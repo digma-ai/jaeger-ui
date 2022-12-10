@@ -23,6 +23,11 @@ declare interface Window {
   // For getting ui config
   getJaegerUiConfig?: () => Record<string, any>;
   getJaegerVersion?: () => Record<string, any>;
+  VS_CODE_SETTINGS: {
+    apiBaseUrl: string;
+    startPath: string;
+    staticPath: string;
+  }
 }
 
 // For inlined envvars
