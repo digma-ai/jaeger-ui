@@ -81,7 +81,7 @@ limitations under the License.
   outline: none;
   overflow: hidden;
   padding-left: 4px;
-  padding-right: 0.25em;
+  padding-right: 40px;
   position: relative;
   text-overflow: ellipsis;
 }
@@ -121,6 +121,20 @@ limitations under the License.
 
 .span-name:hover > .endpoint-name {
   color: #000;
+}
+
+.importance-icon {
+  position: absolute;
+  height: 60%;
+  top: 20%;
+  right: 25px;
+}
+
+.code-location-icon {
+  position: absolute;
+  height: 70%;
+  top: 15%;
+  right: 5px;
 }
 
 .span-svc-name {

@@ -54,6 +54,13 @@ export default class JaegerUIApp extends Component {
   }
 
   render() {
+    // Navigate to URL provided by VS Code
+    if (window.VS_CODE_SETTINGS.startPath) {
+      const urlToNavigate = window.VS_CODE_SETTINGS.startPath;
+      window.VS_CODE_SETTINGS.startPath = "";
+      history.push(urlToNavigate);
+    }
+
     return (
       <Provider store={this.store}>
         <ConnectedRouter history={history}>

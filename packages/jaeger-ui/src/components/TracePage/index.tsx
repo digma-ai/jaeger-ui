@@ -187,6 +187,28 @@ export class TracePageImpl extends React.PureComponent<TProps, TState> {
   componentDidUpdate({ id: prevID }: TProps) {
     const { id, trace } = this.props;
 
+    // Get all the trace spans and send it to VS Code extension
+    // to verify if they have resolved location
+    if (
+      window.vscode &&
+      trace &&
+      trace.data &&
+      trace.state &&
+      trace.state === fetchedState.DONE
+    ) {
+      window.vscode.postMessage({
+        command: "getTraceSpansLocations",
+        data: trace.data.spans.map(span => {
+          const tag = span.tags.find(tag => tag.key === "otel.library.name");
+          
+          return {
+            id: span.spanID,
+            name: span.operationName,
+            instrumentationLibrary: tag && tag.value
+        }}).filter(span => span.instrumentationLibrary)
+      });
+    }
+
     this._scrollManager.setTrace(trace && trace.data);
 
     this.setHeaderHeight(this._headerElm);

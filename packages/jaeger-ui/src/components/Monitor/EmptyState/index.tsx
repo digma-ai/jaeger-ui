@@ -29,6 +29,8 @@ export default class MonitorATMEmptyState extends React.PureComponent {
   }
 
   render() {
+    const monitorImgUrl = window.VS_CODE_SETTINGS.staticPath ? new URL(monitorImg, window.VS_CODE_SETTINGS.staticPath).href : monitorImg;
+
     return (
       <Col>
         <Row justify="center">
@@ -36,7 +38,7 @@ export default class MonitorATMEmptyState extends React.PureComponent {
             <img
               className="monitor-preview-image-empty-state"
               alt="jaeger-monitor-tab-preview"
-              src={monitorImg}
+              src={monitorImgUrl}
             />
           </Col>
         </Row>

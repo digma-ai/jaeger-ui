@@ -27,7 +27,15 @@ import Ticks from './Ticks';
 import { TNil } from '../../../types';
 import { Span } from '../../../types/trace';
 
+import codeIcon from '../../../img/code.svg';
+import exclamationMarkIcon from '../../../img/exclamation-mark.svg';
+
 import './SpanBarRow.css';
+
+type SpanInfo = {
+  hasResolvedLocation: boolean,
+  importance?: number
+}
 
 type SpanBarRowProps = {
   className?: string;
@@ -61,6 +69,11 @@ type SpanBarRowProps = {
   focusSpan: (spanID: string) => void;
 };
 
+type SpanBarRowState = {
+  hasResolvedLocation: boolean;
+  importance?: number;
+}
+
 /**
  * This was originally a stateless function, but changing to a PureComponent
  * reduced the render time of expanding a span row detail by ~50%. This is
@@ -69,7 +82,16 @@ type SpanBarRowProps = {
  * handlers to the onClick props. E.g. for now, the PureComponent is more
  * performance than the stateless function.
  */
-export default class SpanBarRow extends React.PureComponent<SpanBarRowProps> {
+export default class SpanBarRow extends React.PureComponent<SpanBarRowProps, SpanBarRowState> {
+  constructor(props: SpanBarRowProps) {
+    super(props);
+    const span = window.spansWithResolvedLocation[props.span.spanID]
+    this.state = {
+      hasResolvedLocation: Boolean(span) && span.hasResolvedLocation,
+      importance: span && span.importance,
+    }
+  }
+
   static defaultProps = {
     className: '',
     rpc: null,
@@ -82,6 +104,36 @@ export default class SpanBarRow extends React.PureComponent<SpanBarRowProps> {
   _childrenToggle = () => {
     this.props.onChildrenToggled(this.props.span.spanID);
   };
+
+  updateResolvedLocation = (e:{ data: { command: string, data: Record<string, SpanInfo> }}) => {
+    const message = e.data;
+    if (message.command === "setSpansWithResolvedLocation") {
+      const span = message.data[this.props.span.spanID];
+      this.setState({
+        hasResolvedLocation: span.hasResolvedLocation,
+        importance: span.importance
+      });
+    }
+  }
+
+  componentDidMount(): void {
+    window.addEventListener('message', this.updateResolvedLocation);
+  }
+
+  componentWillUnmount(): void {
+    window.removeEventListener('message', this.updateResolvedLocation);
+  }
+
+  getImportanceAltText(importance?: number): string {
+    switch (importance) {
+      case 1:
+        return "Showstopper";
+      case 2:
+        return "Critical";
+      default:
+        return "";
+    }
+  }
 
   render() {
     const {
@@ -121,6 +173,9 @@ export default class SpanBarRow extends React.PureComponent<SpanBarRowProps> {
       longLabel = `${label} | ${labelDetail}`;
       hintSide = 'right';
     }
+
+    const codeIconUrl = window.VS_CODE_SETTINGS.staticPath ? new URL(codeIcon, window.VS_CODE_SETTINGS.staticPath).href : codeIcon;
+    const exclamationMarkIconUrl = window.VS_CODE_SETTINGS.staticPath ? new URL(exclamationMarkIcon, window.VS_CODE_SETTINGS.staticPath).href : exclamationMarkIcon;
 
     return (
       <TimelineRow
@@ -170,6 +225,11 @@ export default class SpanBarRow extends React.PureComponent<SpanBarRowProps> {
                 )}
               </span>
               <small className="endpoint-name">{rpc ? rpc.operationName : operationName}</small>
+              {
+                typeof this.state.importance === "number" && [1,2].includes(this.state.importance) && this.state.hasResolvedLocation &&
+                <img alt={this.getImportanceAltText(this.state.importance)} className="importance-icon" src={exclamationMarkIconUrl} />
+              }
+              {this.state.hasResolvedLocation && <img className="code-location-icon" src={codeIconUrl} />}
             </a>
             {span.references && span.references.length > 1 && (
               <ReferencesButton

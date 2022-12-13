@@ -23,6 +23,14 @@ declare interface Window {
   // For getting ui config
   getJaegerUiConfig?: () => Record<string, any>;
   getJaegerVersion?: () => Record<string, any>;
+  vscode?: Record<any, any>;
+  spansWithResolvedLocation: Record<string, { hasResolvedLocation: boolean, importance?: number }>;
+  VS_CODE_SETTINGS: {
+    apiBaseUrl: string;
+    startPath: string;
+    staticPath: string;
+    embeddedMode: boolean;
+  }
 }
 
 // For inlined envvars
@@ -47,3 +55,4 @@ declare module 'json-markup';
 declare module 'react-vis-force';
 declare module 'tween-functions';
 declare module '*.png' { export default '' as string; }
+declare module "*.svg" { export default '' as string; }

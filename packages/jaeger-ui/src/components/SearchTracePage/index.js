@@ -41,6 +41,29 @@ import JaegerLogo from '../../img/jaeger-logo.svg';
 
 const TabPane = Tabs.TabPane;
 
+// Sanitize query params to filter out ones provided by VS Code
+const sanitizeQueryParams = (params) => {
+  const VS_CODE_PARAMS = [
+    "id",
+    "origin",
+    "swVersion",
+    "extensionId",
+    "platform",
+    "vscode-resource-base-authority",
+    "parentOrigin"
+  ];
+
+  const filteredParams = {};
+
+  Object.keys(params).forEach((key) => {
+    if (!VS_CODE_PARAMS.includes(key)) {
+      filteredParams[key] = params[key]
+    }
+  })
+
+  return filteredParams;
+};
+
 // export for tests
 export class SearchTracePageImpl extends Component {
   componentDidMount() {
@@ -97,6 +120,7 @@ export class SearchTracePageImpl extends Component {
     const hasTraceResults = traceResults && traceResults.length > 0;
     const showErrors = errors && !loadingTraces;
     const showLogo = isHomepage && !hasTraceResults && !loadingTraces && !errors;
+    const logoUrl = window.VS_CODE_SETTINGS.staticPath ? new URL(JaegerLogo, window.VS_CODE_SETTINGS.staticPath).href : JaegerLogo;
     return (
       <Row className="SearchTracePage--row">
         {!embedded && (
@@ -147,7 +171,7 @@ export class SearchTracePageImpl extends Component {
             <img
               className="SearchTracePage--logo js-test-logo"
               alt="presentation"
-              src={JaegerLogo}
+              src={logoUrl}
               width="400"
             />
           )}
@@ -241,6 +265,7 @@ const stateServicesXformer = memoizeOne(stateServices => {
 export function mapStateToProps(state) {
   const { embedded, router, services: stServices, traceDiff } = state;
   const query = getUrlState(router.location.search);
+  const sanitizedQuery = sanitizeQueryParams(query);
   const isHomepage = !Object.keys(query).length;
   const { query: queryOfResults, traces, maxDuration, traceError, loadingTraces } = stateTraceXformer(
     state.trace
@@ -268,7 +293,7 @@ export function mapStateToProps(state) {
     errors: errors.length ? errors : null,
     maxTraceDuration: maxDuration,
     sortTracesBy: sortBy,
-    urlQueryParams: Object.keys(query).length > 0 ? query : null,
+    urlQueryParams: Object.keys(sanitizedQuery).length > 0 ? sanitizedQuery : null,
   };
 }
 

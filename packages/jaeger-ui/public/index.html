@@ -35,6 +35,26 @@
         return JAEGER_VERSION;
       }
     </script>
+    <script>
+      // Variables for injection by VS Code extension
+      var VS_CODE_SETTINGS = {
+        apiBaseUrl: "",
+        startPath: "",
+        staticPath: "",
+        embeddedMode: false,
+      };
+
+      // Store list of trace spans with resolved location globally
+      var spansWithResolvedLocation = {};
+
+      window.addEventListener("message", (e) => {
+        const message = e.data;
+        switch (message.command) {
+          case "setSpansWithResolvedLocation":
+            spansWithResolvedLocation = message.data;
+        }
+      });
+    </script>
   </head>
   <body>
     <div id="jaeger-ui-root"></div>
