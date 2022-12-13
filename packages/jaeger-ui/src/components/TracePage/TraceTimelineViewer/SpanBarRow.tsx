@@ -27,6 +27,8 @@ import Ticks from './Ticks';
 import { TNil } from '../../../types';
 import { Span } from '../../../types/trace';
 
+import codeIcon from '../../../img/code.svg';
+
 import './SpanBarRow.css';
 
 type SpanBarRowProps = {
@@ -61,6 +63,10 @@ type SpanBarRowProps = {
   focusSpan: (spanID: string) => void;
 };
 
+type SpanBarRowState = {
+  hasResolvedLocation: boolean;
+}
+
 /**
  * This was originally a stateless function, but changing to a PureComponent
  * reduced the render time of expanding a span row detail by ~50%. This is
@@ -69,7 +75,14 @@ type SpanBarRowProps = {
  * handlers to the onClick props. E.g. for now, the PureComponent is more
  * performance than the stateless function.
  */
-export default class SpanBarRow extends React.PureComponent<SpanBarRowProps> {
+export default class SpanBarRow extends React.PureComponent<SpanBarRowProps, SpanBarRowState> {
+  constructor(props: SpanBarRowProps) {
+    super(props);
+    this.state = {
+      hasResolvedLocation: window.spansWithResolvedLocation[props.span.spanID]
+    }
+  }
+
   static defaultProps = {
     className: '',
     rpc: null,
@@ -82,6 +95,21 @@ export default class SpanBarRow extends React.PureComponent<SpanBarRowProps> {
   _childrenToggle = () => {
     this.props.onChildrenToggled(this.props.span.spanID);
   };
+
+  updateResolvedLocation = (e:{ data: { command: string, data: Record<string, boolean> }}) => {
+    const message = e.data;
+    if (message.command === "setSpansWithResolvedLocation") {
+      this.setState({ hasResolvedLocation: message.data[this.props.span.spanID] })
+    }
+  }
+
+  componentDidMount(): void {
+    window.addEventListener('message', this.updateResolvedLocation);
+  }
+
+  componentWillUnmount(): void {
+    window.removeEventListener('message', this.updateResolvedLocation);
+  }
 
   render() {
     const {
@@ -121,6 +149,8 @@ export default class SpanBarRow extends React.PureComponent<SpanBarRowProps> {
       longLabel = `${label} | ${labelDetail}`;
       hintSide = 'right';
     }
+
+    const codeIconUrl = window.VS_CODE_SETTINGS.staticPath ? new URL(codeIcon, window.VS_CODE_SETTINGS.staticPath).href : codeIcon;
 
     return (
       <TimelineRow
@@ -170,6 +200,7 @@ export default class SpanBarRow extends React.PureComponent<SpanBarRowProps> {
                 )}
               </span>
               <small className="endpoint-name">{rpc ? rpc.operationName : operationName}</small>
+              {this.state.hasResolvedLocation && <img className="code-location" src={codeIconUrl} />}
             </a>
             {span.references && span.references.length > 1 && (
               <ReferencesButton

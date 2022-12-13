@@ -42,6 +42,17 @@
         startPath: "",
         staticPath: "",
       };
+
+      // Store list of trace spans with resolved location globally
+      var spansWithResolvedLocation = {};
+
+      window.addEventListener("message", (e) => {
+        const message = e.data;
+        switch (message.command) {
+          case "setSpansWithResolvedLocation":
+            spansWithResolvedLocation = message.data;
+        }
+      });
     </script>
   </head>
   <body>

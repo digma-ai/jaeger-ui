@@ -23,6 +23,8 @@ declare interface Window {
   // For getting ui config
   getJaegerUiConfig?: () => Record<string, any>;
   getJaegerVersion?: () => Record<string, any>;
+  vscode?: Record<any, any>;
+  spansWithResolvedLocation: Record<string, boolean>;
   VS_CODE_SETTINGS: {
     apiBaseUrl: string;
     startPath: string;
@@ -52,3 +54,4 @@ declare module 'json-markup';
 declare module 'react-vis-force';
 declare module 'tween-functions';
 declare module '*.png' { export default '' as string; }
+declare module "*.svg" { export default '' as string; }
