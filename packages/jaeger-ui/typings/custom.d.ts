@@ -29,6 +29,7 @@ declare interface Window {
     apiBaseUrl: string;
     startPath: string;
     staticPath: string;
+    embeddedMode: boolean;
   }
 }
 

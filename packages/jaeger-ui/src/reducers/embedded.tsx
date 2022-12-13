@@ -15,11 +15,18 @@
 import _get from 'lodash/get';
 
 import { EmbeddedState } from '../types/embedded';
-import { getEmbeddedState } from '../utils/embedded-url';
+import { getEmbeddedState, VERSION_0 } from '../utils/embedded-url';
 
 export default function embeddedConfig(state: EmbeddedState | undefined) {
   if (state === undefined) {
-    const search = _get(window, 'location.search');
+    let search = _get(window, 'location.search');
+    
+    let params = new URLSearchParams(search);
+    if (window.VS_CODE_SETTINGS.embeddedMode && !params.get("uiEmbed")) {
+      params.set("uiEmbed", VERSION_0);
+      search = params.toString();
+    }
+
     return search ? getEmbeddedState(search) : null;
   }
   return state;

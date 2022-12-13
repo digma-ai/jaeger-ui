@@ -23,6 +23,7 @@ import DetailState from './DetailState';
 import { formatDuration } from '../utils';
 import CopyIcon from '../../../common/CopyIcon';
 import LabeledList from '../../../common/LabeledList';
+import { Link as RouterLink } from 'react-router-dom';
 
 import { TNil } from '../../../../types';
 import { KeyValuePair, Link, Log, Span } from '../../../../types/trace';
@@ -116,6 +117,7 @@ export default class SpanDetail extends React.Component<SpanDetailProps, SpanDet
     const deepLinkCopyText = `${window.location.origin}${window.location.pathname}?uiFind=${spanID}`;
     
     const handleGoToCodeLinkClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+      e.preventDefault();
       window.vscode && window.vscode.postMessage({
         command: "goToSpanLocation",
         data: span
@@ -125,8 +127,15 @@ export default class SpanDetail extends React.Component<SpanDetailProps, SpanDet
     return (
       <div>
         <div className="ub-flex ub-items-center">
-          <h2 className="ub-flex-auto ub-m0">{operationName}</h2>
-          {this.state.hasResolvedLocation && <a style={{ paddingRight: "10px" }} onClick={handleGoToCodeLinkClick} href="#">Go to code</a>}
+          {this.state.hasResolvedLocation ?
+            <RouterLink
+              to={"#"}
+              onClick={handleGoToCodeLinkClick}
+              className="SpanDetail--operationNameLink ub-flex-auto ub-m0"
+            >
+              {operationName}
+            </RouterLink> : <h2 className="ub-flex-auto ub-m0">{operationName}</h2>
+          }
           <LabeledList
             className="ub-tx-right-align"
             dividerClassName="SpanDetail--divider"
