@@ -87,7 +87,8 @@ export default class SpanBarRow extends React.PureComponent<SpanBarRowProps, Spa
     super(props);
     const span = window.spansWithResolvedLocation[props.span.spanID]
     this.state = {
-      hasResolvedLocation: Boolean(span) && span.hasResolvedLocation
+      hasResolvedLocation: Boolean(span) && span.hasResolvedLocation,
+      importance: span && span.importance,
     }
   }
 
@@ -225,7 +226,7 @@ export default class SpanBarRow extends React.PureComponent<SpanBarRowProps, Spa
               </span>
               <small className="endpoint-name">{rpc ? rpc.operationName : operationName}</small>
               {
-                typeof this.state.importance === "number" && [1,2].includes(this.state.importance) &&
+                typeof this.state.importance === "number" && [1,2].includes(this.state.importance) && this.state.hasResolvedLocation &&
                 <img alt={this.getImportanceAltText(this.state.importance)} className="importance-icon" src={exclamationMarkIconUrl} />
               }
               {this.state.hasResolvedLocation && <img className="code-location-icon" src={codeIconUrl} />}
