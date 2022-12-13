@@ -28,8 +28,14 @@ import { TNil } from '../../../types';
 import { Span } from '../../../types/trace';
 
 import codeIcon from '../../../img/code.svg';
+import exclamationMarkIcon from '../../../img/exclamation-mark.svg';
 
 import './SpanBarRow.css';
+
+type SpanInfo = {
+  hasResolvedLocation: boolean,
+  importance?: number
+}
 
 type SpanBarRowProps = {
   className?: string;
@@ -65,6 +71,7 @@ type SpanBarRowProps = {
 
 type SpanBarRowState = {
   hasResolvedLocation: boolean;
+  importance?: number;
 }
 
 /**
@@ -78,8 +85,9 @@ type SpanBarRowState = {
 export default class SpanBarRow extends React.PureComponent<SpanBarRowProps, SpanBarRowState> {
   constructor(props: SpanBarRowProps) {
     super(props);
+    const span = window.spansWithResolvedLocation[props.span.spanID]
     this.state = {
-      hasResolvedLocation: window.spansWithResolvedLocation[props.span.spanID]
+      hasResolvedLocation: Boolean(span) && span.hasResolvedLocation
     }
   }
 
@@ -96,10 +104,14 @@ export default class SpanBarRow extends React.PureComponent<SpanBarRowProps, Spa
     this.props.onChildrenToggled(this.props.span.spanID);
   };
 
-  updateResolvedLocation = (e:{ data: { command: string, data: Record<string, boolean> }}) => {
+  updateResolvedLocation = (e:{ data: { command: string, data: Record<string, SpanInfo> }}) => {
     const message = e.data;
     if (message.command === "setSpansWithResolvedLocation") {
-      this.setState({ hasResolvedLocation: message.data[this.props.span.spanID] })
+      const span = message.data[this.props.span.spanID];
+      this.setState({
+        hasResolvedLocation: span.hasResolvedLocation,
+        importance: span.importance
+      });
     }
   }
 
@@ -109,6 +121,17 @@ export default class SpanBarRow extends React.PureComponent<SpanBarRowProps, Spa
 
   componentWillUnmount(): void {
     window.removeEventListener('message', this.updateResolvedLocation);
+  }
+
+  getImportanceAltText(importance?: number): string {
+    switch (importance) {
+      case 1:
+        return "Showstopper";
+      case 2:
+        return "Critical";
+      default:
+        return "";
+    }
   }
 
   render() {
@@ -151,6 +174,7 @@ export default class SpanBarRow extends React.PureComponent<SpanBarRowProps, Spa
     }
 
     const codeIconUrl = window.VS_CODE_SETTINGS.staticPath ? new URL(codeIcon, window.VS_CODE_SETTINGS.staticPath).href : codeIcon;
+    const exclamationMarkIconUrl = window.VS_CODE_SETTINGS.staticPath ? new URL(exclamationMarkIcon, window.VS_CODE_SETTINGS.staticPath).href : exclamationMarkIcon;
 
     return (
       <TimelineRow
@@ -200,7 +224,11 @@ export default class SpanBarRow extends React.PureComponent<SpanBarRowProps, Spa
                 )}
               </span>
               <small className="endpoint-name">{rpc ? rpc.operationName : operationName}</small>
-              {this.state.hasResolvedLocation && <img className="code-location" src={codeIconUrl} />}
+              {
+                typeof this.state.importance === "number" && [1,2].includes(this.state.importance) &&
+                <img alt={this.getImportanceAltText(this.state.importance)} className="importance-icon" src={exclamationMarkIconUrl} />
+              }
+              {this.state.hasResolvedLocation && <img className="code-location-icon" src={codeIconUrl} />}
             </a>
             {span.references && span.references.length > 1 && (
               <ReferencesButton

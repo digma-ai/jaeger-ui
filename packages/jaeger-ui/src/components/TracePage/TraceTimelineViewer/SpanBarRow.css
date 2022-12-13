@@ -81,7 +81,7 @@ limitations under the License.
   outline: none;
   overflow: hidden;
   padding-left: 4px;
-  padding-right: 15px;
+  padding-right: 40px;
   position: relative;
   text-overflow: ellipsis;
 }
@@ -123,7 +123,14 @@ limitations under the License.
   color: #000;
 }
 
-.code-location {
+.importance-icon {
+  position: absolute;
+  height: 60%;
+  top: 20%;
+  right: 25px;
+}
+
+.code-location-icon {
   position: absolute;
   height: 70%;
   top: 15%;

@@ -44,6 +44,11 @@ type SpanDetailProps = {
   focusSpan: (uiFind: string) => void;
 };
 
+type SpanInfo = {
+  hasResolvedLocation: boolean,
+  importance?: number
+}
+
 type SpanDetailState = {
   hasResolvedLocation: boolean;
 }
@@ -51,15 +56,16 @@ type SpanDetailState = {
 export default class SpanDetail extends React.Component<SpanDetailProps, SpanDetailState> {
   constructor(props: SpanDetailProps) {
     super(props);
+    const span = window.spansWithResolvedLocation[props.span.spanID]
     this.state = {
-      hasResolvedLocation: window.spansWithResolvedLocation[props.span.spanID]
+      hasResolvedLocation: Boolean(span) && span.hasResolvedLocation
     }
   }
 
-  updateResolvedLocation = (e:{ data: { command: string, data: Record<string, boolean> }}) => {
+  updateResolvedLocation = (e:{ data: { command: string, data: Record<string, SpanInfo> }}) => {
     const message = e.data;
     if (message.command === "setSpansWithResolvedLocation") {
-      this.setState({ hasResolvedLocation: message.data[this.props.span.spanID] })
+      this.setState({ hasResolvedLocation: message.data[this.props.span.spanID].hasResolvedLocation })
     }
   }
 
@@ -118,10 +124,16 @@ export default class SpanDetail extends React.Component<SpanDetailProps, SpanDet
     
     const handleGoToCodeLinkClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
       e.preventDefault();
-      window.vscode && window.vscode.postMessage({
-        command: "goToSpanLocation",
-        data: span
-      });
+      const tag = span.tags.find((tag: any) => tag.key === "otel.library.name");
+      if (tag && window.vscode) {
+        window.vscode.postMessage({
+          command: "goToSpanLocation",
+          data: {
+            name: span.operationName,
+            instrumentationLibrary: tag && tag.value
+          }
+        });
+      }
     }
     
     return (
