@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import React from 'react';
-import { Divider } from 'antd';
+import { Divider, Tooltip } from 'antd';
 
 import AccordianKeyValues from './AccordianKeyValues';
 import AccordianLogs from './AccordianLogs';
@@ -168,7 +168,9 @@ export default class SpanDetail extends React.Component<SpanDetailProps, SpanDet
           }
           {
             typeof this.state.importance === "number" && [1,2].includes(this.state.importance) && this.state.hasResolvedLocation &&
-            <span title={this.getImportanceAltText(this.state.importance)} className="SpanDetail--importanceMarker">❗️</span>
+            <Tooltip title={this.getImportanceAltText(this.state.importance)}>
+              <span className="SpanDetail--importanceMarker">❗️</span>
+            </Tooltip>
           }
           <LabeledList
             className="ub-tx-right-align"
