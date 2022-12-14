@@ -28,6 +28,8 @@ import { Link as RouterLink } from 'react-router-dom';
 import { TNil } from '../../../../types';
 import { KeyValuePair, Link, Log, Span } from '../../../../types/trace';
 
+import exclamationMarkIcon from '../../../../img/exclamation-mark.svg';
+
 import './index.css';
 
 type SpanDetailProps = {
@@ -51,6 +53,7 @@ type SpanInfo = {
 
 type SpanDetailState = {
   hasResolvedLocation: boolean;
+  importance?: number
 }
 
 export default class SpanDetail extends React.Component<SpanDetailProps, SpanDetailState> {
@@ -58,7 +61,8 @@ export default class SpanDetail extends React.Component<SpanDetailProps, SpanDet
     super(props);
     const span = window.spansWithResolvedLocation[props.span.spanID]
     this.state = {
-      hasResolvedLocation: Boolean(span) && span.hasResolvedLocation
+      hasResolvedLocation: Boolean(span) && span.hasResolvedLocation,
+      importance: span && span.importance,
     }
   }
 
@@ -75,6 +79,32 @@ export default class SpanDetail extends React.Component<SpanDetailProps, SpanDet
 
   componentWillUnmount(): void {
     window.removeEventListener('message', this.updateResolvedLocation);
+  }
+
+  getImportanceAltText(importance?: number): string {
+    switch (importance) {
+      case 1:
+        return "Showstopper";
+      case 2:
+        return "Critical";
+      default:
+        return "";
+    }
+  }
+
+      
+  handleGoToCodeLinkClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    const tag = this.props.span.tags.find((tag: any) => tag.key === "otel.library.name");
+    if (tag && window.vscode) {
+      window.vscode.postMessage({
+        command: "goToSpanLocation",
+        data: {
+          name: this.props.span.operationName,
+          instrumentationLibrary: tag && tag.value
+        }
+      });
+    }
   }
 
   render() {
@@ -121,32 +151,23 @@ export default class SpanDetail extends React.Component<SpanDetailProps, SpanDet
       },
     ];
     const deepLinkCopyText = `${window.location.origin}${window.location.pathname}?uiFind=${spanID}`;
-    
-    const handleGoToCodeLinkClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
-      e.preventDefault();
-      const tag = span.tags.find((tag: any) => tag.key === "otel.library.name");
-      if (tag && window.vscode) {
-        window.vscode.postMessage({
-          command: "goToSpanLocation",
-          data: {
-            name: span.operationName,
-            instrumentationLibrary: tag && tag.value
-          }
-        });
-      }
-    }
-    
+    const exclamationMarkIconUrl = window.VS_CODE_SETTINGS.staticPath ? new URL(exclamationMarkIcon, window.VS_CODE_SETTINGS.staticPath).href : exclamationMarkIcon;
+
     return (
       <div>
         <div className="ub-flex ub-items-center">
           {this.state.hasResolvedLocation ?
             <RouterLink
               to={"#"}
-              onClick={handleGoToCodeLinkClick}
+              onClick={this.handleGoToCodeLinkClick}
               className="SpanDetail--operationNameLink ub-flex-auto ub-m0"
             >
               {operationName}
             </RouterLink> : <h2 className="ub-flex-auto ub-m0">{operationName}</h2>
+          }
+          {
+            typeof this.state.importance === "number" && [1,2].includes(this.state.importance) && this.state.hasResolvedLocation &&
+            <img alt={this.getImportanceAltText(this.state.importance)} className="SpanDetail--importanceMarker" src={exclamationMarkIconUrl} />
           }
           <LabeledList
             className="ub-tx-right-align"
