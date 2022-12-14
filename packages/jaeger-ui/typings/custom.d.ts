@@ -24,7 +24,8 @@ declare interface Window {
   getJaegerUiConfig?: () => Record<string, any>;
   getJaegerVersion?: () => Record<string, any>;
   vscode?: Record<any, any>;
-  spansWithResolvedLocation: Record<string, { hasResolvedLocation: boolean, importance?: number }>;
+  spansWithResolvedLocation: Record<string, { importance?: number }>;
+  pendingOperationsCount: number;
   VS_CODE_SETTINGS: {
     apiBaseUrl: string;
     startPath: string;

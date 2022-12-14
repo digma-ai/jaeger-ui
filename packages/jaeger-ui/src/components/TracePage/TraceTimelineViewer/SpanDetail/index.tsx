@@ -28,8 +28,6 @@ import { Link as RouterLink } from 'react-router-dom';
 import { TNil } from '../../../../types';
 import { KeyValuePair, Link, Log, Span } from '../../../../types/trace';
 
-import exclamationMarkIcon from '../../../../img/exclamation-mark.svg';
-
 import './index.css';
 
 type SpanDetailProps = {
@@ -59,26 +57,30 @@ type SpanDetailState = {
 export default class SpanDetail extends React.Component<SpanDetailProps, SpanDetailState> {
   constructor(props: SpanDetailProps) {
     super(props);
-    const span = window.spansWithResolvedLocation[props.span.spanID]
+    const span = window.spansWithResolvedLocation[props.span.spanID];
     this.state = {
-      hasResolvedLocation: Boolean(span) && span.hasResolvedLocation,
+      hasResolvedLocation: Boolean(span),
       importance: span && span.importance,
     }
   }
 
-  updateResolvedLocation = (e:{ data: { command: string, data: Record<string, SpanInfo> }}) => {
+  updateSpanInfo = (e:{ data: { command: string, data: Record<string, SpanInfo> }}) => {
     const message = e.data;
     if (message.command === "setSpansWithResolvedLocation") {
-      this.setState({ hasResolvedLocation: message.data[this.props.span.spanID].hasResolvedLocation })
+      const span = message.data[this.props.span.spanID];
+      this.setState({
+        hasResolvedLocation: Boolean(span),
+        importance: span && span.importance
+      });
     }
   }
 
   componentDidMount(): void {
-    window.addEventListener('message', this.updateResolvedLocation);
+    window.addEventListener('message', this.updateSpanInfo);
   }
 
   componentWillUnmount(): void {
-    window.removeEventListener('message', this.updateResolvedLocation);
+    window.removeEventListener('message', this.updateSpanInfo);
   }
 
   getImportanceAltText(importance?: number): string {
@@ -151,7 +153,6 @@ export default class SpanDetail extends React.Component<SpanDetailProps, SpanDet
       },
     ];
     const deepLinkCopyText = `${window.location.origin}${window.location.pathname}?uiFind=${spanID}`;
-    const exclamationMarkIconUrl = window.VS_CODE_SETTINGS.staticPath ? new URL(exclamationMarkIcon, window.VS_CODE_SETTINGS.staticPath).href : exclamationMarkIcon;
 
     return (
       <div>
@@ -167,7 +168,7 @@ export default class SpanDetail extends React.Component<SpanDetailProps, SpanDet
           }
           {
             typeof this.state.importance === "number" && [1,2].includes(this.state.importance) && this.state.hasResolvedLocation &&
-            <img alt={this.getImportanceAltText(this.state.importance)} className="SpanDetail--importanceMarker" src={exclamationMarkIconUrl} />
+            <span title={this.getImportanceAltText(this.state.importance)} className="SpanDetail--importanceMarker">❗️</span>
           }
           <LabeledList
             className="ub-tx-right-align"

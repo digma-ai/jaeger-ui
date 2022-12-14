@@ -31,3 +31,11 @@ limitations under the License.
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
+.TimelineHeaderRow--loading {
+  align-items: center;
+}
+
+.TimelineHeaderRow--loading-text {
+  margin: 0 8px;
+}

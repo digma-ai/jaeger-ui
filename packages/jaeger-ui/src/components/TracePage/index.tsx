@@ -184,7 +184,7 @@ export class TracePageImpl extends React.PureComponent<TProps, TState> {
     mergeShortcuts(shortcutCallbacks);
   }
 
-  componentDidUpdate({ id: prevID }: TProps) {
+  componentDidUpdate({ id: prevID, trace: prevTrace }: TProps) {
     const { id, trace } = this.props;
 
     // Get all the trace spans and send it to VS Code extension
@@ -192,6 +192,7 @@ export class TracePageImpl extends React.PureComponent<TProps, TState> {
     if (
       window.vscode &&
       trace &&
+      trace != prevTrace &&
       trace.data &&
       trace.state &&
       trace.state === fetchedState.DONE
@@ -205,8 +206,10 @@ export class TracePageImpl extends React.PureComponent<TProps, TState> {
             id: span.spanID,
             name: span.operationName,
             instrumentationLibrary: tag && tag.value
-        }}).filter(span => span.instrumentationLibrary)
+          }}).filter(span => span.instrumentationLibrary)
       });
+
+      window.pendingOperationsCount++;
     }
 
     this._scrollManager.setTrace(trace && trace.data);

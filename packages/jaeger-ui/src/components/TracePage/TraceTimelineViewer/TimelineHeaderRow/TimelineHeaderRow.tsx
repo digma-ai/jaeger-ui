@@ -22,6 +22,7 @@ import TimelineRow from '../TimelineRow';
 import { TUpdateViewRangeTimeFunction, IViewRangeTime, ViewRangeTimeUpdate } from '../../types';
 
 import './TimelineHeaderRow.css';
+import LoadingIndicator from '../../../common/LoadingIndicator';
 
 type TimelineHeaderRowProps = {
   duration: number;
@@ -37,42 +38,78 @@ type TimelineHeaderRowProps = {
   viewRangeTime: IViewRangeTime;
 };
 
-export default function TimelineHeaderRow(props: TimelineHeaderRowProps) {
-  const {
-    duration,
-    nameColumnWidth,
-    numTicks,
-    onCollapseAll,
-    onCollapseOne,
-    onColummWidthChange,
-    onExpandAll,
-    onExpandOne,
-    updateViewRangeTime,
-    updateNextViewRangeTime,
-    viewRangeTime,
-  } = props;
-  const [viewStart, viewEnd] = viewRangeTime.current;
-  return (
-    <TimelineRow className="TimelineHeaderRow">
-      <TimelineRow.Cell className="ub-flex ub-px2" width={nameColumnWidth}>
-        <h3 className="TimelineHeaderRow--title">Service &amp; Operation</h3>
-        <TimelineCollapser
-          onCollapseAll={onCollapseAll}
-          onExpandAll={onExpandAll}
-          onCollapseOne={onCollapseOne}
-          onExpandOne={onExpandOne}
-        />
-      </TimelineRow.Cell>
-      <TimelineRow.Cell width={1 - nameColumnWidth}>
-        <TimelineViewingLayer
-          boundsInvalidator={nameColumnWidth}
-          updateNextViewRangeTime={updateNextViewRangeTime}
-          updateViewRangeTime={updateViewRangeTime}
-          viewRangeTime={viewRangeTime}
-        />
-        <Ticks numTicks={numTicks} startTime={viewStart * duration} endTime={viewEnd * duration} showLabels />
-      </TimelineRow.Cell>
-      <VerticalResizer position={nameColumnWidth} onChange={onColummWidthChange} min={0.15} max={0.85} />
-    </TimelineRow>
-  );
+type TimelineHeaderRowState = {
+  isLoading: boolean;
+}
+
+export default class SpanDetailRow extends React.PureComponent<TimelineHeaderRowProps, TimelineHeaderRowState> {
+  constructor(props: TimelineHeaderRowProps) {
+    super(props)
+    this.state = {
+      isLoading: Boolean(window.pendingOperationsCount)
+    }
+  }
+  
+  // TODO: Move event type to common place
+  updateIsLoading = (e:{ data: { command: string, data: Record<string, any> }}) => {
+    const message = e.data;
+    if (message.command === "setSpansWithResolvedLocation") {
+      this.setState({
+        isLoading: false
+      });
+    }
+  }
+
+  componentDidMount(): void {
+    window.addEventListener('message', this.updateIsLoading);
+  }
+
+  componentWillUnmount(): void {
+    window.removeEventListener('message', this.updateIsLoading);
+  }
+  
+  render() {
+    const {
+      duration,
+      nameColumnWidth,
+      numTicks,
+      onCollapseAll,
+      onCollapseOne,
+      onColummWidthChange,
+      onExpandAll,
+      onExpandOne,
+      updateViewRangeTime,
+      updateNextViewRangeTime,
+      viewRangeTime,
+    } = this.props;
+    const [viewStart, viewEnd] = viewRangeTime.current;
+
+    return (
+      <TimelineRow className="TimelineHeaderRow">
+        <TimelineRow.Cell className="ub-flex ub-px2" width={nameColumnWidth}>
+          <h3 className="TimelineHeaderRow--title">Service &amp; Operation</h3>
+          {this.state.isLoading && <div className="ub-flex TimelineHeaderRow--loading">
+            <LoadingIndicator className={"is-medium"} />
+            <span className="TimelineHeaderRow--loading-text">Loading data...</span>
+          </div>}
+          <TimelineCollapser
+            onCollapseAll={onCollapseAll}
+            onExpandAll={onExpandAll}
+            onCollapseOne={onCollapseOne}
+            onExpandOne={onExpandOne}
+          />
+        </TimelineRow.Cell>
+        <TimelineRow.Cell width={1 - nameColumnWidth}>
+          <TimelineViewingLayer
+            boundsInvalidator={nameColumnWidth}
+            updateNextViewRangeTime={updateNextViewRangeTime}
+            updateViewRangeTime={updateViewRangeTime}
+            viewRangeTime={viewRangeTime}
+          />
+          <Ticks numTicks={numTicks} startTime={viewStart * duration} endTime={viewEnd * duration} showLabels />
+        </TimelineRow.Cell>
+        <VerticalResizer position={nameColumnWidth} onChange={onColummWidthChange} min={0.15} max={0.85} />
+      </TimelineRow>
+    );
+  }
 }

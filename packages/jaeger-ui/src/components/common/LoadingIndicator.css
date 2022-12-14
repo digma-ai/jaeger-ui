@@ -49,3 +49,7 @@ limitations under the License.
 .LoadingIndicator.is-small {
   font-size: 0.7em;
 }
+
+.LoadingIndicator.is-medium {
+  font-size: 1.5em;
+}

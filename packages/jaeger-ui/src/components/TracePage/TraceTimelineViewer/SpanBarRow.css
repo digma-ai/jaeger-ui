@@ -123,10 +123,9 @@ limitations under the License.
   color: #000;
 }
 
-.importance-icon {
+.importance-marker {
   position: absolute;
-  height: 60%;
-  top: 20%;
+  top: 5%;
   right: 25px;
 }
 
