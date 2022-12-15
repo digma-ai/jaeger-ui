@@ -94,12 +94,11 @@ export default class SpanDetail extends React.Component<SpanDetailProps, SpanDet
     }
   }
 
-      
   handleGoToCodeLinkClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
     const tag = this.props.span.tags.find((tag: any) => tag.key === "otel.library.name");
-    if (tag && window.vscode) {
-      window.vscode.postMessage({
+    if (tag && window.sendMessageToVSCode) {
+      window.sendMessageToVSCode({
         command: "goToSpanLocation",
         data: {
           name: this.props.span.operationName,

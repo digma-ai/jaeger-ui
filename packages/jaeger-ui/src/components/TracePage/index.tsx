@@ -190,14 +190,14 @@ export class TracePageImpl extends React.PureComponent<TProps, TState> {
     // Get all the trace spans and send it to VS Code extension
     // to verify if they have resolved location
     if (
-      window.vscode &&
+      window.sendMessageToVSCode &&
       trace &&
       trace != prevTrace &&
       trace.data &&
       trace.state &&
       trace.state === fetchedState.DONE
     ) {
-      window.vscode.postMessage({
+      window.sendMessageToVSCode({
         command: "getTraceSpansLocations",
         data: trace.data.spans.map(span => {
           const tag = span.tags.find(tag => tag.key === "otel.library.name");

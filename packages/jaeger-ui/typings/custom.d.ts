@@ -23,7 +23,7 @@ declare interface Window {
   // For getting ui config
   getJaegerUiConfig?: () => Record<string, any>;
   getJaegerVersion?: () => Record<string, any>;
-  vscode?: Record<any, any>;
+  sendMessageToVSCode?: (message: { command: string, data: any }) => void;
   spansWithResolvedLocation: Record<string, { importance?: number }>;
   pendingOperationsCount: number;
   VS_CODE_SETTINGS: {
