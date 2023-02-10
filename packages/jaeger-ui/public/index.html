@@ -46,12 +46,14 @@
 
       // Store list of trace spans with resolved location globally
       var spansWithResolvedLocation = {};
+      var pendingOperationsCount = 0;
 
       window.addEventListener("message", (e) => {
         const message = e.data;
         switch (message.command) {
           case "setSpansWithResolvedLocation":
             spansWithResolvedLocation = message.data;
+            pendingOperationsCount--;
         }
       });
     </script>

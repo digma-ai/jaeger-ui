@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import React from 'react';
-import { Divider } from 'antd';
+import { Divider, Tooltip } from 'antd';
 
 import AccordianKeyValues from './AccordianKeyValues';
 import AccordianLogs from './AccordianLogs';
@@ -51,30 +51,61 @@ type SpanInfo = {
 
 type SpanDetailState = {
   hasResolvedLocation: boolean;
+  importance?: number
 }
 
 export default class SpanDetail extends React.Component<SpanDetailProps, SpanDetailState> {
   constructor(props: SpanDetailProps) {
     super(props);
-    const span = window.spansWithResolvedLocation[props.span.spanID]
+    const span = window.spansWithResolvedLocation[props.span.spanID];
     this.state = {
-      hasResolvedLocation: Boolean(span) && span.hasResolvedLocation
+      hasResolvedLocation: Boolean(span),
+      importance: span && span.importance,
     }
   }
 
-  updateResolvedLocation = (e:{ data: { command: string, data: Record<string, SpanInfo> }}) => {
+  updateSpanInfo = (e:{ data: { command: string, data: Record<string, SpanInfo> }}) => {
     const message = e.data;
     if (message.command === "setSpansWithResolvedLocation") {
-      this.setState({ hasResolvedLocation: message.data[this.props.span.spanID].hasResolvedLocation })
+      const span = message.data[this.props.span.spanID];
+      this.setState({
+        hasResolvedLocation: Boolean(span),
+        importance: span && span.importance
+      });
     }
   }
 
   componentDidMount(): void {
-    window.addEventListener('message', this.updateResolvedLocation);
+    window.addEventListener('message', this.updateSpanInfo);
   }
 
   componentWillUnmount(): void {
-    window.removeEventListener('message', this.updateResolvedLocation);
+    window.removeEventListener('message', this.updateSpanInfo);
+  }
+
+  getImportanceAltText(importance?: number): string {
+    switch (importance) {
+      case 1:
+        return "Showstopper";
+      case 2:
+        return "Critical";
+      default:
+        return "";
+    }
+  }
+
+  handleGoToCodeLinkClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    const tag = this.props.span.tags.find((tag: any) => tag.key === "otel.library.name");
+    if (tag && window.sendMessageToVSCode) {
+      window.sendMessageToVSCode({
+        command: "goToSpanLocation",
+        data: {
+          name: this.props.span.operationName,
+          instrumentationLibrary: tag && tag.value
+        }
+      });
+    }
   }
 
   render() {
@@ -121,32 +152,24 @@ export default class SpanDetail extends React.Component<SpanDetailProps, SpanDet
       },
     ];
     const deepLinkCopyText = `${window.location.origin}${window.location.pathname}?uiFind=${spanID}`;
-    
-    const handleGoToCodeLinkClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
-      e.preventDefault();
-      const tag = span.tags.find((tag: any) => tag.key === "otel.library.name");
-      if (tag && window.vscode) {
-        window.vscode.postMessage({
-          command: "goToSpanLocation",
-          data: {
-            name: span.operationName,
-            instrumentationLibrary: tag && tag.value
-          }
-        });
-      }
-    }
-    
+
     return (
       <div>
         <div className="ub-flex ub-items-center">
           {this.state.hasResolvedLocation ?
             <RouterLink
               to={"#"}
-              onClick={handleGoToCodeLinkClick}
+              onClick={this.handleGoToCodeLinkClick}
               className="SpanDetail--operationNameLink ub-flex-auto ub-m0"
             >
               {operationName}
             </RouterLink> : <h2 className="ub-flex-auto ub-m0">{operationName}</h2>
+          }
+          {
+            typeof this.state.importance === "number" && [1,2].includes(this.state.importance) && this.state.hasResolvedLocation &&
+            <Tooltip title={this.getImportanceAltText(this.state.importance)}>
+              <span className="SpanDetail--importanceMarker">❗️</span>
+            </Tooltip>
           }
           <LabeledList
             className="ub-tx-right-align"

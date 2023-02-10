@@ -28,12 +28,10 @@ import { TNil } from '../../../types';
 import { Span } from '../../../types/trace';
 
 import codeIcon from '../../../img/code.svg';
-import exclamationMarkIcon from '../../../img/exclamation-mark.svg';
 
 import './SpanBarRow.css';
 
 type SpanInfo = {
-  hasResolvedLocation: boolean,
   importance?: number
 }
 
@@ -85,9 +83,9 @@ type SpanBarRowState = {
 export default class SpanBarRow extends React.PureComponent<SpanBarRowProps, SpanBarRowState> {
   constructor(props: SpanBarRowProps) {
     super(props);
-    const span = window.spansWithResolvedLocation[props.span.spanID]
+    const span = window.spansWithResolvedLocation[props.span.spanID];
     this.state = {
-      hasResolvedLocation: Boolean(span) && span.hasResolvedLocation,
+      hasResolvedLocation: Boolean(span),
       importance: span && span.importance,
     }
   }
@@ -105,23 +103,23 @@ export default class SpanBarRow extends React.PureComponent<SpanBarRowProps, Spa
     this.props.onChildrenToggled(this.props.span.spanID);
   };
 
-  updateResolvedLocation = (e:{ data: { command: string, data: Record<string, SpanInfo> }}) => {
+  updateSpanInfo = (e: { data: { command: string, data: Record<string, SpanInfo> }}) => {
     const message = e.data;
     if (message.command === "setSpansWithResolvedLocation") {
       const span = message.data[this.props.span.spanID];
       this.setState({
-        hasResolvedLocation: span.hasResolvedLocation,
-        importance: span.importance
+        hasResolvedLocation: Boolean(span),
+        importance: span && span.importance
       });
     }
   }
 
   componentDidMount(): void {
-    window.addEventListener('message', this.updateResolvedLocation);
+    window.addEventListener('message', this.updateSpanInfo);
   }
 
   componentWillUnmount(): void {
-    window.removeEventListener('message', this.updateResolvedLocation);
+    window.removeEventListener('message', this.updateSpanInfo);
   }
 
   getImportanceAltText(importance?: number): string {
@@ -175,7 +173,6 @@ export default class SpanBarRow extends React.PureComponent<SpanBarRowProps, Spa
     }
 
     const codeIconUrl = window.VS_CODE_SETTINGS.staticPath ? new URL(codeIcon, window.VS_CODE_SETTINGS.staticPath).href : codeIcon;
-    const exclamationMarkIconUrl = window.VS_CODE_SETTINGS.staticPath ? new URL(exclamationMarkIcon, window.VS_CODE_SETTINGS.staticPath).href : exclamationMarkIcon;
 
     return (
       <TimelineRow
@@ -227,7 +224,7 @@ export default class SpanBarRow extends React.PureComponent<SpanBarRowProps, Spa
               <small className="endpoint-name">{rpc ? rpc.operationName : operationName}</small>
               {
                 typeof this.state.importance === "number" && [1,2].includes(this.state.importance) && this.state.hasResolvedLocation &&
-                <img alt={this.getImportanceAltText(this.state.importance)} className="importance-icon" src={exclamationMarkIconUrl} />
+                <span title={this.getImportanceAltText(this.state.importance)} className="importance-marker">❗️</span>
               }
               {this.state.hasResolvedLocation && <img className="code-location-icon" src={codeIconUrl} />}
             </a>
