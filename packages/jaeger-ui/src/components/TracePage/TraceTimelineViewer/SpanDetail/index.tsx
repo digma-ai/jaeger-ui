@@ -123,17 +123,8 @@ export default class SpanDetail extends React.Component<SpanDetailProps, SpanDet
       focusSpan,
     } = this.props;
     const { isTagsOpen, isProcessOpen, logs: logsState, isWarningsOpen, isReferencesOpen } = detailState;
-    const {
-      operationName,
-      process,
-      duration,
-      relativeStartTime,
-      spanID,
-      logs,
-      tags,
-      warnings,
-      references,
-    } = span;
+    const { operationName, process, duration, relativeStartTime, spanID, logs, tags, warnings, references } =
+    span;
     const overviewItems = [
       {
         key: 'svc',

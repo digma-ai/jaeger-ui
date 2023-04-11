@@ -113,6 +113,7 @@ export class SearchTracePageImpl extends Component {
       maxTraceDuration,
       services,
       traceResults,
+      traceResultsToDownload,
       queryOfResults,
       loadJsonTraces,
       urlQueryParams,
@@ -130,9 +131,9 @@ export class SearchTracePageImpl extends Component {
                 <TabPane tab="Search" key="searchForm">
                   {!loadingServices && services ? <SearchForm services={services} /> : <LoadingIndicator />}
                 </TabPane>
-                <TabPane tab="JSON File" key="fileLoader">
+                <TabPane tab="Upload" key="fileLoader">
                   <FileLoader
-                    loadJsonTraces={(fileList: FileList) => {
+                    loadJsonTraces={fileList => {
                       loadJsonTraces(fileList);
                     }}
                   />
@@ -165,6 +166,7 @@ export class SearchTracePageImpl extends Component {
               skipMessage={isHomepage}
               spanLinks={urlQueryParams && urlQueryParams.spanLinks}
               traces={traceResults}
+              rawTraces={traceResultsToDownload}
             />
           )}
           {showLogo && (
@@ -184,6 +186,8 @@ SearchTracePageImpl.propTypes = {
   isHomepage: PropTypes.bool,
   // eslint-disable-next-line react/forbid-prop-types
   traceResults: PropTypes.array,
+  // eslint-disable-next-line react/forbid-prop-types
+  traceResultsToDownload: PropTypes.array,
   // eslint-disable-next-line react/forbid-prop-types
   diffCohort: PropTypes.array,
   cohortAddTrace: PropTypes.func,
@@ -224,13 +228,16 @@ SearchTracePageImpl.propTypes = {
 };
 
 const stateTraceXformer = memoizeOne(stateTrace => {
-  const { traces: traceMap, search } = stateTrace;
+  const { traces: traceMap, rawTraces, search } = stateTrace;
   const { query, results, state, error: traceError } = search;
 
   const loadingTraces = state === fetchedState.LOADING;
   const traces = results.map(id => traceMap[id].data);
-  const maxDuration = Math.max.apply(null, traces.map(tr => tr.duration));
-  return { traces, maxDuration, traceError, loadingTraces, query };
+  const maxDuration = Math.max.apply(
+    null,
+    traces.map(tr => tr.duration)
+  );
+  return { traces, rawTraces, maxDuration, traceError, loadingTraces, query };
 });
 
 const stateTraceDiffXformer = memoizeOne((stateTrace, stateTraceDiff) => {
@@ -267,9 +274,14 @@ export function mapStateToProps(state) {
   const query = getUrlState(router.location.search);
   const sanitizedQuery = sanitizeQueryParams(query);
   const isHomepage = !Object.keys(query).length;
-  const { query: queryOfResults, traces, maxDuration, traceError, loadingTraces } = stateTraceXformer(
-    state.trace
-  );
+  const {
+    query: queryOfResults,
+    traces,
+    rawTraces,
+    maxDuration,
+    traceError,
+    loadingTraces,
+  } = stateTraceXformer(state.trace);
   const diffCohort = stateTraceDiffXformer(state.trace, traceDiff);
   const { loadingServices, services, serviceError } = stateServicesXformer(stServices);
   const errors = [];
@@ -290,6 +302,7 @@ export function mapStateToProps(state) {
     loadingTraces,
     services,
     traceResults,
+    traceResultsToDownload: rawTraces,
     errors: errors.length ? errors : null,
     maxTraceDuration: maxDuration,
     sortTracesBy: sortBy,
@@ -315,7 +328,4 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(SearchTracePageImpl);
+export default connect(mapStateToProps, mapDispatchToProps)(SearchTracePageImpl);

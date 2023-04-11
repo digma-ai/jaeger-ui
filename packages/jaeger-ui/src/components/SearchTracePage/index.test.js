@@ -44,13 +44,22 @@ describe('<SearchTracePage>', () => {
   const queryOfResults = {};
   let wrapper;
   let traceResults;
+  let traceResultsToDownload;
   let props;
 
   beforeEach(() => {
-    traceResults = [{ traceID: 'a', spans: [], processes: {} }, { traceID: 'b', spans: [], processes: {} }];
+    traceResults = [
+      { traceID: 'a', spans: [], processes: {} },
+      { traceID: 'b', spans: [], processes: {} },
+    ];
+    traceResultsToDownload = [
+      { traceID: 'a', spans: [], processes: {} },
+      { traceID: 'b', spans: [], processes: {} },
+    ];
     props = {
       queryOfResults,
       traceResults,
+      traceResultsToDownload,
       diffCohort: [],
       isHomepage: false,
       loadingServices: false,
@@ -114,11 +123,7 @@ describe('<SearchTracePage>', () => {
         <SearchTracePage {...props} history={historyMock} query={query} />
       </MemoryRouter>
     );
-    wrapper
-      .find(SearchTracePage)
-      .first()
-      .instance()
-      .goToTrace(traceID);
+    wrapper.find(SearchTracePage).first().instance().goToTrace(traceID);
     expect(historyPush.mock.calls.length).toBe(1);
     expect(historyPush.mock.calls[0][0]).toEqual({
       pathname: `/trace/${traceID}`,
@@ -170,6 +175,7 @@ describe('mapStateToProps()', () => {
       traces: {
         [trace.traceID]: { id: trace.traceID, data: trace, state: fetchedState.DONE },
       },
+      rawTraces: [trace],
     };
     const stateServices = {
       loading: false,
@@ -189,6 +195,7 @@ describe('mapStateToProps()', () => {
     const {
       maxTraceDuration,
       traceResults,
+      traceResultsToDownload,
       diffCohort,
       numberOfTraceResults,
       location,
@@ -196,6 +203,7 @@ describe('mapStateToProps()', () => {
     } = mapStateToProps(state);
     expect(traceResults).toHaveLength(stateTrace.search.results.length);
     expect(traceResults[0].traceID).toBe(trace.traceID);
+    expect(traceResultsToDownload[0].traceID).toBe(trace.traceID);
     expect(maxTraceDuration).toBe(trace.duration);
     expect(diffCohort).toHaveLength(state.traceDiff.cohort.length);
     expect(diffCohort[0].id).toBe(trace.traceID);

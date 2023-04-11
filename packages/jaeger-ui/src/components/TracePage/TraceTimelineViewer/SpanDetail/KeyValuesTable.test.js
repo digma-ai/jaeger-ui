@@ -45,12 +45,19 @@ describe('LinkValue', () => {
 describe('<KeyValuesTable>', () => {
   let wrapper;
 
+  const jsonkeyValue = { hello: 'world' };
   const data = [
     { key: 'span.kind', value: 'client', expected: 'client' },
     { key: 'omg', value: 'mos-def', expected: 'mos-def' },
     { key: 'numericString', value: '12345678901234567890', expected: '12345678901234567890' },
     { key: 'numeric', value: 123456789, expected: '123456789' },
-    { key: 'jsonkey', value: JSON.stringify({ hello: 'world' }) },
+    { key: 'jsonkey', value: JSON.stringify(jsonkeyValue), expected: JSON.stringify(jsonkeyValue, null, 4) },
+    { key: 'http.request.header.accept', value: ['application/json'], expected: 'application/json' },
+    {
+      key: 'http.response.header.set_cookie',
+      value: JSON.stringify(['name=mos-def', 'code=12345']),
+      expected: 'name=mos-def, code=12345',
+    },
   ];
 
   beforeEach(() => {
@@ -87,13 +94,7 @@ describe('<KeyValuesTable>', () => {
     expect(anchor).toHaveLength(1);
     expect(anchor.prop('href')).toBe('http://example.com/?kind=client');
     expect(anchor.prop('title')).toBe('More info about client');
-    expect(
-      anchor
-        .closest('tr')
-        .find('td')
-        .first()
-        .text()
-    ).toBe('span.kind');
+    expect(anchor.closest('tr').find('td').first().text()).toBe('span.kind');
   });
 
   it('renders multiple links correctly', () => {
@@ -107,7 +108,7 @@ describe('<KeyValuesTable>', () => {
           : [],
     });
     const dropdown = wrapper.find(Dropdown);
-    const menu = shallow(dropdown.prop('overlay'));
+    const menu = shallow(dropdown.prop('overlay')).dive();
     const anchors = menu.find(LinkValue);
     expect(anchors).toHaveLength(2);
     const firstAnchor = anchors.first();
@@ -116,13 +117,7 @@ describe('<KeyValuesTable>', () => {
     const secondAnchor = anchors.last();
     expect(secondAnchor.prop('href')).toBe('http://example.com/2?kind=client');
     expect(secondAnchor.children().text()).toBe('Example 2');
-    expect(
-      dropdown
-        .closest('tr')
-        .find('td')
-        .first()
-        .text()
-    ).toBe('span.kind');
+    expect(dropdown.closest('tr').find('td').first().text()).toBe('span.kind');
   });
 
   it('renders a <CopyIcon /> with correct copyText for each data element', () => {
@@ -134,12 +129,12 @@ describe('<KeyValuesTable>', () => {
     });
   });
 
-  it('renders a span value containing numeric string correctly', () => {
+  it('renders the expected text for each span value', () => {
     const el = wrapper.find('.ub-inline-block');
     expect(el.length).toBe(data.length);
     el.forEach((valueDiv, i) => {
-      if (data[i].key !== 'jsonkey') {
-        expect(valueDiv.html()).toMatch(data[i].expected);
+      if (data[i].expected) {
+        expect(valueDiv.render().text()).toBe(data[i].expected);
       }
     });
   });
