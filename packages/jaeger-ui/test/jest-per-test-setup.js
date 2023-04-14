@@ -38,6 +38,8 @@ window.getJaegerVersion = () => ({
   buildDate: '',
 });
 
+window.sendMessageToDigma = () => {};
+
 global.__APP_ENVIRONMENT__ = 'test';
 global.__REACT_APP_GA_DEBUG__ = '';
 global.__REACT_APP_VSN_STATE__ = '';

@@ -12,8 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { IDigmaOutgoingMessageData } from "../src/api/digma/types";
-
 // For jest
 declare const global: {
   location: Location;
@@ -33,9 +31,7 @@ declare interface Window {
     onFailure: (error_code, error_message) => void;
   }) => string;
   cefQueryCancel?: (request_id: string) => void;
-  sendMessageToDigma: (
-    message: IDigmaOutgoingMessageData
-  ) => string | undefined;
+  sendMessageToDigma: (message) => string | undefined;
   cancelMessageToDigma: (request_id: string) => void;
   platform?: unknown;
   apiBaseUrl?: unknown;

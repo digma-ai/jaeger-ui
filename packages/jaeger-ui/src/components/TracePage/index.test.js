@@ -103,6 +103,7 @@ describe('<TracePage>', () => {
 
   beforeAll(() => {
     filterSpansSpy.mockReturnValue(new Set());
+    jest.spyOn(window, 'sendMessageToDigma').mockImplementation(jest.fn());
   });
 
   beforeEach(() => {

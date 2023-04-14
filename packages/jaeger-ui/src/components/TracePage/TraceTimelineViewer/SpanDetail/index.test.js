@@ -114,6 +114,7 @@ describe('<SpanDetail>', () => {
     props.logsToggle.mockReset();
     props.logItemToggle.mockReset();
     wrapper = shallow(<SpanDetail {...props} />);
+    jest.spyOn(window, 'sendMessageToDigma').mockImplementation(jest.fn());
   });
 
   it('renders without exploding', () => {

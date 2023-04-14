@@ -224,7 +224,7 @@ export default class SpanBarRow extends React.PureComponent<SpanBarRowProps, Spa
                 typeof this.state.importance === "number" && [1,2].includes(this.state.importance) && this.state.hasResolvedLocation &&
                 <span title={this.getImportanceAltText(this.state.importance)} className="importance-marker">❗️</span>
               }
-              {this.state.hasResolvedLocation && <img alt="has code location" className="code-location-icon" src={codeIconUrl} />}
+              {this.state.hasResolvedLocation && <img alt="Code location available" className="code-location-icon" src={codeIconUrl} />}
             </a>
             {span.references && span.references.length > 1 && (
               <ReferencesButton
