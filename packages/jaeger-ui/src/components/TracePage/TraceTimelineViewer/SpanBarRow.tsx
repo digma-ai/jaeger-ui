@@ -23,17 +23,17 @@ import { formatDuration, ViewedBoundsFunctionType } from './utils';
 import SpanTreeOffset from './SpanTreeOffset';
 import SpanBar from './SpanBar';
 import Ticks from './Ticks';
-
+import { dispatcher } from '../../../api/digma/dispatcher';
+import { actions } from '../../../api/digma/actions';
+import { state as globalState } from '../../../api/digma/state';
+import { getStaticAssetPath } from '../../../utils/getStaticAssetPath';
 import { TNil } from '../../../types';
 import { Span } from '../../../types/trace';
 
 import codeIcon from '../../../img/code.svg';
 
 import './SpanBarRow.css';
-
-type SpanInfo = {
-  importance?: number
-}
+import { SetSpansWithResolvedLocationsData } from '../../../api/digma/types';
 
 type SpanBarRowProps = {
   className?: string;
@@ -72,6 +72,8 @@ type SpanBarRowState = {
   importance?: number;
 }
 
+const codeIconUrl = getStaticAssetPath(codeIcon);
+
 /**
  * This was originally a stateless function, but changing to a PureComponent
  * reduced the render time of expanding a span row detail by ~50%. This is
@@ -83,7 +85,7 @@ type SpanBarRowState = {
 export default class SpanBarRow extends React.PureComponent<SpanBarRowProps, SpanBarRowState> {
   constructor(props: SpanBarRowProps) {
     super(props);
-    const span = window.spansWithResolvedLocation[props.span.spanID];
+    const span = globalState.spansWithResolvedLocation[props.span.spanID];
     this.state = {
       hasResolvedLocation: Boolean(span),
       importance: span && span.importance,
@@ -103,23 +105,20 @@ export default class SpanBarRow extends React.PureComponent<SpanBarRowProps, Spa
     this.props.onChildrenToggled(this.props.span.spanID);
   };
 
-  updateSpanInfo = (e: { data: { command: string, data: Record<string, SpanInfo> }}) => {
-    const message = e.data;
-    if (message.command === "setSpansWithResolvedLocation") {
-      const span = message.data[this.props.span.spanID];
+  updateSpanInfo = (data: unknown) => {
+      const span = (data as SetSpansWithResolvedLocationsData)[this.props.span.spanID];
       this.setState({
         hasResolvedLocation: Boolean(span),
         importance: span && span.importance
       });
-    }
   }
 
   componentDidMount(): void {
-    window.addEventListener('message', this.updateSpanInfo);
+    dispatcher.addActionListener(actions.SET_SPANS_WITH_RESOLVED_LOCATION, this.updateSpanInfo);
   }
 
   componentWillUnmount(): void {
-    window.removeEventListener('message', this.updateSpanInfo);
+    dispatcher.removeActionListener(actions.SET_SPANS_WITH_RESOLVED_LOCATION, this.updateSpanInfo);
   }
 
   getImportanceAltText(importance?: number): string {
@@ -172,7 +171,6 @@ export default class SpanBarRow extends React.PureComponent<SpanBarRowProps, Spa
       hintSide = 'right';
     }
 
-    const codeIconUrl = window.VS_CODE_SETTINGS.staticPath ? new URL(codeIcon, window.VS_CODE_SETTINGS.staticPath).href : codeIcon;
 
     return (
       <TimelineRow
@@ -226,7 +224,7 @@ export default class SpanBarRow extends React.PureComponent<SpanBarRowProps, Spa
                 typeof this.state.importance === "number" && [1,2].includes(this.state.importance) && this.state.hasResolvedLocation &&
                 <span title={this.getImportanceAltText(this.state.importance)} className="importance-marker">❗️</span>
               }
-              {this.state.hasResolvedLocation && <img className="code-location-icon" src={codeIconUrl} />}
+              {this.state.hasResolvedLocation && <img alt="has code location" className="code-location-icon" src={codeIconUrl} />}
             </a>
             {span.references && span.references.length > 1 && (
               <ReferencesButton

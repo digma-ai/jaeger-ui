@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import { IDigmaOutgoingMessageData } from "../src/api/digma/types";
+
 // For jest
 declare const global: {
   location: Location;
@@ -23,15 +25,23 @@ declare interface Window {
   // For getting ui config
   getJaegerUiConfig?: () => Record<string, any>;
   getJaegerVersion?: () => Record<string, any>;
-  sendMessageToVSCode?: (message: { command: string, data: any }) => void;
-  spansWithResolvedLocation: Record<string, { importance?: number }>;
-  pendingOperationsCount: number;
-  VS_CODE_SETTINGS: {
-    apiBaseUrl: string;
-    startPath: string;
-    staticPath: string;
-    embeddedMode: boolean;
-  }
+  sendMessageToVSCode?: (message) => void;
+  cefQuery?: (query: {
+    request: string;
+    persistent?: boolean;
+    onSuccess: (response) => void;
+    onFailure: (error_code, error_message) => void;
+  }) => string;
+  cefQueryCancel?: (request_id: string) => void;
+  sendMessageToDigma: (
+    message: IDigmaOutgoingMessageData
+  ) => string | undefined;
+  cancelMessageToDigma: (request_id: string) => void;
+  platform?: unknown;
+  apiBaseUrl?: unknown;
+  initialRoutePath?: unknown;
+  embeddedMode?: unknown;
+  staticPath?: unknown;
 }
 
 declare const __REACT_APP_GA_DEBUG__: string | undefined;

@@ -23,6 +23,9 @@ import { TUpdateViewRangeTimeFunction, IViewRangeTime, ViewRangeTimeUpdate } fro
 
 import './TimelineHeaderRow.css';
 import LoadingIndicator from '../../../common/LoadingIndicator';
+import { dispatcher } from '../../../../api/digma/dispatcher';
+import { actions } from '../../../../api/digma/actions';
+import { state as globalState } from '../../../../api/digma/state';
 
 type TimelineHeaderRowProps = {
   duration: number;
@@ -46,26 +49,22 @@ export default class SpanDetailRow extends React.PureComponent<TimelineHeaderRow
   constructor(props: TimelineHeaderRowProps) {
     super(props)
     this.state = {
-      isLoading: Boolean(window.pendingOperationsCount)
+      isLoading: Boolean(globalState.pendingOperationsCount)
     }
   }
   
-  // TODO: Move event type to common place
-  updateIsLoading = (e:{ data: { command: string, data: Record<string, any> }}) => {
-    const message = e.data;
-    if (message.command === "setSpansWithResolvedLocation") {
-      this.setState({
-        isLoading: false
-      });
-    }
-  }
-
   componentDidMount(): void {
-    window.addEventListener('message', this.updateIsLoading);
+    dispatcher.addActionListener(actions.SET_SPANS_WITH_RESOLVED_LOCATION, this.updateIsLoading);
   }
 
   componentWillUnmount(): void {
-    window.removeEventListener('message', this.updateIsLoading);
+    dispatcher.removeActionListener(actions.SET_SPANS_WITH_RESOLVED_LOCATION, this.updateIsLoading);
+  }
+
+  updateIsLoading = () => {
+    this.setState({
+      isLoading: false
+    });
   }
   
   render() {
@@ -89,7 +88,7 @@ export default class SpanDetailRow extends React.PureComponent<TimelineHeaderRow
         <TimelineRow.Cell className="ub-flex ub-px2" width={nameColumnWidth}>
           <h3 className="TimelineHeaderRow--title">Service &amp; Operation</h3>
           {this.state.isLoading && <div className="ub-flex TimelineHeaderRow--loading">
-            <LoadingIndicator className={"is-medium"} />
+            <LoadingIndicator className="is-medium" />
             <span className="TimelineHeaderRow--loading-text">Loading data...</span>
           </div>}
           <TimelineCollapser

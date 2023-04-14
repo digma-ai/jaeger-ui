@@ -24,6 +24,9 @@ import { createRoot } from 'react-dom/client';
 import JaegerUIApp from './components/App';
 import { context as trackingContext } from './utils/tracking';
 
+import { cancelMessage, initializeDigmaMessageListener, sendMessage } from './api/digma';
+import { dispatcher } from './api/digma/dispatcher';
+
 // these need to go after the App import
 /* eslint-disable import/first */
 import 'u-basscss/css/flexbox.css';
@@ -36,6 +39,11 @@ import 'u-basscss/css/typography.css';
 const UI_ROOT_ID = 'jaeger-ui-root';
 
 const root = createRoot(document.getElementById(UI_ROOT_ID));
+
+initializeDigmaMessageListener(dispatcher);
+
+window.sendMessageToDigma = sendMessage;
+window.cancelMessageToDigma = cancelMessage;
 
 if (typeof trackingContext === 'object' && trackingContext !== null) {
   trackingContext.context(() => {

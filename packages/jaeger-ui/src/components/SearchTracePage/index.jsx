@@ -34,6 +34,7 @@ import { actions as traceDiffActions } from '../TraceDiff/duck';
 import { fetchedState } from '../../constants';
 import { sortTraces } from '../../model/search';
 import { stripEmbeddedState } from '../../utils/embedded-url';
+import { getStaticAssetPath } from '../../utils/getStaticAssetPath';
 import FileLoader from './FileLoader';
 
 import './index.css';
@@ -41,8 +42,10 @@ import JaegerLogo from '../../img/jaeger-logo.svg';
 
 const TabPane = Tabs.TabPane;
 
+const logoUrl = getStaticAssetPath(JaegerLogo);
+
 // Sanitize query params to filter out ones provided by VS Code
-const sanitizeQueryParams = (params) => {
+const sanitizeQueryParams = params => {
   const VS_CODE_PARAMS = [
     "id",
     "origin",
@@ -55,7 +58,7 @@ const sanitizeQueryParams = (params) => {
 
   const filteredParams = {};
 
-  Object.keys(params).forEach((key) => {
+  Object.keys(params).forEach(key => {
     if (!VS_CODE_PARAMS.includes(key)) {
       filteredParams[key] = params[key]
     }
@@ -121,7 +124,6 @@ export class SearchTracePageImpl extends Component {
     const hasTraceResults = traceResults && traceResults.length > 0;
     const showErrors = errors && !loadingTraces;
     const showLogo = isHomepage && !hasTraceResults && !loadingTraces && !errors;
-    const logoUrl = window.VS_CODE_SETTINGS.staticPath ? new URL(JaegerLogo, window.VS_CODE_SETTINGS.staticPath).href : JaegerLogo;
     return (
       <Row className="SearchTracePage--row">
         {!embedded && (

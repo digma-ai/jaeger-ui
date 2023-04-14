@@ -59,6 +59,7 @@ import TraceStatistics from './TraceStatistics/index';
 import TraceSpanView from './TraceSpanView/index';
 import TraceFlamegraph from './TraceFlamegraph/index';
 import { TraceGraphConfig } from '../../types/config';
+import { actions } from '../../api/digma/actions';
 
 import './index.css';
 
@@ -188,26 +189,25 @@ export class TracePageImpl extends React.PureComponent<TProps, TState> {
     // Get all the trace spans and send it to VS Code extension
     // to verify if they have resolved location
     if (
-      window.sendMessageToVSCode &&
       trace &&
-      trace != prevTrace &&
+      trace !== prevTrace &&
       trace.data &&
       trace.state &&
       trace.state === fetchedState.DONE
     ) {
-      window.sendMessageToVSCode({
-        command: "getTraceSpansLocations",
-        data: trace.data.spans.map(span => {
-          const tag = span.tags.find(tag => tag.key === "otel.library.name");
-          
-          return {
-            id: span.spanID,
-            name: span.operationName,
-            instrumentationLibrary: tag && tag.value
+      window.sendMessageToDigma({
+        action: actions.GET_SPANS_WITH_RESOLVED_LOCATION,
+        payload: {
+          spans: trace.data.spans.map(span => {
+            const tag = span.tags.find(tag => tag.key === "otel.library.name");
+            
+            return {
+              id: span.spanID,
+              name: span.operationName,
+              instrumentationLibrary: tag && tag.value
           }}).filter(span => span.instrumentationLibrary)
+        }
       });
-
-      window.pendingOperationsCount++;
     }
 
     this._scrollManager.setTrace(trace && trace.data);
