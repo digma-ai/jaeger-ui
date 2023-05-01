@@ -239,8 +239,8 @@ export class TracePageImpl extends React.PureComponent<TProps, TState> {
             id: span.spanID,
             name: span.operationName,
             instrumentationLibrary: otelLibraryNameTag && otelLibraryNameTag.value,
-            function: functionTag && functionTag.value,
-            namespace: namespaceTag && namespaceTag.value,
+            ...(functionTag ? {function:  functionTag.value} : {}),
+            ...(namespaceTag ? {namespace: namespaceTag.value} : {}),
       }}).filter(span => span.instrumentationLibrary)
       }
     });

@@ -23,6 +23,8 @@ export const initializeDigmaMessageListener = (
 export const sendMessage = (
   message: IDigmaOutgoingMessageData
 ): string | undefined => {
+  console.info("Message to send:", message);
+
   updateState(message.action, message.payload);
 
   if (window.sendMessageToVSCode) {

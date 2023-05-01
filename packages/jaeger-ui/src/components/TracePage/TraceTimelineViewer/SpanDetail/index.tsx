@@ -101,9 +101,9 @@ export default class SpanDetail extends React.Component<SpanDetailProps, SpanDet
         action: actions.GO_TO_SPAN,
         payload: {
           name: this.props.span.operationName,
-          instrumentationLibrary: otelLibraryNameTag && otelLibraryNameTag.value,
-          function: functionTag && functionTag.value,
-          namespace: namespaceTag && namespaceTag.value
+          instrumentationLibrary: otelLibraryNameTag.value,
+          ...(functionTag ? {function:  functionTag.value} : {}),
+          ...(namespaceTag ? {namespace: namespaceTag.value} : {}),
         }
       });
     }
@@ -148,7 +148,7 @@ export default class SpanDetail extends React.Component<SpanDetailProps, SpanDet
     return (
       <div>
         <div className="ub-flex ub-items-center">
-          {this.state.hasResolvedLocation ?
+          {!this.state.hasResolvedLocation ?
             <RouterLink
               to="#"
               onClick={this.handleGoToCodeLinkClick}
