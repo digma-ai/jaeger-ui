@@ -100,6 +100,7 @@ export default class SpanDetail extends React.Component<SpanDetailProps, SpanDet
       window.sendMessageToDigma({
         action: actions.GO_TO_SPAN,
         payload: {
+          id: this.props.span.spanID,
           name: this.props.span.operationName,
           instrumentationLibrary: otelLibraryNameTag.value,
           ...(functionTag ? {function:  functionTag.value} : {}),
@@ -148,7 +149,7 @@ export default class SpanDetail extends React.Component<SpanDetailProps, SpanDet
     return (
       <div>
         <div className="ub-flex ub-items-center">
-          {!this.state.hasResolvedLocation ?
+          {this.state.hasResolvedLocation ?
             <RouterLink
               to="#"
               onClick={this.handleGoToCodeLinkClick}
