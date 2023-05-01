@@ -231,13 +231,17 @@ export class TracePageImpl extends React.PureComponent<TProps, TState> {
       action: actions.GET_SPANS_WITH_RESOLVED_LOCATION,
       payload: {
         spans: trace.spans.map(span => {
-          const tag = span.tags.find(tag => tag.key === "otel.library.name");
+          const otelLibraryNameTag = span.tags.find(tag => tag.key === "otel.library.name");
+          const functionTag = span.tags.find(tag => tag.key === "code.function");
+          const namespaceTag  = span.tags.find(tag => tag.key === "code.namespace");
           
           return {
             id: span.spanID,
             name: span.operationName,
-            instrumentationLibrary: tag && tag.value
-        }}).filter(span => span.instrumentationLibrary)
+            instrumentationLibrary: otelLibraryNameTag && otelLibraryNameTag.value,
+            function: functionTag && functionTag.value,
+            namespace: namespaceTag && namespaceTag.value,
+      }}).filter(span => span.instrumentationLibrary)
       }
     });
   }

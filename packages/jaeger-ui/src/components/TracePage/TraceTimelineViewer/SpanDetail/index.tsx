@@ -92,13 +92,18 @@ export default class SpanDetail extends React.Component<SpanDetailProps, SpanDet
 
   handleGoToCodeLinkClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
-    const tag = this.props.span.tags.find((tag: any) => tag.key === "otel.library.name");
-    if (tag) {
+    const otelLibraryNameTag = this.props.span.tags.find((tag: any) => tag.key === "otel.library.name");
+    const functionTag = this.props.span.tags.find((tag: any) => tag.key === "code.function");
+    const namespaceTag  = this.props.span.tags.find((tag: any) => tag.key === "code.namespace");
+
+    if (otelLibraryNameTag) {
       window.sendMessageToDigma({
         action: actions.GO_TO_SPAN,
         payload: {
           name: this.props.span.operationName,
-          instrumentationLibrary: tag && tag.value
+          instrumentationLibrary: otelLibraryNameTag && otelLibraryNameTag.value,
+          function: functionTag && functionTag.value,
+          namespace: namespaceTag && namespaceTag.value
         }
       });
     }
