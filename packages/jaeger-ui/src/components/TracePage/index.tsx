@@ -59,6 +59,7 @@ import TraceStatistics from './TraceStatistics/index';
 import TraceSpanView from './TraceSpanView/index';
 import TraceFlamegraph from './TraceFlamegraph/index';
 import { TraceGraphConfig } from '../../types/config';
+import { actions } from '../../api/digma/actions';
 
 import './index.css';
 
@@ -163,6 +164,11 @@ export class TracePageImpl extends React.PureComponent<TProps, TState> {
   }
 
   componentDidMount() {
+    const trace = this.props.trace;
+    if (trace && trace.data) {
+      this.getSpansWithResolvedLocations(trace.data);
+    }
+
     this.ensureTraceFetched();
     this.updateViewRangeTime(0, 1);
     /* istanbul ignore if */
@@ -185,29 +191,14 @@ export class TracePageImpl extends React.PureComponent<TProps, TState> {
   componentDidUpdate({ id: prevID, trace: prevTrace }: TProps) {
     const { id, trace } = this.props;
 
-    // Get all the trace spans and send it to VS Code extension
-    // to verify if they have resolved location
     if (
-      window.sendMessageToVSCode &&
       trace &&
-      trace != prevTrace &&
+      trace !== prevTrace &&
       trace.data &&
       trace.state &&
       trace.state === fetchedState.DONE
     ) {
-      window.sendMessageToVSCode({
-        command: "getTraceSpansLocations",
-        data: trace.data.spans.map(span => {
-          const tag = span.tags.find(tag => tag.key === "otel.library.name");
-          
-          return {
-            id: span.spanID,
-            name: span.operationName,
-            instrumentationLibrary: tag && tag.value
-          }}).filter(span => span.instrumentationLibrary)
-      });
-
-      window.pendingOperationsCount++;
+      this.getSpansWithResolvedLocations(trace.data)
     }
 
     this._scrollManager.setTrace(trace && trace.data);
@@ -230,6 +221,28 @@ export class TracePageImpl extends React.PureComponent<TProps, TState> {
     this._scrollManager = new ScrollManager(undefined, {
       scrollBy,
       scrollTo,
+    });
+  }
+
+  getSpansWithResolvedLocations(trace: Trace) {
+    // Get all the trace spans and send it Digma IDE plugin
+    // to verify if they have resolved location
+    window.sendMessageToDigma({
+      action: actions.GET_SPANS_WITH_RESOLVED_LOCATION,
+      payload: {
+        spans: trace.spans.map(span => {
+          const otelLibraryNameTag = span.tags.find(tag => tag.key === "otel.library.name");
+          const functionTag = span.tags.find(tag => tag.key === "code.function");
+          const namespaceTag  = span.tags.find(tag => tag.key === "code.namespace");
+          
+          return {
+            id: span.spanID,
+            name: span.operationName,
+            instrumentationLibrary: otelLibraryNameTag && otelLibraryNameTag.value,
+            ...(functionTag ? {function:  functionTag.value} : {}),
+            ...(namespaceTag ? {namespace: namespaceTag.value} : {}),
+      }}).filter(span => span.instrumentationLibrary)
+      }
     });
   }
 

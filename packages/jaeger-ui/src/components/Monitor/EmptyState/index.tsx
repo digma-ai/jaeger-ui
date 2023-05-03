@@ -17,7 +17,10 @@ import { Row, Col, Button, Alert } from 'antd';
 import './index.css';
 import { MonitorEmptyStateConfig } from '../../../types/config';
 import { getConfigValue } from '../../../utils/config/get-config';
+import { getStaticAssetPath } from '../../../utils/getStaticAssetPath';
 import monitorImg from './media/monitor.png';
+
+const monitorImgUrl = getStaticAssetPath(monitorImg);
 
 export default class MonitorATMEmptyState extends React.PureComponent {
   config: MonitorEmptyStateConfig;
@@ -29,8 +32,6 @@ export default class MonitorATMEmptyState extends React.PureComponent {
   }
 
   render() {
-    const monitorImgUrl = window.VS_CODE_SETTINGS.staticPath ? new URL(monitorImg, window.VS_CODE_SETTINGS.staticPath).href : monitorImg;
-
     return (
       <Col>
         <Row justify="center">

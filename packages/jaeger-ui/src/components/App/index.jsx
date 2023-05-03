@@ -38,6 +38,7 @@ import JaegerAPI, { DEFAULT_API_ROOT } from '../../api/jaeger';
 import configureStore from '../../utils/configure-store';
 import processScripts from '../../utils/config/process-scripts';
 import prefixUrl from '../../utils/prefix-url';
+import { isString } from '../../utils/ts/typeGuards/isString';
 
 import '../common/vars.css';
 import '../common/utils.css';
@@ -54,10 +55,10 @@ export default class JaegerUIApp extends Component {
   }
 
   render() {
-    // Navigate to URL provided by VS Code
-    if (window.VS_CODE_SETTINGS.startPath) {
-      const urlToNavigate = window.VS_CODE_SETTINGS.startPath;
-      window.VS_CODE_SETTINGS.startPath = "";
+    // Navigate to URL provided on app start
+    if (isString(window.initialRoutePath) && window.initialRoutePath) {
+      const urlToNavigate = window.initialRoutePath;
+      window.initialRoutePath = "";
       history.push(urlToNavigate);
     }
 

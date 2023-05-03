@@ -21,8 +21,8 @@ export default function embeddedConfig(state: EmbeddedState | undefined) {
   if (state === undefined) {
     let search = _get(window, 'location.search');
     
-    let params = new URLSearchParams(search);
-    if (window.VS_CODE_SETTINGS.embeddedMode && !params.get("uiEmbed")) {
+    const params = new URLSearchParams(search);
+    if (typeof window.embeddedMode === "boolean" && window.embeddedMode && !params.get("uiEmbed")) {
       params.set("uiEmbed", VERSION_0);
       search = params.toString();
     }

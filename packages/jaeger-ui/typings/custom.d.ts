@@ -23,15 +23,21 @@ declare interface Window {
   // For getting ui config
   getJaegerUiConfig?: () => Record<string, any>;
   getJaegerVersion?: () => Record<string, any>;
-  sendMessageToVSCode?: (message: { command: string, data: any }) => void;
-  spansWithResolvedLocation: Record<string, { importance?: number }>;
-  pendingOperationsCount: number;
-  VS_CODE_SETTINGS: {
-    apiBaseUrl: string;
-    startPath: string;
-    staticPath: string;
-    embeddedMode: boolean;
-  }
+  sendMessageToVSCode?: (message) => void;
+  cefQuery?: (query: {
+    request: string;
+    persistent?: boolean;
+    onSuccess: (response) => void;
+    onFailure: (error_code, error_message) => void;
+  }) => string;
+  cefQueryCancel?: (request_id: string) => void;
+  sendMessageToDigma: (message) => string | undefined;
+  cancelMessageToDigma: (request_id: string) => void;
+  platform?: unknown;
+  apiBaseUrl?: unknown;
+  initialRoutePath?: unknown;
+  embeddedMode?: unknown;
+  staticPath?: unknown;
 }
 
 declare const __REACT_APP_GA_DEBUG__: string | undefined;

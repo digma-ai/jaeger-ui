@@ -14,6 +14,7 @@
 
 import React from 'react';
 import { Divider, Tooltip } from 'antd';
+import { Link as RouterLink } from 'react-router-dom';
 
 import AccordianKeyValues from './AccordianKeyValues';
 import AccordianLogs from './AccordianLogs';
@@ -23,12 +24,15 @@ import DetailState from './DetailState';
 import { formatDuration } from '../utils';
 import CopyIcon from '../../../common/CopyIcon';
 import LabeledList from '../../../common/LabeledList';
-import { Link as RouterLink } from 'react-router-dom';
 
 import { TNil } from '../../../../types';
 import { KeyValuePair, Link, Log, Span } from '../../../../types/trace';
 
 import './index.css';
+import { actions } from '../../../../api/digma/actions';
+import { dispatcher } from '../../../../api/digma/dispatcher';
+import { state as globalState } from '../../../../api/digma/state';
+import { SetSpansWithResolvedLocationsData } from '../../../../api/digma/types';
 
 type SpanDetailProps = {
   detailState: DetailState;
@@ -44,11 +48,6 @@ type SpanDetailProps = {
   focusSpan: (uiFind: string) => void;
 };
 
-type SpanInfo = {
-  hasResolvedLocation: boolean,
-  importance?: number
-}
-
 type SpanDetailState = {
   hasResolvedLocation: boolean;
   importance?: number
@@ -57,30 +56,27 @@ type SpanDetailState = {
 export default class SpanDetail extends React.Component<SpanDetailProps, SpanDetailState> {
   constructor(props: SpanDetailProps) {
     super(props);
-    const span = window.spansWithResolvedLocation[props.span.spanID];
+    const span = globalState.spansWithResolvedLocation[props.span.spanID];
     this.state = {
       hasResolvedLocation: Boolean(span),
       importance: span && span.importance,
     }
   }
 
-  updateSpanInfo = (e:{ data: { command: string, data: Record<string, SpanInfo> }}) => {
-    const message = e.data;
-    if (message.command === "setSpansWithResolvedLocation") {
-      const span = message.data[this.props.span.spanID];
+  componentDidMount(): void {
+    dispatcher.addActionListener(actions.SET_SPANS_WITH_RESOLVED_LOCATION, this.updateSpanInfo);
+  }
+
+  componentWillUnmount(): void {
+    dispatcher.removeActionListener(actions.SET_SPANS_WITH_RESOLVED_LOCATION, this.updateSpanInfo);
+  }
+
+  updateSpanInfo = (data: unknown) => {
+      const span = (data as SetSpansWithResolvedLocationsData)[this.props.span.spanID];
       this.setState({
         hasResolvedLocation: Boolean(span),
         importance: span && span.importance
       });
-    }
-  }
-
-  componentDidMount(): void {
-    window.addEventListener('message', this.updateSpanInfo);
-  }
-
-  componentWillUnmount(): void {
-    window.removeEventListener('message', this.updateSpanInfo);
   }
 
   getImportanceAltText(importance?: number): string {
@@ -96,13 +92,19 @@ export default class SpanDetail extends React.Component<SpanDetailProps, SpanDet
 
   handleGoToCodeLinkClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
-    const tag = this.props.span.tags.find((tag: any) => tag.key === "otel.library.name");
-    if (tag && window.sendMessageToVSCode) {
-      window.sendMessageToVSCode({
-        command: "goToSpanLocation",
-        data: {
+    const otelLibraryNameTag = this.props.span.tags.find((tag: any) => tag.key === "otel.library.name");
+    const functionTag = this.props.span.tags.find((tag: any) => tag.key === "code.function");
+    const namespaceTag  = this.props.span.tags.find((tag: any) => tag.key === "code.namespace");
+
+    if (otelLibraryNameTag) {
+      window.sendMessageToDigma({
+        action: actions.GO_TO_SPAN,
+        payload: {
+          id: this.props.span.spanID,
           name: this.props.span.operationName,
-          instrumentationLibrary: tag && tag.value
+          instrumentationLibrary: otelLibraryNameTag.value,
+          ...(functionTag ? {function:  functionTag.value} : {}),
+          ...(namespaceTag ? {namespace: namespaceTag.value} : {}),
         }
       });
     }
@@ -149,7 +151,7 @@ export default class SpanDetail extends React.Component<SpanDetailProps, SpanDet
         <div className="ub-flex ub-items-center">
           {this.state.hasResolvedLocation ?
             <RouterLink
-              to={"#"}
+              to="#"
               onClick={this.handleGoToCodeLinkClick}
               className="SpanDetail--operationNameLink ub-flex-auto ub-m0"
             >
