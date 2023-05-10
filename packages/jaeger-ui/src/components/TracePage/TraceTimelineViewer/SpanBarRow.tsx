@@ -214,7 +214,7 @@ export default class SpanBarRow extends React.PureComponent<SpanBarRowProps, Spa
                 )}
                 {this.state.hasCodeLocation && (
                   <span className="icon code-location-icon">
-                    <CrosshairIcon size={16} color="#56b5bc" />
+                    <CrosshairIcon size={16} color="#fff" />
                   </span>
                 )}
               </span>

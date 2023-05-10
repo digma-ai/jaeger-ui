@@ -147,8 +147,8 @@ limitations under the License.
 }
 
 .span-name .code-location-icon {
-  background: #d7f0f1;
-  border: 1px solid #56b5bc;
+  background: #3538cd;
+  border: none;
 }
 
 .span-svc-name {
