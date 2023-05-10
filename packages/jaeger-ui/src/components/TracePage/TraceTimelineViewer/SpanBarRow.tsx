@@ -17,6 +17,7 @@ import IoAlert from 'react-icons/lib/io/alert';
 import IoArrowRightA from 'react-icons/lib/io/arrow-right-a';
 import IoNetwork from 'react-icons/lib/io/network';
 import MdFileUpload from 'react-icons/lib/md/file-upload';
+import { Tooltip } from 'antd';
 import ReferencesButton from './ReferencesButton';
 import TimelineRow from './TimelineRow';
 import { formatDuration, ViewedBoundsFunctionType } from './utils';
@@ -208,14 +209,18 @@ export default class SpanBarRow extends React.PureComponent<SpanBarRowProps, Spa
               <small className="endpoint-name">{rpc ? rpc.operationName : operationName}</small>
               <span className="icons-container">
                 {this.state.insights.length > 0 && (
-                  <span className="icon">
-                    <LightBulbIcon size={12} color="#56b5bc" />
-                  </span>
+                  <Tooltip title="Insights available">
+                    <span className="icon">
+                      <LightBulbIcon size={12} color="#56b5bc" />
+                    </span>
+                  </Tooltip>
                 )}
                 {this.state.hasCodeLocation && (
-                  <span className="icon code-location-icon">
-                    <CrosshairIcon size={16} color="#fff" />
-                  </span>
+                  <Tooltip title="Code link available">
+                    <span className="icon code-location-icon">
+                      <CrosshairIcon size={16} color="#fff" />
+                    </span>
+                  </Tooltip>
                 )}
               </span>
             </a>

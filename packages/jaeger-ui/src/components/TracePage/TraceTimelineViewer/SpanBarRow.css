@@ -110,6 +110,7 @@ limitations under the License.
   position: absolute;
   top: 0;
   width: 1000px;
+  pointer-events: none;
 }
 
 .span-name:focus {
