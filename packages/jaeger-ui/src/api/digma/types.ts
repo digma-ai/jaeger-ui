@@ -1,7 +1,9 @@
+import { InsightType } from '../../components/common/InsightIcon/types';
+
 export type ActionListener = (data: unknown) => void;
 
 export interface IDigmaIncomingMessageData {
-  type: "digma";
+  type: 'digma';
   action: string;
   payload?: unknown;
 }
@@ -13,8 +15,14 @@ export interface IDigmaOutgoingMessageData {
 
 export type DigmaMessageEvent = MessageEvent<IDigmaIncomingMessageData>;
 
-interface ISpanInfo {
-  importance?: number
+export interface ISpanInsight {
+  type: InsightType;
+  importance: number;
 }
 
-export type SetSpansWithResolvedLocationsData = Record<string, ISpanInfo>
+interface ISpanInfo {
+  hasCodeLocation: boolean;
+  insights: ISpanInsight[];
+}
+
+export type SetSpansDataPayload = Record<string, ISpanInfo>;

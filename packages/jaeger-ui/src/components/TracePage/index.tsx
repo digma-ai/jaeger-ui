@@ -60,6 +60,7 @@ import TraceSpanView from './TraceSpanView/index';
 import TraceFlamegraph from './TraceFlamegraph/index';
 import { TraceGraphConfig } from '../../types/config';
 import { actions } from '../../api/digma/actions';
+import { dispatcher } from '../../api/digma/dispatcher';
 
 import './index.css';
 
@@ -191,14 +192,8 @@ export class TracePageImpl extends React.PureComponent<TProps, TState> {
   componentDidUpdate({ id: prevID, trace: prevTrace }: TProps) {
     const { id, trace } = this.props;
 
-    if (
-      trace &&
-      trace !== prevTrace &&
-      trace.data &&
-      trace.state &&
-      trace.state === fetchedState.DONE
-    ) {
-      this.getSpansWithResolvedLocations(trace.data)
+    if (trace && trace !== prevTrace && trace.data && trace.state && trace.state === fetchedState.DONE) {
+      this.getSpansWithResolvedLocations(trace.data);
     }
 
     this._scrollManager.setTrace(trace && trace.data);
@@ -222,27 +217,30 @@ export class TracePageImpl extends React.PureComponent<TProps, TState> {
       scrollBy,
       scrollTo,
     });
+    dispatcher.dispatch(actions.CLEAR);
   }
 
   getSpansWithResolvedLocations(trace: Trace) {
     // Get all the trace spans and send it Digma IDE plugin
-    // to verify if they have resolved location
     window.sendMessageToDigma({
-      action: actions.GET_SPANS_WITH_RESOLVED_LOCATION,
+      action: actions.GET_SPANS_DATA,
       payload: {
-        spans: trace.spans.map(span => {
-          const otelLibraryNameTag = span.tags.find(tag => tag.key === "otel.library.name");
-          const functionTag = span.tags.find(tag => tag.key === "code.function");
-          const namespaceTag  = span.tags.find(tag => tag.key === "code.namespace");
-          
-          return {
-            id: span.spanID,
-            name: span.operationName,
-            instrumentationLibrary: otelLibraryNameTag && otelLibraryNameTag.value,
-            ...(functionTag ? {function:  functionTag.value} : {}),
-            ...(namespaceTag ? {namespace: namespaceTag.value} : {}),
-      }}).filter(span => span.instrumentationLibrary)
-      }
+        spans: trace.spans
+          .map(span => {
+            const otelLibraryNameTag = span.tags.find(tag => tag.key === 'otel.library.name');
+            const functionTag = span.tags.find(tag => tag.key === 'code.function');
+            const namespaceTag = span.tags.find(tag => tag.key === 'code.namespace');
+
+            return {
+              id: span.spanID,
+              name: span.operationName,
+              instrumentationLibrary: otelLibraryNameTag && otelLibraryNameTag.value,
+              ...(functionTag ? { function: functionTag.value } : {}),
+              ...(namespaceTag ? { namespace: namespaceTag.value } : {}),
+            };
+          })
+          .filter(span => span.instrumentationLibrary),
+      },
     });
   }
 

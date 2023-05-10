@@ -81,9 +81,10 @@ limitations under the License.
   outline: none;
   overflow: hidden;
   padding-left: 4px;
-  padding-right: 40px;
+  padding-right: 0.25em;
   position: relative;
   text-overflow: ellipsis;
+  display: flex;
 }
 
 .span-name::before {
@@ -117,23 +118,37 @@ limitations under the License.
 
 .endpoint-name {
   color: #808080;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding-right: 0.25em;
 }
 
 .span-name:hover > .endpoint-name {
   color: #000;
 }
 
-.importance-marker {
-  position: absolute;
-  top: 5%;
-  right: 25px;
+.span-name .icons-container {
+  display: flex;
+  gap: 6px;
+  margin-left: auto;
+  align-items: center;
 }
 
-.code-location-icon {
-  position: absolute;
-  height: 70%;
-  top: 15%;
-  right: 5px;
+.span-name .icon {
+  height: 20px;
+  width: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  border-radius: 4px;
+  background: #f5f5f5;
+  border: 1px solid #d3d3d3;
+}
+
+.span-name .code-location-icon {
+  background: #d7f0f1;
+  border: 1px solid #56b5bc;
 }
 
 .span-svc-name {

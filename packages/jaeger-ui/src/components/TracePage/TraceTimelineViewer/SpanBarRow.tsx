@@ -26,14 +26,14 @@ import Ticks from './Ticks';
 import { dispatcher } from '../../../api/digma/dispatcher';
 import { actions } from '../../../api/digma/actions';
 import { state as globalState } from '../../../api/digma/state';
-import { getStaticAssetPath } from '../../../utils/getStaticAssetPath';
+import { ISpanInsight, SetSpansDataPayload } from '../../../api/digma/types';
+import { LightBulbIcon } from '../../common/icons/LightBulbIcon';
+import { CrosshairIcon } from '../../common/icons/CrosshairIcon';
+
 import { TNil } from '../../../types';
 import { Span } from '../../../types/trace';
 
-import codeIcon from '../../../img/code.svg';
-
 import './SpanBarRow.css';
-import { SetSpansWithResolvedLocationsData } from '../../../api/digma/types';
 
 type SpanBarRowProps = {
   className?: string;
@@ -68,11 +68,9 @@ type SpanBarRowProps = {
 };
 
 type SpanBarRowState = {
-  hasResolvedLocation: boolean;
-  importance?: number;
-}
-
-const codeIconUrl = getStaticAssetPath(codeIcon);
+  hasCodeLocation: boolean;
+  insights: ISpanInsight[];
+};
 
 /**
  * This was originally a stateless function, but changing to a PureComponent
@@ -85,11 +83,11 @@ const codeIconUrl = getStaticAssetPath(codeIcon);
 export default class SpanBarRow extends React.PureComponent<SpanBarRowProps, SpanBarRowState> {
   constructor(props: SpanBarRowProps) {
     super(props);
-    const span = globalState.spansWithResolvedLocation[props.span.spanID];
+    const span = globalState.spans[props.span.spanID];
     this.state = {
-      hasResolvedLocation: Boolean(span),
-      importance: span && span.importance,
-    }
+      hasCodeLocation: Boolean(span && span.hasCodeLocation),
+      insights: span ? span.insights : [],
+    };
   }
 
   static defaultProps = {
@@ -106,30 +104,19 @@ export default class SpanBarRow extends React.PureComponent<SpanBarRowProps, Spa
   };
 
   updateSpanInfo = (data: unknown) => {
-      const span = (data as SetSpansWithResolvedLocationsData)[this.props.span.spanID];
-      this.setState({
-        hasResolvedLocation: Boolean(span),
-        importance: span && span.importance
-      });
-  }
+    const span = (data as SetSpansDataPayload)[this.props.span.spanID];
+    this.setState({
+      hasCodeLocation: Boolean(span && span.hasCodeLocation),
+      insights: span ? span.insights : [],
+    });
+  };
 
   componentDidMount(): void {
-    dispatcher.addActionListener(actions.SET_SPANS_WITH_RESOLVED_LOCATION, this.updateSpanInfo);
+    dispatcher.addActionListener(actions.SET_SPANS_DATA, this.updateSpanInfo);
   }
 
   componentWillUnmount(): void {
-    dispatcher.removeActionListener(actions.SET_SPANS_WITH_RESOLVED_LOCATION, this.updateSpanInfo);
-  }
-
-  getImportanceAltText(importance?: number): string {
-    switch (importance) {
-      case 1:
-        return "Showstopper";
-      case 2:
-        return "Critical";
-      default:
-        return "";
-    }
+    dispatcher.removeActionListener(actions.SET_SPANS_DATA, this.updateSpanInfo);
   }
 
   render() {
@@ -170,7 +157,6 @@ export default class SpanBarRow extends React.PureComponent<SpanBarRowProps, Spa
       longLabel = `${label} | ${labelDetail}`;
       hintSide = 'right';
     }
-
 
     return (
       <TimelineRow
@@ -220,11 +206,18 @@ export default class SpanBarRow extends React.PureComponent<SpanBarRowProps, Spa
                 )}
               </span>
               <small className="endpoint-name">{rpc ? rpc.operationName : operationName}</small>
-              {
-                typeof this.state.importance === "number" && [1,2].includes(this.state.importance) && this.state.hasResolvedLocation &&
-                <span title={this.getImportanceAltText(this.state.importance)} className="importance-marker">❗️</span>
-              }
-              {this.state.hasResolvedLocation && <img alt="Code location available" className="code-location-icon" src={codeIconUrl} />}
+              <span className="icons-container">
+                {this.state.insights.length > 0 && (
+                  <span className="icon">
+                    <LightBulbIcon size={12} color="#56b5bc" />
+                  </span>
+                )}
+                {this.state.hasCodeLocation && (
+                  <span className="icon code-location-icon">
+                    <CrosshairIcon size={16} color="#56b5bc" />
+                  </span>
+                )}
+              </span>
             </a>
             {span.references && span.references.length > 1 && (
               <ReferencesButton
