@@ -17,6 +17,13 @@ import * as React from 'react';
 import { ApiError } from '../../types/api-error';
 
 import './ErrorMessage.css';
+import { CrossedCrosshairCircleIcon } from './icons/CrossedCrosshairCircleIcon';
+import { SlackLogoIcon } from './icons/SlackLogoIcon';
+import { BrokenLinkCircleIcon } from './icons/BrokenLinkCircleIcon';
+import { isString } from '../../utils/ts/typeGuards/isString';
+
+const SLACK_CHANNEL_URL =
+  'https://join.slack.com/t/continuous-feedback/shared_invite/zt-1hk5rbjow-yXOIxyyYOLSXpCZ4RXstgA';
 
 type ErrorMessageProps = {
   className?: string;
@@ -30,6 +37,13 @@ type SubPartProps = {
   error: ApiError;
   wrap?: boolean;
   wrapperClassName?: string;
+};
+
+type DigmaErrorMessageProps = {
+  icon: React.ReactNode;
+  title: string;
+  content: React.ReactNode;
+  includeSlackLink?: boolean;
 };
 
 function ErrorAttr({ name, value }: { name: string; value: any }) {
@@ -95,6 +109,27 @@ Details.defaultProps = {
   wrapperClassName: undefined,
 };
 
+export const DigmaErrorMessage = (props: DigmaErrorMessageProps) => (
+  <div className="CustomErrorMessage">
+    {props.icon}
+    <div className="CustomErrorMessage--text">
+      <span className="CustomErrorMessage--title">{props.title}</span>
+      <span className="CustomErrorMessage--description">{props.content}</span>
+    </div>
+    {props.includeSlackLink && (
+      <a
+        href={SLACK_CHANNEL_URL}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="CustomErrorMessage--slackLink"
+      >
+        <SlackLogoIcon />
+        Join our slack channel for support
+      </a>
+    )}
+  </div>
+);
+
 export default function ErrorMessage({
   className,
   detailClassName,
@@ -107,6 +142,77 @@ export default function ErrorMessage({
   if (typeof error === 'string') {
     return <Message className={messageClassName} error={error} wrapperClassName={className} wrap />;
   }
+
+  if (error.message.includes('trace not found')) {
+    return (
+      <DigmaErrorMessage
+        icon={<CrossedCrosshairCircleIcon size={72} color="#56b5bc" />}
+        title="We cannot find the trace you're looking for..."
+        content={
+          <>
+            Our bad, the trace might be old or we may have simply missed it somehow.
+            <br />
+            No need to worry! Please run some more actions and check again
+            <br />
+            If you&apos;re using your your own Jaeger instance, please check that Digma
+            <br />
+            knows to send traces to it as well.
+            <br />
+            Check the &quot;Jaeger Query URL&quot; parameter in the Digma plugin settings and make sure it
+            matches your Jaeger address
+          </>
+        }
+        includeSlackLink
+      />
+    );
+  }
+
+  if (error.message.includes('Failed to fetch')) {
+    const isUserDefinedJaegerQueryURL = window.isUserDefinedJaegerQueryURL === true;
+    return (
+      <DigmaErrorMessage
+        icon={<BrokenLinkCircleIcon size={72} color="#56b5bc" />}
+        title="Jaeger Not Available"
+        content={
+          isUserDefinedJaegerQueryURL ? (
+            <>
+              The Jaeger link
+              {isString(window.apiBaseUrl) && (
+                <>
+                  {' '}
+                  <a
+                    className="CustomErrorMessage--link"
+                    href={window.apiBaseUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {window.apiBaseUrl}
+                  </a>
+                </>
+              )}{' '}
+              is not available.
+              <br />
+              Please makes sure the link you specified in the
+              <br />
+              Digma plugin settings is correct.
+            </>
+          ) : (
+            <>
+              Something is wrong and we are unable to communicate
+              <br />
+              with the Digma Jaeger instance.
+              <br />
+              Please make sure Digma is fully up and running
+              <br />
+              and try updating to the latest version.
+            </>
+          )
+        }
+        includeSlackLink={isUserDefinedJaegerQueryURL}
+      />
+    );
+  }
+
   return (
     <div className={`ErrorMessage ${className || ''}`}>
       <Message error={error} className={messageClassName} />

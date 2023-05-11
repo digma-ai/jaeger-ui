@@ -37,6 +37,7 @@ declare interface Window {
   apiBaseUrl?: unknown;
   initialRoutePath?: unknown;
   embeddedMode?: unknown;
+  isUserDefinedJaegerQueryURL?: unknown;
   staticPath?: unknown;
 }
 
