@@ -38,4 +38,5 @@ limitations under the License.
 
 .TimelineHeaderRow--loading-text {
   margin: 0 8px;
+  line-height: 14px;
 }

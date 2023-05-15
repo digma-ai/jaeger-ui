@@ -24,15 +24,17 @@ import DetailState from './DetailState';
 import { formatDuration } from '../utils';
 import CopyIcon from '../../../common/CopyIcon';
 import LabeledList from '../../../common/LabeledList';
+import { actions } from '../../../../api/digma/actions';
+import { dispatcher } from '../../../../api/digma/dispatcher';
+import { state as globalState } from '../../../../api/digma/state';
+import { SetSpansDataPayload } from '../../../../api/digma/types';
+import { getInsightTypeInfo } from '../../../common/InsightIcon/utils';
+import { InsightIcon } from '../../../common/InsightIcon';
 
 import { TNil } from '../../../../types';
 import { KeyValuePair, Link, Log, Span } from '../../../../types/trace';
 
 import './index.css';
-import { actions } from '../../../../api/digma/actions';
-import { dispatcher } from '../../../../api/digma/dispatcher';
-import { state as globalState } from '../../../../api/digma/state';
-import { SetSpansWithResolvedLocationsData } from '../../../../api/digma/types';
 
 type SpanDetailProps = {
   detailState: DetailState;
@@ -49,52 +51,42 @@ type SpanDetailProps = {
 };
 
 type SpanDetailState = {
-  hasResolvedLocation: boolean;
-  importance?: number
-}
+  hasCodeLocation: boolean;
+  insights: ISpanInsight[];
+};
 
 export default class SpanDetail extends React.Component<SpanDetailProps, SpanDetailState> {
   constructor(props: SpanDetailProps) {
     super(props);
-    const span = globalState.spansWithResolvedLocation[props.span.spanID];
+    const span = globalState.spans[props.span.spanID];
     this.state = {
-      hasResolvedLocation: Boolean(span),
-      importance: span && span.importance,
-    }
+      hasCodeLocation: Boolean(span && span.hasCodeLocation),
+      insights: span ? span.insights : [],
+    };
   }
 
   componentDidMount(): void {
-    dispatcher.addActionListener(actions.SET_SPANS_WITH_RESOLVED_LOCATION, this.updateSpanInfo);
+    dispatcher.addActionListener(actions.SET_SPANS_DATA, this.updateSpanInfo);
   }
 
   componentWillUnmount(): void {
-    dispatcher.removeActionListener(actions.SET_SPANS_WITH_RESOLVED_LOCATION, this.updateSpanInfo);
+    dispatcher.removeActionListener(actions.SET_SPANS_DATA, this.updateSpanInfo);
+    dispatcher.dispatch(actions.CLEAR);
   }
 
   updateSpanInfo = (data: unknown) => {
-      const span = (data as SetSpansWithResolvedLocationsData)[this.props.span.spanID];
-      this.setState({
-        hasResolvedLocation: Boolean(span),
-        importance: span && span.importance
-      });
-  }
-
-  getImportanceAltText(importance?: number): string {
-    switch (importance) {
-      case 1:
-        return "Showstopper";
-      case 2:
-        return "Critical";
-      default:
-        return "";
-    }
-  }
+    const span = (data as SetSpansDataPayload)[this.props.span.spanID];
+    this.setState({
+      hasCodeLocation: Boolean(span && span.hasCodeLocation),
+      insights: span ? span.insights : [],
+    });
+  };
 
   handleGoToCodeLinkClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
-    const otelLibraryNameTag = this.props.span.tags.find((tag: any) => tag.key === "otel.library.name");
-    const functionTag = this.props.span.tags.find((tag: any) => tag.key === "code.function");
-    const namespaceTag  = this.props.span.tags.find((tag: any) => tag.key === "code.namespace");
+    const otelLibraryNameTag = this.props.span.tags.find((tag: any) => tag.key === 'otel.library.name');
+    const functionTag = this.props.span.tags.find((tag: any) => tag.key === 'code.function');
+    const namespaceTag = this.props.span.tags.find((tag: any) => tag.key === 'code.namespace');
 
     if (otelLibraryNameTag) {
       window.sendMessageToDigma({
@@ -103,12 +95,12 @@ export default class SpanDetail extends React.Component<SpanDetailProps, SpanDet
           id: this.props.span.spanID,
           name: this.props.span.operationName,
           instrumentationLibrary: otelLibraryNameTag.value,
-          ...(functionTag ? {function:  functionTag.value} : {}),
-          ...(namespaceTag ? {namespace: namespaceTag.value} : {}),
-        }
+          ...(functionTag ? { function: functionTag.value } : {}),
+          ...(namespaceTag ? { namespace: namespaceTag.value } : {}),
+        },
       });
     }
-  }
+  };
 
   render() {
     const {
@@ -126,7 +118,7 @@ export default class SpanDetail extends React.Component<SpanDetailProps, SpanDet
     } = this.props;
     const { isTagsOpen, isProcessOpen, logs: logsState, isWarningsOpen, isReferencesOpen } = detailState;
     const { operationName, process, duration, relativeStartTime, spanID, logs, tags, warnings, references } =
-    span;
+      span;
     const overviewItems = [
       {
         key: 'svc',
@@ -148,27 +140,34 @@ export default class SpanDetail extends React.Component<SpanDetailProps, SpanDet
 
     return (
       <div>
-        <div className="ub-flex ub-items-center">
-          {this.state.hasResolvedLocation ?
-            <RouterLink
-              to="#"
-              onClick={this.handleGoToCodeLinkClick}
-              className="SpanDetail--operationNameLink ub-flex-auto ub-m0"
-            >
-              {operationName}
-            </RouterLink> : <h2 className="ub-flex-auto ub-m0">{operationName}</h2>
-          }
-          {
-            typeof this.state.importance === "number" && [1,2].includes(this.state.importance) && this.state.hasResolvedLocation &&
-            <Tooltip title={this.getImportanceAltText(this.state.importance)}>
-              <span className="SpanDetail--importanceMarker">❗️</span>
-            </Tooltip>
-          }
-          <LabeledList
-            className="ub-tx-right-align"
-            dividerClassName="SpanDetail--divider"
-            items={overviewItems}
-          />
+        <div className="SpanDetail--header">
+          <div className="ub-flex ub-items-center">
+            {this.state.hasCodeLocation ? (
+              <RouterLink
+                to="#"
+                onClick={this.handleGoToCodeLinkClick}
+                className="SpanDetail--operationNameLink ub-flex-auto ub-m0"
+              >
+                {operationName}
+              </RouterLink>
+            ) : (
+              <h2 className="SpanDetail--operationNameTitle ub-flex-auto ub-m0">{operationName}</h2>
+            )}
+            <div className="SpanDetail--insights">
+              {this.state.insights.map(insight => {
+                const insightTypeInfo = getInsightTypeInfo(insight.type);
+
+                return insightTypeInfo ? (
+                  <Tooltip key={insight.type} title={insightTypeInfo.label}>
+                    <span className="SpanDetail--insightIconContainer">
+                      <InsightIcon insight={insight} size={20} />
+                    </span>
+                  </Tooltip>
+                ) : null;
+              })}
+            </div>
+          </div>
+          <LabeledList dividerClassName="SpanDetail--divider" items={overviewItems} />
         </div>
         <Divider className="SpanDetail--divider ub-my1" />
         <div>

@@ -14,10 +14,39 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+.SpanDetail--header {
+  display: flex;
+  flex-direction: column;
+}
+
+.SpanDetail--operationNameTitle {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .SpanDetail--operationNameLink {
   font-weight: 500;
   display: block;
   font-size: 1.5em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.SpanDetail--insights {
+  display: flex;
+  gap: 4px;
+}
+
+.SpanDetail--insightIconContainer {
+  height: 24px;
+  width: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  border-radius: 4px;
+  background: #fff;
+  border: 1px solid #dadada;
 }
 
 .SpanDetail--divider {

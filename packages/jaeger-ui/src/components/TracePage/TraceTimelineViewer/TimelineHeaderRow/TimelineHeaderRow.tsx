@@ -43,30 +43,33 @@ type TimelineHeaderRowProps = {
 
 type TimelineHeaderRowState = {
   isLoading: boolean;
-}
+};
 
-export default class SpanDetailRow extends React.PureComponent<TimelineHeaderRowProps, TimelineHeaderRowState> {
+export default class SpanDetailRow extends React.PureComponent<
+  TimelineHeaderRowProps,
+  TimelineHeaderRowState
+> {
   constructor(props: TimelineHeaderRowProps) {
-    super(props)
+    super(props);
     this.state = {
-      isLoading: Boolean(globalState.pendingOperationsCount)
-    }
+      isLoading: Boolean(globalState.pendingOperationsCount),
+    };
   }
-  
+
   componentDidMount(): void {
-    dispatcher.addActionListener(actions.SET_SPANS_WITH_RESOLVED_LOCATION, this.updateIsLoading);
+    dispatcher.addActionListener(actions.SET_SPANS_DATA, this.updateIsLoading);
   }
 
   componentWillUnmount(): void {
-    dispatcher.removeActionListener(actions.SET_SPANS_WITH_RESOLVED_LOCATION, this.updateIsLoading);
+    dispatcher.removeActionListener(actions.SET_SPANS_DATA, this.updateIsLoading);
   }
 
   updateIsLoading = () => {
     this.setState({
-      isLoading: false
+      isLoading: false,
     });
-  }
-  
+  };
+
   render() {
     const {
       duration,
@@ -87,10 +90,12 @@ export default class SpanDetailRow extends React.PureComponent<TimelineHeaderRow
       <TimelineRow className="TimelineHeaderRow">
         <TimelineRow.Cell className="ub-flex ub-px2" width={nameColumnWidth}>
           <h3 className="TimelineHeaderRow--title">Service &amp; Operation</h3>
-          {this.state.isLoading && <div className="ub-flex TimelineHeaderRow--loading">
-            <LoadingIndicator className="is-medium" />
-            <span className="TimelineHeaderRow--loading-text">Loading data...</span>
-          </div>}
+          {this.state.isLoading && (
+            <div className="ub-flex TimelineHeaderRow--loading">
+              <LoadingIndicator className="is-medium" />
+              <span className="TimelineHeaderRow--loading-text">Loading data...</span>
+            </div>
+          )}
           <TimelineCollapser
             onCollapseAll={onCollapseAll}
             onExpandAll={onExpandAll}
@@ -105,7 +110,12 @@ export default class SpanDetailRow extends React.PureComponent<TimelineHeaderRow
             updateViewRangeTime={updateViewRangeTime}
             viewRangeTime={viewRangeTime}
           />
-          <Ticks numTicks={numTicks} startTime={viewStart * duration} endTime={viewEnd * duration} showLabels />
+          <Ticks
+            numTicks={numTicks}
+            startTime={viewStart * duration}
+            endTime={viewEnd * duration}
+            showLabels
+          />
         </TimelineRow.Cell>
         <VerticalResizer position={nameColumnWidth} onChange={onColummWidthChange} min={0.15} max={0.85} />
       </TimelineRow>

@@ -1,24 +1,27 @@
-import { actions } from "./actions";
-import { SetSpansWithResolvedLocationsData } from "./types";
+import { actions } from './actions';
+import { SetSpansDataPayload } from './types';
 
 export const state: {
-  pendingOperationsCount: number,
-  spansWithResolvedLocation: SetSpansWithResolvedLocationsData
+  pendingOperationsCount: number;
+  spans: SetSpansDataPayload;
 } = {
   pendingOperationsCount: 0,
-  spansWithResolvedLocation: {}
+  spans: {},
 };
 
 export const updateState = (action: string, payload: any) => {
-  switch(action) {
-    case (actions.GET_SPANS_WITH_RESOLVED_LOCATION):
+  switch (action) {
+    case actions.GET_SPANS_DATA:
       state.pendingOperationsCount++;
       break;
-    case (actions.SET_SPANS_WITH_RESOLVED_LOCATION):
-      state.spansWithResolvedLocation = payload;
+    case actions.SET_SPANS_DATA:
+      state.spans = payload;
+      state.pendingOperationsCount--;
+      break;
+    case actions.CLEAR:
+      state.spans = {};
       state.pendingOperationsCount--;
       break;
     default:
   }
-}
-
+};
