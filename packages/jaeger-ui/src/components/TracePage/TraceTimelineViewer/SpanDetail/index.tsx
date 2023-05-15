@@ -140,7 +140,7 @@ export default class SpanDetail extends React.Component<SpanDetailProps, SpanDet
       <div>
         <div className="SpanDetail--header">
           <div className="ub-flex ub-items-center">
-            {otelLibraryNameTag ? (
+            {otelLibraryNameTag && this.state.insights.length > 0 ? (
               <RouterLink
                 to="#"
                 onClick={this.handleGoToCodeLinkClick}
