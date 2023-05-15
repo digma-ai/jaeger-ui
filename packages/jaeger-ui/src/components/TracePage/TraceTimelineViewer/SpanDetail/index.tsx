@@ -27,7 +27,7 @@ import LabeledList from '../../../common/LabeledList';
 import { actions } from '../../../../api/digma/actions';
 import { dispatcher } from '../../../../api/digma/dispatcher';
 import { state as globalState } from '../../../../api/digma/state';
-import { SetSpansDataPayload } from '../../../../api/digma/types';
+import { ISpanInsight, SetSpansDataPayload } from '../../../../api/digma/types';
 import { getInsightTypeInfo } from '../../../common/InsightIcon/utils';
 import { InsightIcon } from '../../../common/InsightIcon';
 
@@ -51,7 +51,6 @@ type SpanDetailProps = {
 };
 
 type SpanDetailState = {
-  hasCodeLocation: boolean;
   insights: ISpanInsight[];
 };
 
@@ -60,7 +59,6 @@ export default class SpanDetail extends React.Component<SpanDetailProps, SpanDet
     super(props);
     const span = globalState.spans[props.span.spanID];
     this.state = {
-      hasCodeLocation: Boolean(span && span.hasCodeLocation),
       insights: span ? span.insights : [],
     };
   }
@@ -77,7 +75,6 @@ export default class SpanDetail extends React.Component<SpanDetailProps, SpanDet
   updateSpanInfo = (data: unknown) => {
     const span = (data as SetSpansDataPayload)[this.props.span.spanID];
     this.setState({
-      hasCodeLocation: Boolean(span && span.hasCodeLocation),
       insights: span ? span.insights : [],
     });
   };
@@ -137,12 +134,13 @@ export default class SpanDetail extends React.Component<SpanDetailProps, SpanDet
       },
     ];
     const deepLinkCopyText = `${window.location.origin}${window.location.pathname}?uiFind=${spanID}`;
+    const otelLibraryNameTag = this.props.span.tags.find((tag: any) => tag.key === 'otel.library.name');
 
     return (
       <div>
         <div className="SpanDetail--header">
           <div className="ub-flex ub-items-center">
-            {this.state.hasCodeLocation ? (
+            {otelLibraryNameTag ? (
               <RouterLink
                 to="#"
                 onClick={this.handleGoToCodeLinkClick}
