@@ -1,0 +1,39 @@
+.Button {
+  font-family: inherit;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 18px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: max-content;
+  user-select: none;
+
+  color: #b9c2eb;
+  background: #3538cd;
+  border: none;
+}
+
+.Button:hover,
+.Button:focus {
+  background: #5154ec;
+}
+
+.Button:active {
+  color: #dadada;
+}
+
+.Button:disabled {
+  cursor: initial;
+  color: #49494d;
+  background: #2e2e2e;
+}
+
+.Button__content {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}

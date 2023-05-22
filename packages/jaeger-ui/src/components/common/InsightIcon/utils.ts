@@ -12,6 +12,7 @@ import { SpotIcon } from '../icons/SpotIcon';
 import { WarningCircleIcon } from '../icons/WarningCircleIcon';
 import { IIconProps } from '../icons/types';
 import { InsightType } from './types';
+import { ClockWithTicksIcon } from '../icons/ClockWithTicksIcon';
 
 export const getInsightTypeInfo = (
   type: InsightType
@@ -85,7 +86,7 @@ export const getInsightTypeInfo = (
       label: 'Duration',
     },
     [InsightType.SpanDurationBreakdown]: {
-      icon: AlarmClockIcon,
+      icon: ClockWithTicksIcon,
       label: 'Duration Breakdown',
     },
   };
@@ -98,7 +99,7 @@ export const getInsightImportanceColor = (importance: number): string | undefine
     return undefined;
   }
   if (importance < 3) {
-    return '#f93967';
+    return '#e00036';
   }
   if (importance < 5) {
     return '#e06c00';

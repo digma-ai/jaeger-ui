@@ -53,10 +53,16 @@ limitations under the License.
   background: #ddd;
 }
 
+.SpanDetail--code {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 0;
+  align-items: center;
+}
+
 .SpanDetail--debugInfo {
   display: block;
   letter-spacing: 0.25px;
-  margin: 0.5em 0 -0.75em;
   text-align: right;
 }
 

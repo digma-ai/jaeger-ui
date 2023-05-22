@@ -30,6 +30,8 @@ import { state as globalState } from '../../../../api/digma/state';
 import { ISpanInsight, SetSpansDataPayload } from '../../../../api/digma/types';
 import { getInsightTypeInfo } from '../../../common/InsightIcon/utils';
 import { InsightIcon } from '../../../common/InsightIcon';
+import Button from '../../../common/Button';
+import { CrosshairIcon } from '../../../common/icons/CrosshairIcon';
 
 import { TNil } from '../../../../types';
 import { KeyValuePair, Link, Log, Span } from '../../../../types/trace';
@@ -51,35 +53,45 @@ type SpanDetailProps = {
 };
 
 type SpanDetailState = {
+  hasCodeLocation: boolean;
   insights: ISpanInsight[];
 };
 
 export default class SpanDetail extends React.Component<SpanDetailProps, SpanDetailState> {
   constructor(props: SpanDetailProps) {
     super(props);
+    this._updateSpanInfo = this._updateSpanInfo.bind(this);
+    this._handleCodeButtonClick = this._handleCodeButtonClick.bind(this);
+    this._handleSpanNameLinkClick = this._handleSpanNameLinkClick.bind(this);
     const span = globalState.spans[props.span.spanID];
     this.state = {
-      insights: span ? span.insights : [],
+      hasCodeLocation: Boolean(span && span.hasCodeLocation),
+      insights: span ? this._sortInsightsByImportance(span.insights) : [],
     };
   }
 
-  componentDidMount(): void {
-    dispatcher.addActionListener(actions.SET_SPANS_DATA, this.updateSpanInfo);
+  componentDidMount() {
+    dispatcher.addActionListener(actions.SET_SPANS_DATA, this._updateSpanInfo);
   }
 
-  componentWillUnmount(): void {
-    dispatcher.removeActionListener(actions.SET_SPANS_DATA, this.updateSpanInfo);
+  componentWillUnmount() {
+    dispatcher.removeActionListener(actions.SET_SPANS_DATA, this._updateSpanInfo);
     dispatcher.dispatch(actions.CLEAR);
   }
 
-  updateSpanInfo = (data: unknown) => {
+  _sortInsightsByImportance(insights: ISpanInsight[]): ISpanInsight[] {
+    return [...insights].sort((a, b) => a.importance - b.importance);
+  }
+
+  _updateSpanInfo(data: unknown) {
     const span = (data as SetSpansDataPayload)[this.props.span.spanID];
     this.setState({
-      insights: span ? span.insights : [],
+      hasCodeLocation: Boolean(span && span.hasCodeLocation),
+      insights: span ? this._sortInsightsByImportance(span.insights) : [],
     });
-  };
+  }
 
-  handleGoToCodeLinkClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+  _handleCodeButtonClick(e: React.MouseEvent<HTMLButtonElement>) {
     e.preventDefault();
     const otelLibraryNameTag = this.props.span.tags.find((tag: any) => tag.key === 'otel.library.name');
     const functionTag = this.props.span.tags.find((tag: any) => tag.key === 'code.function');
@@ -97,7 +109,26 @@ export default class SpanDetail extends React.Component<SpanDetailProps, SpanDet
         },
       });
     }
-  };
+  }
+
+  _handleSpanNameLinkClick(e: React.MouseEvent<HTMLAnchorElement>) {
+    const otelLibraryNameTag = this.props.span.tags.find((tag: any) => tag.key === 'otel.library.name');
+    const functionTag = this.props.span.tags.find((tag: any) => tag.key === 'code.function');
+    const namespaceTag = this.props.span.tags.find((tag: any) => tag.key === 'code.namespace');
+
+    if (otelLibraryNameTag) {
+      window.sendMessageToDigma({
+        action: actions.GO_TO_INSIGHTS,
+        payload: {
+          id: this.props.span.spanID,
+          name: this.props.span.operationName,
+          instrumentationLibrary: otelLibraryNameTag.value,
+          ...(functionTag ? { function: functionTag.value } : {}),
+          ...(namespaceTag ? { namespace: namespaceTag.value } : {}),
+        },
+      });
+    }
+  }
 
   render() {
     const {
@@ -143,7 +174,7 @@ export default class SpanDetail extends React.Component<SpanDetailProps, SpanDet
             {otelLibraryNameTag && this.state.insights.length > 0 ? (
               <RouterLink
                 to="#"
-                onClick={this.handleGoToCodeLinkClick}
+                onClick={this._handleSpanNameLinkClick}
                 className="SpanDetail--operationNameLink ub-flex-auto ub-m0"
               >
                 {operationName}
@@ -219,15 +250,28 @@ export default class SpanDetail extends React.Component<SpanDetailProps, SpanDet
                 focusSpan={focusSpan}
               />
             )}
-          <small className="SpanDetail--debugInfo">
-            <span className="SpanDetail--debugLabel" data-label="SpanID:" /> {spanID}
-            <CopyIcon
-              copyText={deepLinkCopyText}
-              icon="link"
-              placement="topRight"
-              tooltipTitle="Copy deep link to this span"
-            />
-          </small>
+          <div className="SpanDetail--code">
+            <small className="SpanDetail--debugInfo">
+              <span className="SpanDetail--debugLabel" data-label="SpanID:" /> {spanID}
+              <CopyIcon
+                copyText={deepLinkCopyText}
+                icon="link"
+                placement="topRight"
+                tooltipTitle="Copy deep link to this span"
+              />
+            </small>
+            {this.state.hasCodeLocation && (
+              <Button
+                onClick={this._handleCodeButtonClick}
+                icon={{
+                  component: CrosshairIcon,
+                  size: 18,
+                }}
+              >
+                Code
+              </Button>
+            )}
+          </div>
         </div>
       </div>
     );

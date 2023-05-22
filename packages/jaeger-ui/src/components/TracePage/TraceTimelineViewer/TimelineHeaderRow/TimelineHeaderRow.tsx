@@ -51,24 +51,25 @@ export default class SpanDetailRow extends React.PureComponent<
 > {
   constructor(props: TimelineHeaderRowProps) {
     super(props);
+    this._updateIsLoading = this._updateIsLoading.bind(this);
     this.state = {
       isLoading: Boolean(globalState.pendingOperationsCount),
     };
   }
 
-  componentDidMount(): void {
-    dispatcher.addActionListener(actions.SET_SPANS_DATA, this.updateIsLoading);
+  componentDidMount() {
+    dispatcher.addActionListener(actions.SET_SPANS_DATA, this._updateIsLoading);
   }
 
-  componentWillUnmount(): void {
-    dispatcher.removeActionListener(actions.SET_SPANS_DATA, this.updateIsLoading);
+  componentWillUnmount() {
+    dispatcher.removeActionListener(actions.SET_SPANS_DATA, this._updateIsLoading);
   }
 
-  updateIsLoading = () => {
+  _updateIsLoading() {
     this.setState({
       isLoading: false,
     });
-  };
+  }
 
   render() {
     const {
