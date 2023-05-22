@@ -29,7 +29,7 @@ import { actions } from '../../../api/digma/actions';
 import { state as globalState } from '../../../api/digma/state';
 import { ISpanInsight, SetSpansDataPayload } from '../../../api/digma/types';
 import { LightBulbIcon } from '../../common/icons/LightBulbIcon';
-import { CrosshairIcon } from '../../common/icons/CrosshairIcon';
+import { getInsightImportanceColor } from '../../common/InsightIcon/utils';
 
 import { TNil } from '../../../types';
 import { Span } from '../../../types/trace';
@@ -69,7 +69,6 @@ type SpanBarRowProps = {
 };
 
 type SpanBarRowState = {
-  hasCodeLocation: boolean;
   insights: ISpanInsight[];
 };
 
@@ -84,9 +83,9 @@ type SpanBarRowState = {
 export default class SpanBarRow extends React.PureComponent<SpanBarRowProps, SpanBarRowState> {
   constructor(props: SpanBarRowProps) {
     super(props);
+    this._updateSpanInfo = this._updateSpanInfo.bind(this);
     const span = globalState.spans[props.span.spanID];
     this.state = {
-      hasCodeLocation: Boolean(span && span.hasCodeLocation),
       insights: span ? span.insights : [],
     };
   }
@@ -96,6 +95,21 @@ export default class SpanBarRow extends React.PureComponent<SpanBarRowProps, Spa
     rpc: null,
   };
 
+  componentDidMount() {
+    dispatcher.addActionListener(actions.SET_SPANS_DATA, this._updateSpanInfo);
+  }
+
+  componentWillUnmount() {
+    dispatcher.removeActionListener(actions.SET_SPANS_DATA, this._updateSpanInfo);
+  }
+
+  _updateSpanInfo(data: unknown) {
+    const span = (data as SetSpansDataPayload)[this.props.span.spanID];
+    this.setState({
+      insights: span ? span.insights : [],
+    });
+  }
+
   _detailToggle = () => {
     this.props.onDetailToggled(this.props.span.spanID);
   };
@@ -103,22 +117,6 @@ export default class SpanBarRow extends React.PureComponent<SpanBarRowProps, Spa
   _childrenToggle = () => {
     this.props.onChildrenToggled(this.props.span.spanID);
   };
-
-  updateSpanInfo = (data: unknown) => {
-    const span = (data as SetSpansDataPayload)[this.props.span.spanID];
-    this.setState({
-      hasCodeLocation: Boolean(span && span.hasCodeLocation),
-      insights: span ? span.insights : [],
-    });
-  };
-
-  componentDidMount(): void {
-    dispatcher.addActionListener(actions.SET_SPANS_DATA, this.updateSpanInfo);
-  }
-
-  componentWillUnmount(): void {
-    dispatcher.removeActionListener(actions.SET_SPANS_DATA, this.updateSpanInfo);
-  }
 
   render() {
     const {
@@ -158,6 +156,14 @@ export default class SpanBarRow extends React.PureComponent<SpanBarRowProps, Spa
       longLabel = `${label} | ${labelDetail}`;
       hintSide = 'right';
     }
+
+    const mostImportantInsight =
+      this.state.insights.length > 0
+        ? this.state.insights.reduce((prev, curr) => (prev.importance < curr.importance ? prev : curr))
+        : undefined;
+
+    const insightIconColor =
+      mostImportantInsight && getInsightImportanceColor(mostImportantInsight.importance);
 
     return (
       <TimelineRow
@@ -211,14 +217,7 @@ export default class SpanBarRow extends React.PureComponent<SpanBarRowProps, Spa
                 {this.state.insights.length > 0 && (
                   <Tooltip title="Insights available">
                     <span className="icon">
-                      <LightBulbIcon size={12} color="#56b5bc" />
-                    </span>
-                  </Tooltip>
-                )}
-                {this.state.hasCodeLocation && (
-                  <Tooltip title="Code link available">
-                    <span className="icon code-location-icon">
-                      <CrosshairIcon size={16} color="#fff" />
+                      <LightBulbIcon size={12} color={insightIconColor} />
                     </span>
                   </Tooltip>
                 )}
