@@ -143,11 +143,6 @@ limitations under the License.
   justify-content: center;
 }
 
-.span-name .code-location-icon {
-  background: #3538cd;
-  border: none;
-}
-
 .span-svc-name {
   padding: 0 0.25rem 0 0.5rem;
   font-size: 1.05em;
