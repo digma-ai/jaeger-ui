@@ -28,7 +28,7 @@ import { actions } from '../../../../api/digma/actions';
 import { dispatcher } from '../../../../api/digma/dispatcher';
 import { state as globalState } from '../../../../api/digma/state';
 import { ISpanInsight, SetSpansDataPayload } from '../../../../api/digma/types';
-import { getInsightTypeInfo } from '../../../common/InsightIcon/utils';
+import { getInsightTypeInfo, getInsightTypeOrderPriority } from '../../../common/InsightIcon/utils';
 import { InsightIcon } from '../../../common/InsightIcon';
 import Button from '../../../common/Button';
 import { CrosshairIcon } from '../../../common/icons/CrosshairIcon';
@@ -80,7 +80,11 @@ export default class SpanDetail extends React.Component<SpanDetailProps, SpanDet
   }
 
   _sortInsightsByImportance(insights: ISpanInsight[]): ISpanInsight[] {
-    return [...insights].sort((a, b) => a.importance - b.importance);
+    return [...insights].sort(
+      (a, b) =>
+        a.importance - b.importance ||
+        getInsightTypeOrderPriority(a.type) - getInsightTypeOrderPriority(b.type)
+    );
   }
 
   _updateSpanInfo(data: unknown) {
