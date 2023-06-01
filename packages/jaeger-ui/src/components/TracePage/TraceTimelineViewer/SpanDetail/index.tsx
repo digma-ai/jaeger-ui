@@ -63,6 +63,7 @@ export default class SpanDetail extends React.Component<SpanDetailProps, SpanDet
     this._updateSpanInfo = this._updateSpanInfo.bind(this);
     this._handleCodeButtonClick = this._handleCodeButtonClick.bind(this);
     this._handleSpanNameLinkClick = this._handleSpanNameLinkClick.bind(this);
+    this._getSpanTags = this._getSpanTags.bind(this);
     const span = globalState.spans[props.span.spanID];
     this.state = {
       hasCodeLocation: Boolean(span && span.hasCodeLocation),
@@ -95,43 +96,40 @@ export default class SpanDetail extends React.Component<SpanDetailProps, SpanDet
     });
   }
 
-  _handleCodeButtonClick(e: React.MouseEvent<HTMLButtonElement>) {
-    e.preventDefault();
-    const otelLibraryNameTag = this.props.span.tags.find((tag: any) => tag.key === 'otel.library.name');
-    const functionTag = this.props.span.tags.find((tag: any) => tag.key === 'code.function');
-    const namespaceTag = this.props.span.tags.find((tag: any) => tag.key === 'code.namespace');
+  _getSpanTags(tags: KeyValuePair[]) {
+    const otelLibraryNameTag = tags.find((tag: any) => tag.key === 'otel.library.name');
+    const functionTag = tags.find((tag: any) => tag.key === 'code.function');
+    const namespaceTag = tags.find((tag: any) => tag.key === 'code.namespace');
+    const spanCodeObjectIdTag = tags.find((tag: any) => tag.key === 'digma.span.code.object.id');
+    const methodCodeObjectIdTag = tags.find((tag: any) => tag.key === 'digma.method.code.object.id');
 
-    if (otelLibraryNameTag) {
-      window.sendMessageToDigma({
-        action: actions.GO_TO_SPAN,
-        payload: {
-          id: this.props.span.spanID,
-          name: this.props.span.operationName,
-          instrumentationLibrary: otelLibraryNameTag.value,
-          ...(functionTag ? { function: functionTag.value } : {}),
-          ...(namespaceTag ? { namespace: namespaceTag.value } : {}),
-        },
-      });
-    }
+    return {
+      id: this.props.span.spanID,
+      name: this.props.span.operationName,
+      ...(otelLibraryNameTag ? { instrumentationLibrary: otelLibraryNameTag.value } : {}),
+      ...(functionTag ? { function: functionTag.value } : {}),
+      ...(namespaceTag ? { namespace: namespaceTag.value } : {}),
+      ...(spanCodeObjectIdTag ? { spanCodeObjectId: spanCodeObjectIdTag.value } : {}),
+      ...(methodCodeObjectIdTag ? { methodCodeObjectId: methodCodeObjectIdTag.value } : {}),
+    };
   }
 
-  _handleSpanNameLinkClick(e: React.MouseEvent<HTMLAnchorElement>) {
-    const otelLibraryNameTag = this.props.span.tags.find((tag: any) => tag.key === 'otel.library.name');
-    const functionTag = this.props.span.tags.find((tag: any) => tag.key === 'code.function');
-    const namespaceTag = this.props.span.tags.find((tag: any) => tag.key === 'code.namespace');
+  _handleCodeButtonClick() {
+    const spanTags = this._getSpanTags(this.props.span.tags);
 
-    if (otelLibraryNameTag) {
-      window.sendMessageToDigma({
-        action: actions.GO_TO_INSIGHTS,
-        payload: {
-          id: this.props.span.spanID,
-          name: this.props.span.operationName,
-          instrumentationLibrary: otelLibraryNameTag.value,
-          ...(functionTag ? { function: functionTag.value } : {}),
-          ...(namespaceTag ? { namespace: namespaceTag.value } : {}),
-        },
-      });
-    }
+    window.sendMessageToDigma({
+      action: actions.GO_TO_SPAN,
+      payload: spanTags,
+    });
+  }
+
+  _handleSpanNameLinkClick() {
+    const spanTags = this._getSpanTags(this.props.span.tags);
+
+    window.sendMessageToDigma({
+      action: actions.GO_TO_INSIGHTS,
+      payload: spanTags,
+    });
   }
 
   render() {
@@ -169,7 +167,7 @@ export default class SpanDetail extends React.Component<SpanDetailProps, SpanDet
       },
     ];
     const deepLinkCopyText = `${window.location.origin}${window.location.pathname}?uiFind=${spanID}`;
-    const otelLibraryNameTag = this.props.span.tags.find((tag: any) => tag.key === 'otel.library.name');
+    const otelLibraryNameTag = this._getSpanTags(this.props.span.tags).instrumentationLibrary;
 
     return (
       <div>
