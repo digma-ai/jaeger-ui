@@ -63,7 +63,7 @@ export default class SpanDetail extends React.Component<SpanDetailProps, SpanDet
     this._updateSpanInfo = this._updateSpanInfo.bind(this);
     this._handleCodeButtonClick = this._handleCodeButtonClick.bind(this);
     this._handleSpanNameLinkClick = this._handleSpanNameLinkClick.bind(this);
-    this._getSpanTags = this._getSpanTags.bind(this);
+    this._prepareSpanInfo = this._prepareSpanInfo.bind(this);
     const span = globalState.spans[props.span.spanID];
     this.state = {
       hasCodeLocation: Boolean(span && span.hasCodeLocation),
@@ -96,39 +96,42 @@ export default class SpanDetail extends React.Component<SpanDetailProps, SpanDet
     });
   }
 
-  _getSpanTags(tags: KeyValuePair[]) {
-    const otelLibraryNameTag = tags.find((tag: any) => tag.key === 'otel.library.name');
-    const functionTag = tags.find((tag: any) => tag.key === 'code.function');
-    const namespaceTag = tags.find((tag: any) => tag.key === 'code.namespace');
-    const spanCodeObjectIdTag = tags.find((tag: any) => tag.key === 'digma.span.code.object.id');
-    const methodCodeObjectIdTag = tags.find((tag: any) => tag.key === 'digma.method.code.object.id');
+  _prepareSpanInfo() {
+    const tagsToGet = {
+      instrumentationLibrary: 'otel.library.name',
+      function: 'code.function',
+      namespace: 'code.namespace',
+      spanCodeObjectIdTag: 'digma.span.code.object.id',
+      methodCodeObjectId: 'digma.method.code.object.id',
+    };
+
+    const tagsValues = Object.entries(tagsToGet).reduce((acc, [key, value]) => {
+      const tag = this.props.span.tags.find((x: any) => x.key === value);
+      return tag ? { ...acc, [key]: tag.value } : acc;
+    }, {});
 
     return {
+      ...tagsValues,
       id: this.props.span.spanID,
       name: this.props.span.operationName,
-      ...(otelLibraryNameTag ? { instrumentationLibrary: otelLibraryNameTag.value } : {}),
-      ...(functionTag ? { function: functionTag.value } : {}),
-      ...(namespaceTag ? { namespace: namespaceTag.value } : {}),
-      ...(spanCodeObjectIdTag ? { spanCodeObjectId: spanCodeObjectIdTag.value } : {}),
-      ...(methodCodeObjectIdTag ? { methodCodeObjectId: methodCodeObjectIdTag.value } : {}),
     };
   }
 
   _handleCodeButtonClick() {
-    const spanTags = this._getSpanTags(this.props.span.tags);
+    const spanInfo = this._prepareSpanInfo();
 
     window.sendMessageToDigma({
       action: actions.GO_TO_SPAN,
-      payload: spanTags,
+      payload: spanInfo,
     });
   }
 
   _handleSpanNameLinkClick() {
-    const spanTags = this._getSpanTags(this.props.span.tags);
+    const spanInfo = this._prepareSpanInfo();
 
     window.sendMessageToDigma({
       action: actions.GO_TO_INSIGHTS,
-      payload: spanTags,
+      payload: spanInfo,
     });
   }
 
@@ -167,13 +170,16 @@ export default class SpanDetail extends React.Component<SpanDetailProps, SpanDet
       },
     ];
     const deepLinkCopyText = `${window.location.origin}${window.location.pathname}?uiFind=${spanID}`;
-    const otelLibraryNameTag = this._getSpanTags(this.props.span.tags).instrumentationLibrary;
+    const isInstrumentationLibraryPresent = Object.prototype.hasOwnProperty.call(
+      this._prepareSpanInfo(),
+      'instrumentationLibrary'
+    );
 
     return (
       <div>
         <div className="SpanDetail--header">
           <div className="ub-flex ub-items-center">
-            {otelLibraryNameTag && this.state.insights.length > 0 ? (
+            {isInstrumentationLibraryPresent && this.state.insights.length > 0 ? (
               <RouterLink
                 to="#"
                 onClick={this._handleSpanNameLinkClick}
