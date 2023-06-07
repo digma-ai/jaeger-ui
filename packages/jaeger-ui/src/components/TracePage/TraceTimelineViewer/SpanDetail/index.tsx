@@ -107,7 +107,7 @@ export default class SpanDetail extends React.Component<SpanDetailProps, SpanDet
 
     const tagsValues = Object.entries(tagsToGet).reduce((acc, [key, value]) => {
       const tag = this.props.span.tags.find((x: any) => x.key === value);
-      return tag ? { ...acc, [key]: [tag.value] } : acc;
+      return tag ? { ...acc, [key]: tag.value } : acc;
     }, {});
 
     return {
