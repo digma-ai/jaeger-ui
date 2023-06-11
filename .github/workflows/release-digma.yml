@@ -13,7 +13,7 @@ permissions:
 
 jobs:
   build:
-    uses: digma-ai/digma-jaeger-ui/.github/workflows/reusable-push-to-docker.yml@feature/docker
+    uses: digma-ai/jaeger-ui/.github/workflows/reusable-push-to-docker.yml@feature/docker
     with:
       images: |
         digmatic/jaeger-ui
