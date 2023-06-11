@@ -5,6 +5,7 @@ on:
   workflow_dispatch:
   release:
     types: [released]
+  pull_request:
 
 # permissions are needed if pushing to ghcr.io
 permissions:
