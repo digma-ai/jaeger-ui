@@ -13,7 +13,7 @@ RUN yarn install --frozen-lockfile --network-timeout 300000
 # RUN yarn prettier-lint
 # RUN yarn eslint 
 
-WORKDIR /app/packages/jaeger-ui
+# WORKDIR /app/packages/jaeger-ui
 
 # RUN yarn test
 RUN yarn build
