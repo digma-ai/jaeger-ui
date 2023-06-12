@@ -13,8 +13,6 @@ on:
         required: true
         type: string
     secrets:
-      GH_PAT:
-        required: true
       REGISTRY_USERNAME:
         required: true
       REGISTRY_PASSWORD:
