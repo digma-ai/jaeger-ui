@@ -13,6 +13,7 @@ import { WarningCircleIcon } from '../icons/WarningCircleIcon';
 import { IIconProps } from '../icons/types';
 import { InsightType } from './types';
 import { ClockWithTicksIcon } from '../icons/ClockWithTicksIcon';
+import { PieChartIcon } from '../icons/PieChartIcon';
 
 export const getInsightTypeInfo = (
   type: InsightType
@@ -93,6 +94,10 @@ export const getInsightTypeInfo = (
       icon: SnailIcon,
       label: 'Duration Slowdown Source Detected',
     },
+    [InsightType.EndpointBreakdown]: {
+      icon: PieChartIcon,
+      label: 'Request Breakdown',
+    },
   };
 
   return insightInfoMap[type];
@@ -136,6 +141,7 @@ export const getInsightTypeOrderPriority = (type: string): number => {
     [InsightType.HighUsage]: 10,
     [InsightType.SlowEndpoint]: 20,
     [InsightType.EndpointDurationSlowdown]: 25,
+    [InsightType.EndpointBreakdown]: 5,
   };
 
   return insightOrderPriorityMap[type] || Infinity;
