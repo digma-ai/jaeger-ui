@@ -26,4 +26,5 @@ export enum InsightType {
   SpanScalingRootCause = 'SpanScalingRootCause',
   SpanDurationBreakdown = 'SpanDurationBreakdown',
   EndpointDurationSlowdown = 'EndpointDurationSlowdown',
+  EndpointBreakdown = 'EndpointBreakdown',
 }
