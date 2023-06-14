@@ -32,6 +32,7 @@ import { getInsightTypeInfo, getInsightTypeOrderPriority } from '../../../common
 import { InsightIcon } from '../../../common/InsightIcon';
 import Button from '../../../common/Button';
 import { CrosshairIcon } from '../../../common/icons/CrosshairIcon';
+import getSpanDataForDigma from '../../../../utils/getSpanDataForDigma';
 
 import { TNil } from '../../../../types';
 import { KeyValuePair, Link, Log, Span } from '../../../../types/trace';
@@ -63,7 +64,6 @@ export default class SpanDetail extends React.Component<SpanDetailProps, SpanDet
     this._updateSpanInfo = this._updateSpanInfo.bind(this);
     this._handleCodeButtonClick = this._handleCodeButtonClick.bind(this);
     this._handleSpanNameLinkClick = this._handleSpanNameLinkClick.bind(this);
-    this._prepareSpanInfo = this._prepareSpanInfo.bind(this);
     const span = globalState.spans[props.span.spanID];
     this.state = {
       hasCodeLocation: Boolean(span && span.hasCodeLocation),
@@ -96,29 +96,8 @@ export default class SpanDetail extends React.Component<SpanDetailProps, SpanDet
     });
   }
 
-  _prepareSpanInfo() {
-    const tagsToGet = {
-      instrumentationLibrary: 'otel.library.name',
-      function: 'code.function',
-      namespace: 'code.namespace',
-      spanCodeObjectIdTag: 'digma.span.code.object.id',
-      methodCodeObjectId: 'digma.method.code.object.id',
-    };
-
-    const tagsValues = Object.entries(tagsToGet).reduce((acc, [key, value]) => {
-      const tag = this.props.span.tags.find((x: any) => x.key === value);
-      return tag ? { ...acc, [key]: tag.value } : acc;
-    }, {});
-
-    return {
-      ...tagsValues,
-      id: this.props.span.spanID,
-      name: this.props.span.operationName,
-    };
-  }
-
   _handleCodeButtonClick() {
-    const spanInfo = this._prepareSpanInfo();
+    const spanInfo = getSpanDataForDigma(this.props.span);
 
     window.sendMessageToDigma({
       action: actions.GO_TO_SPAN,
@@ -127,7 +106,7 @@ export default class SpanDetail extends React.Component<SpanDetailProps, SpanDet
   }
 
   _handleSpanNameLinkClick() {
-    const spanInfo = this._prepareSpanInfo();
+    const spanInfo = getSpanDataForDigma(this.props.span);
 
     window.sendMessageToDigma({
       action: actions.GO_TO_INSIGHTS,
@@ -170,10 +149,7 @@ export default class SpanDetail extends React.Component<SpanDetailProps, SpanDet
       },
     ];
     const deepLinkCopyText = `${window.location.origin}${window.location.pathname}?uiFind=${spanID}`;
-    const isInstrumentationLibraryPresent = Object.prototype.hasOwnProperty.call(
-      this._prepareSpanInfo(),
-      'instrumentationLibrary'
-    );
+    const isInstrumentationLibraryPresent = getSpanDataForDigma(this.props.span).instrumentationLibrary;
 
     return (
       <div>
