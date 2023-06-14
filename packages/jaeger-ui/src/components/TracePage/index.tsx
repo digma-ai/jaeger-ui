@@ -61,6 +61,7 @@ import TraceFlamegraph from './TraceFlamegraph/index';
 import { TraceGraphConfig } from '../../types/config';
 import { actions } from '../../api/digma/actions';
 import { dispatcher } from '../../api/digma/dispatcher';
+import getSpanDataForDigma from '../../utils/getSpanDataForDigma';
 
 import './index.css';
 
@@ -225,21 +226,7 @@ export class TracePageImpl extends React.PureComponent<TProps, TState> {
     window.sendMessageToDigma({
       action: actions.GET_SPANS_DATA,
       payload: {
-        spans: trace.spans
-          .map(span => {
-            const otelLibraryNameTag = span.tags.find(tag => tag.key === 'otel.library.name');
-            const functionTag = span.tags.find(tag => tag.key === 'code.function');
-            const namespaceTag = span.tags.find(tag => tag.key === 'code.namespace');
-
-            return {
-              id: span.spanID,
-              name: span.operationName,
-              instrumentationLibrary: otelLibraryNameTag && otelLibraryNameTag.value,
-              ...(functionTag ? { function: functionTag.value } : {}),
-              ...(namespaceTag ? { namespace: namespaceTag.value } : {}),
-            };
-          })
-          .filter(span => span.instrumentationLibrary),
+        spans: trace.spans.map(getSpanDataForDigma).filter(span => span.instrumentationLibrary),
       },
     });
   }
