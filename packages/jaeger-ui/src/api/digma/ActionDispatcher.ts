@@ -1,10 +1,10 @@
-import { ActionListener } from "./types";
+import { ActionListener } from './types';
 
 export class ActionDispatcher {
   private actions: {
     [key: string]: ActionListener[];
   };
-  
+
   constructor() {
     this.actions = {};
   }
@@ -19,7 +19,7 @@ export class ActionDispatcher {
 
   public removeActionListener(type: string, listener: ActionListener) {
     if (this.actions[type]) {
-      this.actions[type] = this.actions[type].filter((x) => x !== listener);
+      this.actions[type] = this.actions[type].filter(x => x !== listener);
     }
 
     if (this.actions[type].length === 0) {
