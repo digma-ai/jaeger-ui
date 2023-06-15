@@ -29,5 +29,5 @@ jobs:
         type=raw,value=latest,enable=${{ github.ref == format('refs/heads/{0}', 'digma') }}
       dockerfile: ./Dockerfile
     secrets:
-      REGISTRY_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-      REGISTRY_PASSWORD: ${{ secrets.DOCKERHUB_TOKEN }}
+      REGISTRY_USERNAME: ${{ secrets.DOCKERHUB_DIGMAAI_USERNAME }}
+      REGISTRY_PASSWORD: ${{ secrets.DOCKERHUB_DIGMAAI_TOKEN }}
