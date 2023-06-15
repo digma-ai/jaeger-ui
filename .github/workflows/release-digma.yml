@@ -16,7 +16,7 @@ jobs:
     uses: digma-ai/jaeger-ui/.github/workflows/reusable-push-to-docker.yml@feature/docker
     with:
       images: |
-        digmatic/jaeger-ui
+        jaeger-ui/jaeger-ui
       tags: |
         type=schedule
         type=ref,event=branch
