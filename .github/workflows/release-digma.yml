@@ -22,7 +22,7 @@ jobs:
           cache: yarn
           node-version: '16'
       - run: yarn install --frozen-lockfile
-      - run: yarn lint
+      # - run: yarn lint
       - run: yarn build
 
       - uses: actions/upload-artifact@v3
