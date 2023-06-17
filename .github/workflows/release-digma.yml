@@ -13,6 +13,7 @@ permissions:
 
 jobs:
   build:
+    name: Build Jaeger UI
     runs-on: ubuntu-latest
 
     steps:
@@ -51,6 +52,7 @@ jobs:
       - uses: actions/download-artifact@v3
         with:
           name: jaeger-build
+          path: build
 
       - uses: actions/download-artifact@v3
         with:
