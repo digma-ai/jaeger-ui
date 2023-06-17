@@ -13,21 +13,57 @@ permissions:
 
 jobs:
   build:
-    uses: digma-ai/jaeger-ui/.github/workflows/reusable-push-to-docker.yml@feature/docker
-    with:
-      images: |
-        digmaai/jaeger-ui
-      tags: |
-        type=schedule
-        type=ref,event=branch
-        type=ref,event=pr
-        type=semver,pattern={{version}}
-        type=semver,pattern={{major}}.{{minor}}
-        type=semver,pattern={{major}}
-        type=sha
-        # set latest tag for digma branch
-        type=raw,value=latest,enable=${{ github.ref == format('refs/heads/{0}', 'digma') }}
-      dockerfile: ./Dockerfile
-    secrets:
-      REGISTRY_USERNAME: ${{ secrets.DOCKERHUB_DIGMAAI_USERNAME }}
-      REGISTRY_PASSWORD: ${{ secrets.DOCKERHUB_DIGMAAI_TOKEN }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          cache: yarn
+          node-version: '16'
+      - run: yarn install --frozen-lockfile
+      - run: yarn lint
+      - run: yarn build
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: jaeger-build
+          path: packages/jaeger-ui/build/
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: nginx-config
+          path: nginx.conf.template
+
+  push:
+    needs: [build]
+    steps:
+      - uses: actions/download-artifact@v3
+        with:
+          name: jaeger-build
+
+      - uses: actions/download-artifact@v3
+        with:
+          name: nginx-config
+
+      - name: Display structure of downloaded files
+        run: ls -R
+
+      - uses: digma-ai/jaeger-ui/.github/workflows/reusable-push-to-docker.yml@feature/docker
+        with:
+          images: |
+            digmaai/jaeger-ui
+          tags: |
+            type=schedule
+            type=ref,event=branch
+            type=ref,event=pr
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}
+            type=sha
+            # set latest tag for digma branch
+            type=raw,value=latest,enable=${{ github.ref == format('refs/heads/{0}', 'digma') }}
+          dockerfile: ./Dockerfile
+        secrets:
+          REGISTRY_USERNAME: ${{ secrets.DOCKERHUB_DIGMAAI_USERNAME }}
+          REGISTRY_PASSWORD: ${{ secrets.DOCKERHUB_DIGMAAI_TOKEN }}
