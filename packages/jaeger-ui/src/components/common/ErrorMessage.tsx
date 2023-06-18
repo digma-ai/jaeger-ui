@@ -163,7 +163,7 @@ export default function ErrorMessage({
     );
   }
 
-  if (error.message.includes('Failed to fetch')) {
+  if (error.message.includes('Failed to fetch') || error.httpStatus === 502) {
     const isUserDefinedJaegerQueryURL = window.isUserDefinedJaegerQueryURL === true;
     return (
       <DigmaErrorMessage
