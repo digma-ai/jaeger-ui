@@ -1,26 +1,3 @@
-# FROM node:16.20.0 AS build
-
-# WORKDIR /app
-
-# Copy files with dependency metadata first
-# to check them for changes and invalidate the Docker cache
-# COPY package.json ./
-# COPY yarn.lock ./
-# COPY lerna.json ./
-# COPY packages/jaeger-ui/package.json ./packages/jaeger-ui/
-# COPY packages/plexus/ ./packages/plexus/
-
-# RUN yarn install --frozen-lockfile --network-timeout 300000
-
-# COPY . .
-# RUN yarn prettier-lint
-# RUN yarn eslint 
-
-# WORKDIR /app/packages/jaeger-ui
-
-# RUN yarn test
-# RUN yarn build
-
 FROM nginx:1.25.0
 
 COPY ./build/ /usr/share/nginx/html/
