@@ -47,22 +47,22 @@ const logoUrl = getStaticAssetPath(JaegerLogo);
 // Sanitize query params to filter out ones provided by VS Code
 const sanitizeQueryParams = params => {
   const VS_CODE_PARAMS = [
-    "id",
-    "origin",
-    "swVersion",
-    "extensionId",
-    "platform",
-    "vscode-resource-base-authority",
-    "parentOrigin"
+    'id',
+    'origin',
+    'swVersion',
+    'extensionId',
+    'platform',
+    'vscode-resource-base-authority',
+    'parentOrigin',
   ];
 
   const filteredParams = {};
 
   Object.keys(params).forEach(key => {
     if (!VS_CODE_PARAMS.includes(key)) {
-      filteredParams[key] = params[key]
+      filteredParams[key] = params[key];
     }
-  })
+  });
 
   return filteredParams;
 };

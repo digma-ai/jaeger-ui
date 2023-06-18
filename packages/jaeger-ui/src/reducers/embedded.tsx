@@ -20,10 +20,10 @@ import { getEmbeddedState, VERSION_0 } from '../utils/embedded-url';
 export default function embeddedConfig(state: EmbeddedState | undefined) {
   if (state === undefined) {
     let search = _get(window, 'location.search');
-    
+
     const params = new URLSearchParams(search);
-    if (typeof window.embeddedMode === "boolean" && window.embeddedMode && !params.get("uiEmbed")) {
-      params.set("uiEmbed", VERSION_0);
+    if (typeof window.embeddedMode === 'boolean' && window.embeddedMode && !params.get('uiEmbed')) {
+      params.set('uiEmbed', VERSION_0);
       search = params.toString();
     }
 

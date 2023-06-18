@@ -77,7 +77,9 @@ function getJSON(url, options = {}) {
   });
 }
 
-export const DEFAULT_API_ROOT = isString(window.apiBaseUrl) ? `${window.apiBaseUrl}/api/` : prefixUrl('/api/');
+export const DEFAULT_API_ROOT = isString(window.apiBaseUrl)
+  ? `${window.apiBaseUrl}/api/`
+  : prefixUrl('/api/');
 export const ANALYTICS_ROOT = prefixUrl('/analytics/');
 export const DEFAULT_DEPENDENCY_LOOKBACK = moment.duration(1, 'weeks').asMilliseconds();
 
