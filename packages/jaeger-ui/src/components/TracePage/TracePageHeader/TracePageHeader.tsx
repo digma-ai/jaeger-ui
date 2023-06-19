@@ -38,6 +38,7 @@ import { getTraceLinks } from '../../../model/link-patterns';
 
 import './TracePageHeader.css';
 import ExternalLinks from '../../common/ExternalLinks';
+import ZoomControls from './ZoomControls';
 
 type TracePageHeaderEmbedProps = {
   canCollapse: boolean;
@@ -209,6 +210,7 @@ export function TracePageHeaderFn(props: TracePageHeaderEmbedProps & { forwarded
             <NewWindowIcon isLarge />
           </Link>
         )}
+        <ZoomControls className="TracePageHeader--zoomControls" />
       </div>
       {summaryItems && <LabeledList className="TracePageHeader--overviewItems" items={summaryItems} />}
       {!hideMap && !slimView && (
