@@ -58,7 +58,7 @@ export default class JaegerUIApp extends Component {
     // Navigate to URL provided on app start
     if (isString(window.initialRoutePath) && window.initialRoutePath) {
       const urlToNavigate = window.initialRoutePath;
-      window.initialRoutePath = "";
+      window.initialRoutePath = '';
       history.push(urlToNavigate);
     }
 
