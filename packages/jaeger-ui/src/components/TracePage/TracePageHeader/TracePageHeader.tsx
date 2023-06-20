@@ -200,6 +200,7 @@ export function TracePageHeaderFn(props: TracePageHeaderEmbedProps & { forwarded
             Archive Trace
           </Button>
         )}
+        <ZoomControls className="TracePageHeader--zoomControls" />
         {showStandaloneLink && (
           <Link
             className="u-tx-inherit ub-nowrap ub-mx2"
@@ -210,7 +211,6 @@ export function TracePageHeaderFn(props: TracePageHeaderEmbedProps & { forwarded
             <NewWindowIcon isLarge />
           </Link>
         )}
-        <ZoomControls className="TracePageHeader--zoomControls" />
       </div>
       {summaryItems && <LabeledList className="TracePageHeader--overviewItems" items={summaryItems} />}
       {!hideMap && !slimView && (

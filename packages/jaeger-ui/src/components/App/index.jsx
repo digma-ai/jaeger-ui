@@ -39,6 +39,8 @@ import configureStore from '../../utils/configure-store';
 import processScripts from '../../utils/config/process-scripts';
 import prefixUrl from '../../utils/prefix-url';
 import { isString } from '../../utils/ts/typeGuards/isString';
+import ZoomManager from '../../utils/ZoomManager';
+import { ZoomContext } from '../../Contexts';
 
 import '../common/vars.css';
 import '../common/utils.css';
@@ -52,6 +54,30 @@ export default class JaegerUIApp extends Component {
     this.store = configureStore(history);
     JaegerAPI.apiRoot = DEFAULT_API_ROOT;
     processScripts();
+    this.zoomManager = new ZoomManager();
+    this._handleZoomKeyboardShortcuts = this._handleZoomKeyboardShortcuts.bind(this);
+  }
+
+  componentDidMount() {
+    document.addEventListener('keydown', this._handleZoomKeyboardShortcuts);
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('keydown', this._handleZoomKeyboardShortcuts);
+  }
+
+  _handleZoomKeyboardShortcuts(e) {
+    if ((window.enableZoomControls && e.metaKey) || e.ctrlKey) {
+      switch (e.key) {
+        case '-':
+          this.zoomManager.zoomOut();
+          break;
+        case '=':
+          this.zoomManager.zoomIn();
+          break;
+        default:
+      }
+    }
   }
 
   render() {
@@ -65,23 +91,25 @@ export default class JaegerUIApp extends Component {
     return (
       <Provider store={this.store}>
         <ConnectedRouter history={history}>
-          <Page>
-            <Switch>
-              <Route path={searchPath} component={SearchTracePage} />
-              <Route path={traceDiffPath} component={TraceDiff} />
-              <Route path={tracePath} component={TracePage} />
-              <Route path={dependenciesPath} component={DependencyGraph} />
-              <Route path={deepDependenciesPath} component={DeepDependencies} />
-              <Route path={qualityMetricsPath} component={QualityMetrics} />
-              <Route path={monitorATMPath} component={MonitorATMPage} />
+          <ZoomContext.Provider value={this.zoomManager}>
+            <Page>
+              <Switch>
+                <Route path={searchPath} component={SearchTracePage} />
+                <Route path={traceDiffPath} component={TraceDiff} />
+                <Route path={tracePath} component={TracePage} />
+                <Route path={dependenciesPath} component={DependencyGraph} />
+                <Route path={deepDependenciesPath} component={DeepDependencies} />
+                <Route path={qualityMetricsPath} component={QualityMetrics} />
+                <Route path={monitorATMPath} component={MonitorATMPage} />
 
-              <Redirect exact path="/" to={searchPath} />
-              <Redirect exact path={prefixUrl()} to={searchPath} />
-              <Redirect exact path={prefixUrl('/')} to={searchPath} />
+                <Redirect exact path="/" to={searchPath} />
+                <Redirect exact path={prefixUrl()} to={searchPath} />
+                <Redirect exact path={prefixUrl('/')} to={searchPath} />
 
-              <Route component={NotFound} />
-            </Switch>
-          </Page>
+                <Route component={NotFound} />
+              </Switch>
+            </Page>
+          </ZoomContext.Provider>
         </ConnectedRouter>
       </Provider>
     );
