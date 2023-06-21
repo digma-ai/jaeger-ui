@@ -2,15 +2,22 @@ const MIN_ZOOM_LEVEL = 0.7;
 const MAX_ZOOM_LEVEL = 1.5;
 const ZOOM_FACTOR = 0.1;
 
+interface IChromeCSSStyleDeclaration extends CSSStyleDeclaration {
+  zoom: number | string;
+}
+
 export default class ZoomManager {
   zoomLevel: number;
 
   constructor() {
-    this.zoomLevel = document.body.style.zoom || 1;
+    this.zoomLevel =
+      typeof (document.body.style as IChromeCSSStyleDeclaration).zoom === 'number'
+        ? ((document.body.style as IChromeCSSStyleDeclaration).zoom as number)
+        : 1;
   }
 
   updateStyles = () => {
-    document.body.style.zoom = this.zoomLevel;
+    (document.body.style as IChromeCSSStyleDeclaration).zoom = this.zoomLevel;
   };
 
   zoomIn = () => {
