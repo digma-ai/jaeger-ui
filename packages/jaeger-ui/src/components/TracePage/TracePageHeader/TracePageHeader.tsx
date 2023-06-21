@@ -38,6 +38,7 @@ import { getTraceLinks } from '../../../model/link-patterns';
 
 import './TracePageHeader.css';
 import ExternalLinks from '../../common/ExternalLinks';
+import ZoomControls from './ZoomControls';
 
 type TracePageHeaderEmbedProps = {
   canCollapse: boolean;
@@ -199,6 +200,7 @@ export function TracePageHeaderFn(props: TracePageHeaderEmbedProps & { forwarded
             Archive Trace
           </Button>
         )}
+        {window.enableZoomControls && <ZoomControls className="TracePageHeader--zoomControls" />}
         {showStandaloneLink && (
           <Link
             className="u-tx-inherit ub-nowrap ub-mx2"
