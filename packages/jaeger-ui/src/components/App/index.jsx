@@ -67,7 +67,7 @@ export default class JaegerUIApp extends Component {
   }
 
   _handleZoomKeyboardShortcuts(e) {
-    if ((window.enableZoomControls && e.metaKey) || e.ctrlKey) {
+    if (window.enableZoomControls && (e.metaKey || e.ctrlKey)) {
       switch (e.key) {
         case '-':
           this.zoomManager.zoomOut();
