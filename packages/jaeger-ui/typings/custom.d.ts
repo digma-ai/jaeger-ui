@@ -39,7 +39,7 @@ declare interface Window {
   embeddedMode?: unknown;
   isUserDefinedJaegerQueryURL?: unknown;
   staticPath?: unknown;
-  enableZoomControls?: unknown
+  enableZoomControls?: unknown;
 }
 
 declare const __REACT_APP_GA_DEBUG__: string | undefined;
