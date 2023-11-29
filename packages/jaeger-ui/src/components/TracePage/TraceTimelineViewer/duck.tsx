@@ -157,7 +157,7 @@ function setTrace(state: TTraceTimeline, { uiFind, trace }: TTraceUiFindValue) {
 
   return Object.assign(
     { ...newInitialState(), spanNameColumnWidth, traceID },
-    uiFind ? calculateFocusedFindRowStates(uiFind, spans) : null
+    uiFind ? calculateFocusedFindRowStates(uiFind, spans, false) : null
   );
 }
 
