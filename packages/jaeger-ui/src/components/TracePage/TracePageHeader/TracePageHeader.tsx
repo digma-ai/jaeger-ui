@@ -39,7 +39,7 @@ import { getTraceLinks } from '../../../model/link-patterns';
 import './TracePageHeader.css';
 import ExternalLinks from '../../common/ExternalLinks';
 import ZoomControls from './ZoomControls';
-import { actions, globalActions } from '../../../api/digma/actions';
+import { globalActions } from '../../../api/digma/actions';
 
 type TracePageHeaderEmbedProps = {
   canCollapse: boolean;
