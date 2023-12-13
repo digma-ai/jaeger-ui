@@ -39,6 +39,7 @@ import { getTraceLinks } from '../../../model/link-patterns';
 import './TracePageHeader.css';
 import ExternalLinks from '../../common/ExternalLinks';
 import ZoomControls from './ZoomControls';
+import { globalActions } from '../../../api/digma/actions';
 
 type TracePageHeaderEmbedProps = {
   canCollapse: boolean;
@@ -156,6 +157,16 @@ export function TracePageHeaderFn(props: TracePageHeaderEmbedProps & { forwarded
     </h1>
   );
 
+  const handleStandaloneLinkClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    window.sendMessageToDigma({
+      action: globalActions.OPEN_URL_IN_DEFAULT_BROWSER,
+      payload: {
+        url: `${window.apiBaseUrl}${window.location.pathname}${window.location.search}`,
+      },
+    });
+  };
+
   return (
     <header className="TracePageHeader">
       <div className="TracePageHeader--titleRow">
@@ -201,7 +212,11 @@ export function TracePageHeaderFn(props: TracePageHeaderEmbedProps & { forwarded
           </Button>
         )}
         {window.enableZoomControls && <ZoomControls className="TracePageHeader--zoomControls" />}
-        {showStandaloneLink && (
+        {showStandaloneLink && window.platform === 'JetBrains' ? (
+          <Link className="u-tx-inherit ub-nowrap ub-mx2" to="#" onClick={handleStandaloneLinkClick}>
+            <NewWindowIcon isLarge />
+          </Link>
+        ) : (
           <Link
             className="u-tx-inherit ub-nowrap ub-mx2"
             to={linkToStandalone}
