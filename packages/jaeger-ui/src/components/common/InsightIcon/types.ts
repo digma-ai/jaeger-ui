@@ -22,9 +22,11 @@ export enum InsightType {
   SpanNPlusOne = 'SpaNPlusOne',
   SpanEndpointBottleneck = 'SpanEndpointBottleneck',
   SpanDurations = 'SpanDurations',
-  SpanScaling = 'SpanScaling',
-  SpanScalingRootCause = 'SpanScalingRootCause',
+  SpanScalingBadly = 'SpanScaling',
   SpanDurationBreakdown = 'SpanDurationBreakdown',
   EndpointDurationSlowdown = 'EndpointDurationSlowdown',
   EndpointBreakdown = 'EndpointBreakdown',
+  EndpointSessionInView = 'EndpointSessionInView',
+  EndpointChattyApi = 'EndpointChattyApi',
+  EndpointHighNumberOfQueries = 'EndpointHighNumberOfQueries',
 }

@@ -214,7 +214,7 @@ export default class SpanBarRow extends React.PureComponent<SpanBarRowProps, Spa
               </span>
               <small className="endpoint-name">{rpc ? rpc.operationName : operationName}</small>
               <span className="icons-container">
-                {this.state.insights.length > 0 && (
+                {mostImportantInsight && mostImportantInsight.importance < 3 && (
                   <Tooltip title="Insights available">
                     <span className="icon">
                       <LightBulbIcon size={12} color={insightIconColor} />
