@@ -56,7 +56,7 @@ export const getInsightTypeInfo = (
     },
     [InsightType.SlowestSpans]: {
       icon: BottleneckIcon,
-      label: 'Span Bottleneck',
+      label: 'Bottleneck',
     },
     [InsightType.EndpointSpanNPlusOne]: {
       icon: SQLDatabaseIcon,
@@ -70,13 +70,9 @@ export const getInsightTypeInfo = (
       icon: BottleneckIcon,
       label: 'Bottleneck',
     },
-    [InsightType.SpanScaling]: {
+    [InsightType.SpanScalingBadly]: {
       icon: ScalesIcon,
       label: 'Scaling Issue Found',
-    },
-    [InsightType.SpanScalingRootCause]: {
-      icon: ScalesIcon,
-      label: 'Scaling Issue Root Cause Found',
     },
     [InsightType.SpanUsages]: {
       icon: SineIcon,
@@ -97,6 +93,18 @@ export const getInsightTypeInfo = (
     [InsightType.EndpointBreakdown]: {
       icon: PieChartIcon,
       label: 'Request Breakdown',
+    },
+    [InsightType.EndpointSessionInView]: {
+      icon: SQLDatabaseIcon,
+      label: 'Session in View Query Detected',
+    },
+    [InsightType.EndpointChattyApi]: {
+      icon: SQLDatabaseIcon,
+      label: 'Excessive API Calls Detected',
+    },
+    [InsightType.EndpointHighNumberOfQueries]: {
+      icon: SQLDatabaseIcon,
+      label: 'High number of queries',
     },
   };
 
@@ -128,13 +136,16 @@ export const getInsightTypeOrderPriority = (type: string): number => {
 
     [InsightType.SpanDurations]: 60,
     [InsightType.SpanUsages]: 61,
-    [InsightType.SpanScaling]: 63,
+    [InsightType.SpanScalingBadly]: 63,
     [InsightType.SpanNPlusOne]: 65,
     [InsightType.SpanDurationChange]: 66,
     [InsightType.SpanEndpointBottleneck]: 67,
     [InsightType.SpanDurationBreakdown]: 68,
 
     [InsightType.EndpointSpanNPlusOne]: 55,
+    [InsightType.EndpointSessionInView]: 56,
+    [InsightType.EndpointChattyApi]: 57,
+    [InsightType.EndpointHighNumberOfQueries]: 58,
     [InsightType.SlowestSpans]: 40,
     [InsightType.LowUsage]: 30,
     [InsightType.NormalUsage]: 50,
