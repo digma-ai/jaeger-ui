@@ -106,6 +106,14 @@ export const getInsightTypeInfo = (
       icon: SQLDatabaseIcon,
       label: 'High number of queries',
     },
+    [InsightType.SpanNexus]: {
+      icon: BottleneckIcon, // todo changes
+      label: "Code Nexus Point"
+    },
+    [InsightType.SpanQueryOptimization]: {
+      icon: SQLDatabaseIcon,
+      label: "Query Optimization Suggested"
+    }
   };
 
   return insightInfoMap[type];
@@ -141,6 +149,8 @@ export const getInsightTypeOrderPriority = (type: string): number => {
     [InsightType.SpanDurationChange]: 66,
     [InsightType.SpanEndpointBottleneck]: 67,
     [InsightType.SpanDurationBreakdown]: 68,
+    [InsightType.SpanNexus]: 69,
+    [InsightType.SpanQueryOptimization]: 70,
 
     [InsightType.EndpointSpanNPlusOne]: 55,
     [InsightType.EndpointSessionInView]: 56,
