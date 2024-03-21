@@ -60,11 +60,11 @@ export const getInsightTypeInfo = (
     },
     [InsightType.EndpointSpanNPlusOne]: {
       icon: SQLDatabaseIcon,
-      label: 'Suspected N-Plus-1',
+      label: 'Suspected N+1',
     },
     [InsightType.SpanNPlusOne]: {
       icon: SQLDatabaseIcon,
-      label: 'Suspected N-Plus-1',
+      label: 'Suspected N+1',
     },
     [InsightType.SpanEndpointBottleneck]: {
       icon: BottleneckIcon,
@@ -117,16 +117,16 @@ export const getInsightTypeInfo = (
     },
     [InsightType.SpanQueryOptimization]: {
       icon: SQLDatabaseIcon,
-      label: 'Query Optimization Suggested',
+      label: 'Inefficient Query',
     },
     // deprecated
     [InsightType.EndpointQueryOptimization]: {
       icon: SQLDatabaseIcon,
-      label: 'Query Optimization Suggested',
+      label: 'Inefficient Query',
     },
     [InsightType.EndpointQueryOptimizationV2]: {
       icon: SQLDatabaseIcon,
-      label: 'Query Optimization Suggested',
+      label: 'Inefficient Query',
     },
   };
 
