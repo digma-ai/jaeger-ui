@@ -25,9 +25,11 @@ export enum InsightType {
   EndpointBreakdown = 'EndpointBreakdown',
   EndpointSessionInView = 'EndpointSessionInView',
   EndpointChattyApi = 'EndpointChattyApi',
+  EndpointChattyApiV2 = 'EndpointChattyApiV2',
   EndpointHighNumberOfQueries = 'EndpointHighNumberOfQueries',
   SpanNexus = 'SpanNexus',
   SpanQueryOptimization = 'SpanQueryOptimization',
   EndpointQueryOptimization = 'EndpointQueryOptimization',
+  EndpointQueryOptimizationV2 = 'EndpointQueryOptimizationV2',
   EndpointSlowdownSource = 'EndpointSlowdownSource',
 }

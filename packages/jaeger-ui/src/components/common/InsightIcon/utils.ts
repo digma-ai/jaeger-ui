@@ -60,11 +60,11 @@ export const getInsightTypeInfo = (
     },
     [InsightType.EndpointSpanNPlusOne]: {
       icon: SQLDatabaseIcon,
-      label: 'Suspected N-Plus-1',
+      label: 'Suspected N+1',
     },
     [InsightType.SpanNPlusOne]: {
       icon: SQLDatabaseIcon,
-      label: 'Suspected N-Plus-1',
+      label: 'Suspected N+1',
     },
     [InsightType.SpanEndpointBottleneck]: {
       icon: BottleneckIcon,
@@ -98,7 +98,12 @@ export const getInsightTypeInfo = (
       icon: SQLDatabaseIcon,
       label: 'Session in View Query Detected',
     },
+    // deprecated
     [InsightType.EndpointChattyApi]: {
+      icon: SQLDatabaseIcon,
+      label: 'Excessive API Calls Detected',
+    },
+    [InsightType.EndpointChattyApiV2]: {
       icon: SQLDatabaseIcon,
       label: 'Excessive API Calls Detected',
     },
@@ -112,11 +117,16 @@ export const getInsightTypeInfo = (
     },
     [InsightType.SpanQueryOptimization]: {
       icon: SQLDatabaseIcon,
-      label: 'Query Optimization Suggested',
+      label: 'Inefficient Query',
     },
+    // deprecated
     [InsightType.EndpointQueryOptimization]: {
       icon: SQLDatabaseIcon,
-      label: 'Query Optimization Suggested',
+      label: 'Inefficient Query',
+    },
+    [InsightType.EndpointQueryOptimizationV2]: {
+      icon: SQLDatabaseIcon,
+      label: 'Inefficient Query',
     },
   };
 
@@ -156,9 +166,11 @@ export const getInsightTypeOrderPriority = (type: string): number => {
     [InsightType.NormalUsage]: 50,
     [InsightType.EndpointSpanNPlusOne]: 55,
     [InsightType.EndpointSessionInView]: 56,
-    [InsightType.EndpointChattyApi]: 57,
+    [InsightType.EndpointChattyApi]: 57, // deprecated
+    [InsightType.EndpointChattyApiV2]: 57,
     [InsightType.EndpointHighNumberOfQueries]: 58,
-    [InsightType.EndpointQueryOptimization]: 59,
+    [InsightType.EndpointQueryOptimization]: 59, // deprecated
+    [InsightType.EndpointQueryOptimizationV2]: 59,
 
     // Span insights
     [InsightType.SpanDurations]: 60,
