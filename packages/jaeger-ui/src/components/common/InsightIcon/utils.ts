@@ -62,7 +62,7 @@ export const getInsightTypeInfo = (
       icon: SQLDatabaseIcon,
       label: 'Suspected N+1',
     },
-    [InsightType.SpanNPlusOne]: {
+    [InsightType.SpaNPlusOne]: {
       icon: SQLDatabaseIcon,
       label: 'Suspected N+1',
     },
@@ -70,7 +70,7 @@ export const getInsightTypeInfo = (
       icon: BottleneckIcon,
       label: 'Bottleneck',
     },
-    [InsightType.SpanScalingBadly]: {
+    [InsightType.SpanScaling]: {
       icon: ScalesIcon,
       label: 'Scaling Issue Found',
     },
@@ -175,8 +175,8 @@ export const getInsightTypeOrderPriority = (type: string): number => {
     // Span insights
     [InsightType.SpanDurations]: 60,
     [InsightType.SpanUsages]: 61,
-    [InsightType.SpanScalingBadly]: 63,
-    [InsightType.SpanNPlusOne]: 65,
+    [InsightType.SpanScaling]: 63,
+    [InsightType.SpaNPlusOne]: 65,
     [InsightType.SpanEndpointBottleneck]: 67,
     [InsightType.SpanDurationBreakdown]: 68,
     [InsightType.SpanNexus]: 69,
