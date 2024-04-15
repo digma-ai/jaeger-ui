@@ -98,11 +98,6 @@ export const getInsightTypeInfo = (
       icon: SQLDatabaseIcon,
       label: 'Session in View Query Detected',
     },
-    // deprecated
-    [InsightType.EndpointChattyApi]: {
-      icon: SQLDatabaseIcon,
-      label: 'Excessive API Calls Detected',
-    },
     [InsightType.EndpointChattyApiV2]: {
       icon: SQLDatabaseIcon,
       label: 'Excessive API Calls Detected',
@@ -116,11 +111,6 @@ export const getInsightTypeInfo = (
       label: 'Code Nexus Point',
     },
     [InsightType.SpanQueryOptimization]: {
-      icon: SQLDatabaseIcon,
-      label: 'Inefficient Query',
-    },
-    // deprecated
-    [InsightType.EndpointQueryOptimization]: {
       icon: SQLDatabaseIcon,
       label: 'Inefficient Query',
     },
@@ -166,10 +156,8 @@ export const getInsightTypeOrderPriority = (type: string): number => {
     [InsightType.NormalUsage]: 50,
     [InsightType.EndpointSpanNPlusOne]: 55,
     [InsightType.EndpointSessionInView]: 56,
-    [InsightType.EndpointChattyApi]: 57, // deprecated
     [InsightType.EndpointChattyApiV2]: 57,
     [InsightType.EndpointHighNumberOfQueries]: 58,
-    [InsightType.EndpointQueryOptimization]: 59, // deprecated
     [InsightType.EndpointQueryOptimizationV2]: 59,
 
     // Span insights
