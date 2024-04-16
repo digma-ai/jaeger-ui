@@ -23,7 +23,7 @@ import { BrokenLinkCircleIcon } from './icons/BrokenLinkCircleIcon';
 import { isString } from '../../utils/ts/typeGuards/isString';
 
 const SLACK_CHANNEL_URL =
-  'https://join.slack.com/t/continuous-feedback/shared_invite/zt-1hk5rbjow-yXOIxyyYOLSXpCZ4RXstgA';
+  'https://join.slack.com/t/continuous-feedback/shared_invite/zt-2gsif7wdy-6Jf17HIJESc2tknT5gybtw';
 
 type ErrorMessageProps = {
   className?: string;
