@@ -25,7 +25,7 @@ import JaegerUIApp from './components/App';
 import { context as trackingContext } from './utils/tracking';
 
 import { cancelMessage, initializeDigmaMessageListener, sendMessage } from './api/digma';
-import { dispatcher } from './api/digma/dispatcher';
+import dispatcher from './api/digma/dispatcher';
 
 // these need to go after the App import
 /* eslint-disable import/first */

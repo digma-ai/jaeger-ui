@@ -40,6 +40,7 @@ declare interface Window {
   isUserDefinedJaegerQueryURL?: unknown;
   staticPath?: unknown;
   enableZoomControls?: unknown;
+  isLoggingEnabled?: boolean;
 }
 
 declare const __REACT_APP_GA_DEBUG__: string | undefined;

@@ -23,7 +23,7 @@ import { TUpdateViewRangeTimeFunction, IViewRangeTime, ViewRangeTimeUpdate } fro
 
 import './TimelineHeaderRow.css';
 import LoadingIndicator from '../../../common/LoadingIndicator';
-import { dispatcher } from '../../../../api/digma/dispatcher';
+import dispatcher from '../../../../api/digma/dispatcher';
 import { actions } from '../../../../api/digma/actions';
 import { state as globalState } from '../../../../api/digma/state';
 

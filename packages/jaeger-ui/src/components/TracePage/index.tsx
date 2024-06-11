@@ -60,7 +60,6 @@ import TraceSpanView from './TraceSpanView/index';
 import TraceFlamegraph from './TraceFlamegraph/index';
 import { TraceGraphConfig } from '../../types/config';
 import { actions } from '../../api/digma/actions';
-import { dispatcher } from '../../api/digma/dispatcher';
 import getSpanDataForDigma from '../../utils/getSpanDataForDigma';
 
 import './index.css';
@@ -218,7 +217,9 @@ export class TracePageImpl extends React.PureComponent<TProps, TState> {
       scrollBy,
       scrollTo,
     });
-    dispatcher.dispatch(actions.CLEAR);
+    window.sendMessageToDigma({
+      action: actions.CLEAR,
+    });
   }
 
   getSpansWithResolvedLocations(trace: Trace) {
@@ -400,7 +401,7 @@ export class TracePageImpl extends React.PureComponent<TProps, TState> {
       showArchiveButton: !isEmbedded && archiveEnabled,
       showShortcutsHelp: !isEmbedded,
       showStandaloneLink: isEmbedded,
-      showViewOptions: !isEmbedded,
+      showViewOptions: true,
       toSearch: (locationState && locationState.fromSearch) || null,
       trace: data,
       updateNextViewRangeTime: this.updateNextViewRangeTime,

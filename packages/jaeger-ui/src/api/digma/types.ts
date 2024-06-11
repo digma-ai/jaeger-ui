@@ -1,6 +1,6 @@
 import { InsightType } from '../../components/common/InsightIcon/types';
 
-export type ActionListener = (data: unknown) => void;
+export type ActionListener = (data: unknown, timeStamp: number) => void;
 
 export interface IDigmaIncomingMessageData {
   type: 'digma';
@@ -8,9 +8,9 @@ export interface IDigmaIncomingMessageData {
   payload?: unknown;
 }
 
-export interface IDigmaOutgoingMessageData {
+export interface IDigmaOutgoingMessageData<T> {
   action: string;
-  payload?: Record<string, unknown>;
+  payload?: T;
 }
 
 export type DigmaMessageEvent = MessageEvent<IDigmaIncomingMessageData>;
