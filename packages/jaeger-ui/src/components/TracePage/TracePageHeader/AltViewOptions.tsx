@@ -14,7 +14,6 @@
 
 import * as React from 'react';
 import { Dropdown, Icon, Menu, Button } from 'antd';
-import { Link } from 'react-router-dom';
 import './AltViewOptions.css';
 
 import {
@@ -25,7 +24,6 @@ import {
   trackJsonView,
   trackRawJsonView,
 } from './TracePageHeader.track';
-import prefixUrl from '../../../utils/prefix-url';
 import { ETraceViewType } from '../types';
 
 type Props = {
@@ -83,24 +81,24 @@ export default function AltViewOptions(props: Props) {
         </Menu.Item>
       ))}
       <Menu.Item>
-        <Link
-          to={prefixUrl(`/api/traces/${traceID}?prettyPrint=true`)}
+        <a
+          href={`${window.apiBaseUrl}/api/traces/${traceID}?prettyPrint=true`}
           rel="noopener noreferrer"
           target="_blank"
           onClick={trackJsonView}
         >
           Trace JSON
-        </Link>
+        </a>
       </Menu.Item>
       <Menu.Item>
-        <Link
-          to={prefixUrl(`/api/traces/${traceID}?raw=true&prettyPrint=true`)}
+        <a
+          href={`${window.apiBaseUrl}/api/traces/${traceID}?raw=true&prettyPrint=true`}
           rel="noopener noreferrer"
           target="_blank"
           onClick={trackRawJsonView}
         >
           Trace JSON (unadjusted)
-        </Link>
+        </a>
       </Menu.Item>
     </Menu>
   );

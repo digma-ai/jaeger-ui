@@ -25,7 +25,7 @@ import { formatDuration } from '../utils';
 import CopyIcon from '../../../common/CopyIcon';
 import LabeledList from '../../../common/LabeledList';
 import { actions } from '../../../../api/digma/actions';
-import { dispatcher } from '../../../../api/digma/dispatcher';
+import dispatcher from '../../../../api/digma/dispatcher';
 import { state as globalState } from '../../../../api/digma/state';
 import { ISpanInsight, SetSpansDataPayload } from '../../../../api/digma/types';
 import { getInsightTypeInfo, getInsightTypeOrderPriority } from '../../../common/InsightIcon/utils';
@@ -77,7 +77,9 @@ export default class SpanDetail extends React.Component<SpanDetailProps, SpanDet
 
   componentWillUnmount() {
     dispatcher.removeActionListener(actions.SET_SPANS_DATA, this._updateSpanInfo);
-    dispatcher.dispatch(actions.CLEAR);
+    window.sendMessageToDigma({
+      type: actions.CLEAR,
+    });
   }
 
   _sortInsightsByImportance(insights: ISpanInsight[]): ISpanInsight[] {

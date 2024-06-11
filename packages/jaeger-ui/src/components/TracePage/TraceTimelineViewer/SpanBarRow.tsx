@@ -24,7 +24,7 @@ import { formatDuration, ViewedBoundsFunctionType } from './utils';
 import SpanTreeOffset from './SpanTreeOffset';
 import SpanBar from './SpanBar';
 import Ticks from './Ticks';
-import { dispatcher } from '../../../api/digma/dispatcher';
+import dispatcher from '../../../api/digma/dispatcher';
 import { actions } from '../../../api/digma/actions';
 import { state as globalState } from '../../../api/digma/state';
 import { ISpanInsight, SetSpansDataPayload } from '../../../api/digma/types';
