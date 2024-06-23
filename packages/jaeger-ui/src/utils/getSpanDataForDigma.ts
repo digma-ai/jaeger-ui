@@ -1,6 +1,6 @@
 import { Span } from '../types/trace';
 
-interface IDigmaSpanData {
+export interface IDigmaSpanData {
   id: string;
   name: string;
   serviceName: string;
@@ -22,7 +22,7 @@ const getSpanDataForDigma = (span: Span): IDigmaSpanData => {
   };
 
   const processTagsToGet = {
-    environment: 'digma.environment',
+    environment: 'digma.environment.id',
   };
 
   const tagsValues = Object.entries(tagsToGet).reduce((acc, [key, value]) => {

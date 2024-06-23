@@ -40,6 +40,7 @@ import './TracePageHeader.css';
 import ExternalLinks from '../../common/ExternalLinks';
 import ZoomControls from './ZoomControls';
 import { globalActions } from '../../../api/digma/actions';
+import { OpenURLInDefaultBrowserPayload } from '../../../api/digma/types';
 
 type TracePageHeaderEmbedProps = {
   canCollapse: boolean;
@@ -159,7 +160,7 @@ export function TracePageHeaderFn(props: TracePageHeaderEmbedProps & { forwarded
 
   const handleStandaloneLinkClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
-    window.sendMessageToDigma({
+    window.sendMessageToDigma<OpenURLInDefaultBrowserPayload>({
       action: globalActions.OPEN_URL_IN_DEFAULT_BROWSER,
       payload: {
         url: `${window.apiBaseUrl}${window.location.pathname}${window.location.search}`,

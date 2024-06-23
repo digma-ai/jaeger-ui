@@ -61,6 +61,7 @@ import TraceFlamegraph from './TraceFlamegraph/index';
 import { TraceGraphConfig } from '../../types/config';
 import { actions } from '../../api/digma/actions';
 import getSpanDataForDigma from '../../utils/getSpanDataForDigma';
+import { GetSpansDataPayload } from '../../api/digma/types';
 
 import './index.css';
 
@@ -224,7 +225,7 @@ export class TracePageImpl extends React.PureComponent<TProps, TState> {
 
   getSpansWithResolvedLocations(trace: Trace) {
     // Get all the trace spans and send it Digma IDE plugin
-    window.sendMessageToDigma({
+    window.sendMessageToDigma<GetSpansDataPayload>({
       action: actions.GET_SPANS_DATA,
       payload: {
         spans: trace.spans.map(getSpanDataForDigma).filter(span => span.instrumentationLibrary),
