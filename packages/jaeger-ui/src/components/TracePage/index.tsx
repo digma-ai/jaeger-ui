@@ -228,7 +228,7 @@ export class TracePageImpl extends React.PureComponent<TProps, TState> {
     window.sendMessageToDigma<GetSpansDataPayload>({
       action: actions.GET_SPANS_DATA,
       payload: {
-        spans: trace.spans.map(getSpanDataForDigma).filter(span => span.instrumentationLibrary),
+        spans: trace.spans.map(x => getSpanDataForDigma(x)).filter(span => span.instrumentationLibrary),
       },
     });
   }

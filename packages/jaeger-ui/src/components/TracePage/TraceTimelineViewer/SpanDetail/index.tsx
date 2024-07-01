@@ -82,9 +82,6 @@ export default class SpanDetail extends React.Component<SpanDetailProps, SpanDet
 
   componentWillUnmount() {
     dispatcher.removeActionListener(actions.SET_SPANS_DATA, this._updateSpanInfo);
-    window.sendMessageToDigma({
-      action: actions.CLEAR,
-    });
   }
 
   _sortInsightsByImportance(insights: ISpanInsight[]): ISpanInsight[] {
@@ -113,7 +110,7 @@ export default class SpanDetail extends React.Component<SpanDetailProps, SpanDet
   }
 
   _handleSpanNameLinkClick() {
-    const spanInfo = getSpanDataForDigma(this.props.span);
+    const spanInfo = getSpanDataForDigma(this.props.span, true);
 
     if (!spanInfo.spanCodeObjectId) {
       return;
@@ -125,7 +122,7 @@ export default class SpanDetail extends React.Component<SpanDetailProps, SpanDet
         span: {
           spanCodeObjectId: spanInfo.spanCodeObjectId,
         },
-        environmentId: spanInfo.environment,
+        environmentId: spanInfo.environmentId,
         context: {
           event: 'JAEGER/SPAN_LINK_CLICKED',
         },
