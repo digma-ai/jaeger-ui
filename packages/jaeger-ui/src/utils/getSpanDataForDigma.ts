@@ -1,6 +1,6 @@
 import { Span } from '../types/trace';
 
-interface IDigmaSpanData {
+export interface IDigmaSpanData {
   id: string;
   name: string;
   serviceName: string;
@@ -10,9 +10,10 @@ interface IDigmaSpanData {
   spanCodeObjectId?: string;
   methodCodeObjectId?: string;
   environment?: string;
+  environmentId?: string;
 }
 
-const getSpanDataForDigma = (span: Span): IDigmaSpanData => {
+const getSpanDataForDigma = (span: Span, withEnvironmentId: boolean | undefined = false): IDigmaSpanData => {
   const tagsToGet = {
     instrumentationLibrary: 'otel.library.name',
     function: 'code.function',
@@ -23,6 +24,7 @@ const getSpanDataForDigma = (span: Span): IDigmaSpanData => {
 
   const processTagsToGet = {
     environment: 'digma.environment',
+    ...(withEnvironmentId ? { environmentId: 'digma.environment.id' } : {}),
   };
 
   const tagsValues = Object.entries(tagsToGet).reduce((acc, [key, value]) => {

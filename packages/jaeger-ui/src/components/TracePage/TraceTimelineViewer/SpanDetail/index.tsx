@@ -24,10 +24,15 @@ import DetailState from './DetailState';
 import { formatDuration } from '../utils';
 import CopyIcon from '../../../common/CopyIcon';
 import LabeledList from '../../../common/LabeledList';
-import { actions } from '../../../../api/digma/actions';
+import { actions, globalActions } from '../../../../api/digma/actions';
 import dispatcher from '../../../../api/digma/dispatcher';
 import { state as globalState } from '../../../../api/digma/state';
-import { ISpanInsight, SetSpansDataPayload } from '../../../../api/digma/types';
+import {
+  ChangeScopePayload,
+  GoToSpanPayload,
+  ISpanInsight,
+  SetSpansDataPayload,
+} from '../../../../api/digma/types';
 import { getInsightTypeInfo, getInsightTypeOrderPriority } from '../../../common/InsightIcon/utils';
 import { InsightIcon } from '../../../common/InsightIcon';
 import Button from '../../../common/Button';
@@ -77,9 +82,6 @@ export default class SpanDetail extends React.Component<SpanDetailProps, SpanDet
 
   componentWillUnmount() {
     dispatcher.removeActionListener(actions.SET_SPANS_DATA, this._updateSpanInfo);
-    window.sendMessageToDigma({
-      type: actions.CLEAR,
-    });
   }
 
   _sortInsightsByImportance(insights: ISpanInsight[]): ISpanInsight[] {
@@ -101,18 +103,30 @@ export default class SpanDetail extends React.Component<SpanDetailProps, SpanDet
   _handleCodeButtonClick() {
     const spanInfo = getSpanDataForDigma(this.props.span);
 
-    window.sendMessageToDigma({
+    window.sendMessageToDigma<GoToSpanPayload>({
       action: actions.GO_TO_SPAN,
       payload: spanInfo,
     });
   }
 
   _handleSpanNameLinkClick() {
-    const spanInfo = getSpanDataForDigma(this.props.span);
+    const spanInfo = getSpanDataForDigma(this.props.span, true);
 
-    window.sendMessageToDigma({
-      action: actions.GO_TO_INSIGHTS,
-      payload: spanInfo,
+    if (!spanInfo.spanCodeObjectId) {
+      return;
+    }
+
+    window.sendMessageToDigma<ChangeScopePayload>({
+      action: globalActions.CHANGE_SCOPE,
+      payload: {
+        span: {
+          spanCodeObjectId: spanInfo.spanCodeObjectId,
+        },
+        environmentId: spanInfo.environmentId,
+        context: {
+          event: 'JAEGER/SPAN_LINK_CLICKED',
+        },
+      },
     });
   }
 
