@@ -37,7 +37,7 @@ export const initializeDigmaMessageListener = (dispatcher: ActionDispatcher) => 
 
 export const sendMessage = <T>(message: IDigmaOutgoingMessageData<T>): string | undefined => {
   logger.debug(
-    `Message to sent: ${message.action}
+    `Message to send: ${message.action}
 Raw message: %O`,
     message
   );

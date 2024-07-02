@@ -31,7 +31,9 @@ declare interface Window {
     onFailure: (error_code, error_message) => void;
   }) => string;
   cefQueryCancel?: (request_id: string) => void;
-  sendMessageToDigma: (message) => string | undefined;
+  sendMessageToDigma: <T>(
+    message: { action: string; payload?: T } /* IDigmaOutgoingMessageData */
+  ) => string | undefined;
   cancelMessageToDigma: (request_id: string) => void;
   platform?: unknown;
   apiBaseUrl?: unknown;
@@ -40,7 +42,7 @@ declare interface Window {
   isUserDefinedJaegerQueryURL?: unknown;
   staticPath?: unknown;
   enableZoomControls?: unknown;
-  isLoggingEnabled?: boolean;
+  isLoggingEnabled?: unknown;
 }
 
 declare const __REACT_APP_GA_DEBUG__: string | undefined;

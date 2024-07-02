@@ -1,11 +1,17 @@
 import { InsightType } from '../../components/common/InsightIcon/types';
+import { IDigmaSpanData } from '../../utils/getSpanDataForDigma';
 
-export type ActionListener = (data: unknown, timeStamp: number) => void;
+export type ActionListener = (data: unknown, timeStamp: number, error: DigmaMessageError | undefined) => void;
+
+export type DigmaMessageError = {
+  message: string;
+};
 
 export interface IDigmaIncomingMessageData {
   type: 'digma';
   action: string;
   payload?: unknown;
+  error?: DigmaMessageError;
 }
 
 export interface IDigmaOutgoingMessageData<T> {
@@ -25,4 +31,27 @@ interface ISpanInfo {
   insights: ISpanInsight[];
 }
 
+export type GoToSpanPayload = IDigmaSpanData;
+
+export type GoToInsightsPayload = IDigmaSpanData;
+
+export type GetSpansDataPayload = { spans: IDigmaSpanData[] };
+
 export type SetSpansDataPayload = Record<string, ISpanInfo>;
+
+export type ChangeScopePayload = {
+  span: {
+    spanCodeObjectId: string;
+  } | null;
+  forceNavigation?: boolean;
+  environmentId?: string;
+  context?: {
+    event: string;
+    payload?: Record<string, unknown>;
+  };
+};
+
+export type OpenURLInDefaultBrowserPayload = {
+  url: string;
+  title?: string;
+};
