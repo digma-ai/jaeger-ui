@@ -159,11 +159,12 @@ export function TracePageHeaderFn(props: TracePageHeaderEmbedProps & { forwarded
   );
 
   const handleStandaloneLinkClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    const baseUrl = window.baseUrl ?? window.apiBaseUrl;
     e.preventDefault();
     window.sendMessageToDigma<OpenURLInDefaultBrowserPayload>({
       action: globalActions.OPEN_URL_IN_DEFAULT_BROWSER,
       payload: {
-        url: `${window.apiBaseUrl}${window.location.pathname}${window.location.search}`,
+        url: `${baseUrl}${window.location.pathname}${window.location.search}`,
       },
     });
   };

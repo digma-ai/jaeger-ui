@@ -36,6 +36,7 @@ declare interface Window {
   ) => string | undefined;
   cancelMessageToDigma: (request_id: string) => void;
   platform?: unknown;
+  baseUrl?: unknown
   apiBaseUrl?: unknown;
   initialRoutePath?: unknown;
   embeddedMode?: unknown;

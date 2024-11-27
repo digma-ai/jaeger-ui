@@ -164,6 +164,7 @@ export default function ErrorMessage({
   }
 
   if (error.message.includes('Failed to fetch') || error.httpStatus === 502) {
+    const baseUrl = window.baseUrl ?? window.apiBaseUrl;
     const isUserDefinedJaegerQueryURL = window.isUserDefinedJaegerQueryURL === true;
     return (
       <DigmaErrorMessage
@@ -173,16 +174,16 @@ export default function ErrorMessage({
           isUserDefinedJaegerQueryURL ? (
             <>
               The Jaeger link
-              {isString(window.apiBaseUrl) && (
+              {isString(baseUrl) && (
                 <>
                   {' '}
                   <a
                     className="CustomErrorMessage--link"
-                    href={window.apiBaseUrl}
+                    href={baseUrl}
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    {window.apiBaseUrl}
+                    {baseUrl}
                   </a>
                 </>
               )}{' '}
