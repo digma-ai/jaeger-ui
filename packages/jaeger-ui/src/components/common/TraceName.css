@@ -17,3 +17,10 @@ limitations under the License.
 .TraceName.is-error {
   color: #c00;
 }
+
+.TraceName .TraceName--name {
+  display: block;
+  padding-bottom: 0.2em;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}

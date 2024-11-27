@@ -71,41 +71,39 @@ export default function AltViewOptions(props: Props) {
     onTraceViewChange(item);
   };
 
-  const menu = () => {
-    const baseUrl = window.baseUrl ?? window.apiBaseUrl;
+  const baseUrl = window.baseUrl ?? window.apiBaseUrl;
 
-    return (
-      <Menu>
-        {MENU_ITEMS.filter(item => item.viewType !== viewType).map(item => (
-          <Menu.Item key={item.viewType}>
-            <a onClick={() => handleSelectView(item.viewType)} role="button">
-              {item.label}
-            </a>
-          </Menu.Item>
-        ))}
-        <Menu.Item>
-          <a
-            href={`${baseUrl}/api/traces/${traceID}?prettyPrint=true`}
-            rel="noopener noreferrer"
-            target="_blank"
-            onClick={trackJsonView}
-          >
-            Trace JSON
+  const menu = (
+    <Menu>
+      {MENU_ITEMS.filter(item => item.viewType !== viewType).map(item => (
+        <Menu.Item key={item.viewType}>
+          <a onClick={() => handleSelectView(item.viewType)} role="button">
+            {item.label}
           </a>
         </Menu.Item>
-        <Menu.Item>
-          <a
-            href={`${baseUrl}/api/traces/${traceID}?raw=true&prettyPrint=true`}
-            rel="noopener noreferrer"
-            target="_blank"
-            onClick={trackRawJsonView}
-          >
-            Trace JSON (unadjusted)
-          </a>
-        </Menu.Item>
-      </Menu>
-    );
-  };
+      ))}
+      <Menu.Item>
+        <a
+          href={`${baseUrl}/api/traces/${traceID}?prettyPrint=true`}
+          rel="noopener noreferrer"
+          target="_blank"
+          onClick={trackJsonView}
+        >
+          Trace JSON
+        </a>
+      </Menu.Item>
+      <Menu.Item>
+        <a
+          href={`${baseUrl}/api/traces/${traceID}?raw=true&prettyPrint=true`}
+          rel="noopener noreferrer"
+          target="_blank"
+          onClick={trackRawJsonView}
+        >
+          Trace JSON (unadjusted)
+        </a>
+      </Menu.Item>
+    </Menu>
+  );
 
   const currentItem = MENU_ITEMS.find(item => item.viewType === viewType);
   const dropdownText = currentItem ? currentItem.label : 'Alternate Views';
