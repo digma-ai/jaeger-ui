@@ -468,7 +468,7 @@ describe('<TracePage>', () => {
           expect.objectContaining({
             showShortcutsHelp: false,
             showStandaloneLink: true,
-            showViewOptions: false,
+            showViewOptions: true,
           })
         );
       });

@@ -34,59 +34,70 @@ exports[`JaegerUIApp does not explode 1`] = `
       }
     }
   >
-    <withRouter(Connect(PageImpl))>
-      <Switch>
-        <Route
-          component={[Function]}
-          path="/search"
-        />
-        <Route
-          component={[Function]}
-          path="/trace/:a?\\\\.\\\\.\\\\.:b?"
-        />
-        <Route
-          component={[Function]}
-          path="/trace/:id"
-        />
-        <Route
-          component={[Function]}
-          path="/dependencies"
-        />
-        <Route
-          component={[Function]}
-          path="/deep-dependencies"
-        />
-        <Route
-          component={[Function]}
-          path="/quality-metrics"
-        />
-        <Route
-          component={[Function]}
-          path="/monitor"
-        />
-        <Redirect
-          exact={true}
-          path="/"
-          push={false}
-          to="/search"
-        />
-        <Redirect
-          exact={true}
-          path=""
-          push={false}
-          to="/search"
-        />
-        <Redirect
-          exact={true}
-          path="/"
-          push={false}
-          to="/search"
-        />
-        <Route
-          component={[Function]}
-        />
-      </Switch>
-    </withRouter(Connect(PageImpl))>
+    <ContextProvider
+      value={
+        ZoomManager {
+          "updateStyles": [Function],
+          "zoomIn": [Function],
+          "zoomLevel": 1,
+          "zoomOut": [Function],
+        }
+      }
+    >
+      <withRouter(Connect(PageImpl))>
+        <Switch>
+          <Route
+            component={[Function]}
+            path="/search"
+          />
+          <Route
+            component={[Function]}
+            path="/trace/:a?\\\\.\\\\.\\\\.:b?"
+          />
+          <Route
+            component={[Function]}
+            path="/trace/:id"
+          />
+          <Route
+            component={[Function]}
+            path="/dependencies"
+          />
+          <Route
+            component={[Function]}
+            path="/deep-dependencies"
+          />
+          <Route
+            component={[Function]}
+            path="/quality-metrics"
+          />
+          <Route
+            component={[Function]}
+            path="/monitor"
+          />
+          <Redirect
+            exact={true}
+            path="/"
+            push={false}
+            to="/search"
+          />
+          <Redirect
+            exact={true}
+            path=""
+            push={false}
+            to="/search"
+          />
+          <Redirect
+            exact={true}
+            path="/"
+            push={false}
+            to="/search"
+          />
+          <Route
+            component={[Function]}
+          />
+        </Switch>
+      </withRouter(Connect(PageImpl))>
+    </ContextProvider>
   </ConnectedRouter>
 </Provider>
 `;
