@@ -11,24 +11,24 @@ permissions:
 jobs:
   lint-test:
     name: Lint & test
-    uses: ./.github/workflows/lint-test.yml
+    uses: ./.github/workflows/digma-lint-test.yml
 
   build:
     name: Build
     needs: lint-test
-    uses: ./.github/workflows/build.yml
+    uses: ./.github/workflows/digma-build.yml
 
   attach-dist-asset:
     name: Attach release asset
     needs: build
-    uses: ./.github/workflows/release-asset.yml
+    uses: ./.github/workflows/digma-release-asset.yml
     with:
       artifact-name: ${{ needs.build.outputs.dist-filename }}
 
   build-push-docker-image:
     name: Build & push Docker image
     needs: build
-    uses: ./.github/workflows/docker-image.yml
+    uses: ./.github/workflows/digma-docker-image.yml
     secrets: inherit
     with:
       dist-artifact-name: ${{ needs.build.outputs.dist-filename }}
