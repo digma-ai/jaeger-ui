@@ -24,6 +24,7 @@ on:
       - '*.md'
       - 'DCO'
       - 'LICENSE'
+  workflow_dispatch:
 
 jobs:
   lint-test:
