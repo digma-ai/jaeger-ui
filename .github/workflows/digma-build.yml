@@ -22,16 +22,16 @@ jobs:
           node-version-file: '.nvmrc'
           cache: 'npm'
 
-      - id: node-modules-cache
-        uses: actions/cache@v4
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-node-${{ steps.setup-node.outputs.node-version }}-node_modules-${{ hashFiles('yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-node-${{ steps.setup-node.outputs.node-version }}-node_modules-
+      # - id: node-modules-cache
+      #   uses: actions/cache@v4
+      #   with:
+      #     path: node_modules
+      #     key: ${{ runner.os }}-node-${{ steps.setup-node.outputs.node-version }}-node_modules-${{ hashFiles('yarn.lock') }}
+      #     restore-keys: |
+      #       ${{ runner.os }}-node-${{ steps.setup-node.outputs.node-version }}-node_modules-
 
-      - if: steps.node-modules-cache.outputs.cache-hit != 'true'
-        run: yarn install --frozen-lockfile
+      # - if: steps.node-modules-cache.outputs.cache-hit != 'true'
+      - run: yarn install --frozen-lockfile
 
       - run: yarn build
 
