@@ -1,8 +1,8 @@
-import { isString } from '../../utils/ts/typeGuards/isString';
+import isString from '../../utils/ts/typeGuards/isString';
 
 type PrefixedMap<T> = Record<keyof T, string>;
 
-export const addActionPrefix = <T extends Record<string, string>>(
+const addActionPrefix = <T extends Record<string, string>>(
   prefix: string,
   actions: T,
   separator?: string
@@ -17,3 +17,5 @@ export const addActionPrefix = <T extends Record<string, string>>(
 
   return res;
 };
+
+export default addActionPrefix;

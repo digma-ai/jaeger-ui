@@ -34,4 +34,6 @@ const SlackLogoIconComponent = (props: IIconProps) => {
   );
 };
 
-export const SlackLogoIcon = React.memo(SlackLogoIconComponent);
+const SlackLogoIcon = React.memo(SlackLogoIconComponent);
+
+export default SlackLogoIcon;

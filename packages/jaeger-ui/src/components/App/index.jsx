@@ -38,9 +38,9 @@ import JaegerAPI, { DEFAULT_API_ROOT } from '../../api/jaeger';
 import configureStore from '../../utils/configure-store';
 import processScripts from '../../utils/config/process-scripts';
 import prefixUrl from '../../utils/prefix-url';
-import { isString } from '../../utils/ts/typeGuards/isString';
+import isString from '../../utils/ts/typeGuards/isString';
 import ZoomManager from '../../utils/ZoomManager';
-import { ZoomContext } from '../../Contexts';
+import ZoomContext from '../../ZoomContext';
 
 import '../common/vars.css';
 import '../common/utils.css';

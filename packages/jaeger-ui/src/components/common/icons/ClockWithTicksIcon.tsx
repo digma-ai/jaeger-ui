@@ -15,4 +15,6 @@ const ClockWithTicksIconComponent = (props: IIconProps) => {
   );
 };
 
-export const ClockWithTicksIcon = React.memo(ClockWithTicksIconComponent);
+const ClockWithTicksIcon = React.memo(ClockWithTicksIconComponent);
+
+export default ClockWithTicksIcon;

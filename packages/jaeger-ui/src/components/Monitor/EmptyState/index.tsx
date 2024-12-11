@@ -17,7 +17,7 @@ import { Row, Col, Button, Alert } from 'antd';
 import './index.css';
 import { MonitorEmptyStateConfig } from '../../../types/config';
 import { getConfigValue } from '../../../utils/config/get-config';
-import { getStaticAssetPath } from '../../../utils/getStaticAssetPath';
+import getStaticAssetPath from '../../../utils/getStaticAssetPath';
 import monitorImg from './media/monitor.png';
 
 const monitorImgUrl = getStaticAssetPath(monitorImg);

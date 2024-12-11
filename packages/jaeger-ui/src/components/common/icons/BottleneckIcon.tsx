@@ -16,4 +16,6 @@ const BottleneckIconComponent = (props: IIconProps) => {
   );
 };
 
-export const BottleneckIcon = React.memo(BottleneckIconComponent);
+const BottleneckIcon = React.memo(BottleneckIconComponent);
+
+export default BottleneckIcon;

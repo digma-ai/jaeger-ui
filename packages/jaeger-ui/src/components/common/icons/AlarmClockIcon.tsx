@@ -17,4 +17,6 @@ const AlarmClockIconComponent = (props: IIconProps) => {
   );
 };
 
-export const AlarmClockIcon = React.memo(AlarmClockIconComponent);
+const AlarmClockIcon = React.memo(AlarmClockIconComponent);
+
+export default AlarmClockIcon;

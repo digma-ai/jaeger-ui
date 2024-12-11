@@ -1,4 +1,4 @@
-import { addActionPrefix } from './addActionPrefix';
+import addActionPrefix from './addActionPrefix';
 
 export const actions = {
   GO_TO_SPAN: 'GO_TO_SPAN',

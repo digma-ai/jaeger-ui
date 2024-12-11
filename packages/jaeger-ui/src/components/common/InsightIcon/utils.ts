@@ -1,19 +1,19 @@
 import * as React from 'react';
-import { AlarmClockIcon } from '../icons/AlarmClockIcon';
-import { BottleneckIcon } from '../icons/BottleneckIcon';
-import { MeterHighIcon } from '../icons/MeterHighIcon';
-import { MeterLowIcon } from '../icons/MeterLowIcon';
-import { MeterMediumIcon } from '../icons/MeterMediumIcon';
-import { SQLDatabaseIcon } from '../icons/SQLDatabaseIcon';
-import { ScalesIcon } from '../icons/ScalesIcon';
-import { SineIcon } from '../icons/SineIcon';
-import { SnailIcon } from '../icons/SnailIcon';
-import { SpotIcon } from '../icons/SpotIcon';
-import { WarningCircleIcon } from '../icons/WarningCircleIcon';
+import AlarmClockIcon from '../icons/AlarmClockIcon';
+import BottleneckIcon from '../icons/BottleneckIcon';
+import MeterHighIcon from '../icons/MeterHighIcon';
+import MeterLowIcon from '../icons/MeterLowIcon';
+import MeterMediumIcon from '../icons/MeterMediumIcon';
+import SQLDatabaseIcon from '../icons/SQLDatabaseIcon';
+import ScalesIcon from '../icons/ScalesIcon';
+import SineIcon from '../icons/SineIcon';
+import SnailIcon from '../icons/SnailIcon';
+import SpotIcon from '../icons/SpotIcon';
+import WarningCircleIcon from '../icons/WarningCircleIcon';
 import { IIconProps } from '../icons/types';
 import { InsightType } from './types';
-import { ClockWithTicksIcon } from '../icons/ClockWithTicksIcon';
-import { PieChartIcon } from '../icons/PieChartIcon';
+import ClockWithTicksIcon from '../icons/ClockWithTicksIcon';
+import PieChartIcon from '../icons/PieChartIcon';
 
 export const getInsightTypeInfo = (
   type: InsightType

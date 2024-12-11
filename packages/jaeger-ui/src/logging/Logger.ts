@@ -1,5 +1,5 @@
 import moment from 'moment';
-import { LOG_LEVEL } from './types';
+import LOG_LEVEL from './types';
 
 class Logger {
   private minLogLevel: number;

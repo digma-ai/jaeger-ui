@@ -17,4 +17,6 @@ const SQLDatabaseIconComponent = (props: IIconProps) => {
   );
 };
 
-export const SQLDatabaseIcon = React.memo(SQLDatabaseIconComponent);
+const SQLDatabaseIcon = React.memo(SQLDatabaseIconComponent);
+
+export default SQLDatabaseIcon;

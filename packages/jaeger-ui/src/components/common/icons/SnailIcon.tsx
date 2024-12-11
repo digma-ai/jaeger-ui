@@ -21,4 +21,6 @@ const SnailIconComponent = (props: IIconProps) => {
   );
 };
 
-export const SnailIcon = React.memo(SnailIconComponent);
+const SnailIcon = React.memo(SnailIconComponent);
+
+export default SnailIcon;

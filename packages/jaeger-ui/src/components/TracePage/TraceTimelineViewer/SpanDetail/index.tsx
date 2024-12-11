@@ -34,9 +34,9 @@ import {
   SetSpansDataPayload,
 } from '../../../../api/digma/types';
 import { getInsightTypeInfo, getInsightTypeOrderPriority } from '../../../common/InsightIcon/utils';
-import { InsightIcon } from '../../../common/InsightIcon';
+import InsightIcon from '../../../common/InsightIcon';
 import Button from '../../../common/Button';
-import { CrosshairIcon } from '../../../common/icons/CrosshairIcon';
+import CrosshairIcon from '../../../common/icons/CrosshairIcon';
 import getSpanDataForDigma from '../../../../utils/getSpanDataForDigma';
 
 import { TNil } from '../../../../types';

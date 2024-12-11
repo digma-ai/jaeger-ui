@@ -25,4 +25,6 @@ const MeterLowIconComponent = (props: IIconProps) => {
   );
 };
 
-export const MeterLowIcon = React.memo(MeterLowIconComponent);
+const MeterLowIcon = React.memo(MeterLowIconComponent);
+
+export default MeterLowIcon;
