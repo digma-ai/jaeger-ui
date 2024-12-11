@@ -43,11 +43,8 @@ jobs:
       - name: Get Jaeger version
         run: echo "JAEGER_VERSION=$(jq -r '.version' jaeger.json)" >> $GITHUB_ENV
 
-      - name: Get distributive filename
-        id: get-dist-filename
-        run: echo "dist-filename=$(cat ${{ needs.build.outputs.dist-filename }})" >> $GITHUB_ENV
-
-      - run: |
+      - name: Create PR in digma-ui
+        run: |
           curl -X POST -H "Accept: application/vnd.github.v3+json" \
           -H "Authorization: token ${{ secrets.RELEASE_PAT }}" \
           https://api.github.com/repos/digma-ai/digma-ui/dispatches \
