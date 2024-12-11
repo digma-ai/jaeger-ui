@@ -32,7 +32,7 @@ jobs:
           git fetch --tags
           LATEST_TAG=$(git describe --tags `git rev-list --tags --max-count=1`)
           echo "LATEST_TAG=$LATEST_TAG" >> $GITHUB_ENV
-          FILENAME="dist-$LATEST_TAG.zip"
+          FILENAME="dist-$LATEST_TAG"
           echo "DIST_FILENAME=$FILENAME" >> $GITHUB_ENV
           echo "dist_filename=$FILENAME" >> $GITHUB_OUTPUT
           echo "version=${LATEST_TAG#v}" >> $GITHUB_OUTPUT
