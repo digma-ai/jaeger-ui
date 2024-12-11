@@ -1,0 +1,55 @@
+name: Build
+
+on:
+  workflow_call:
+    outputs:
+      dist-filename:
+        value: ${{ jobs.build.outputs.dist-filename }}
+      version:
+        value: ${{ jobs.build.outputs.version }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    outputs:
+      dist-filename: ${{ steps.get-dist-filename.outputs.dist_filename }}
+      version: ${{ steps.get-dist-filename.outputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        id: setup-node
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+
+      - id: node-modules-cache
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-${{ steps.setup-node.outputs.node-version }}-node_modules-${{ hashFiles('yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-node-${{ steps.setup-node.outputs.node-version }}-node_modules-
+
+      - if: steps.node-modules-cache.outputs.cache-hit != 'true'
+        run: yarn install --frozen-lockfile
+
+      - run: yarn build
+
+      - name: Get distributive filename and version
+        id: get-dist-filename
+        run: |
+          git fetch --tags
+          LATEST_TAG=$(git describe --tags `git rev-list --tags --max-count=1`)
+          echo "LATEST_TAG=$LATEST_TAG" >> $GITHUB_ENV
+          FILENAME="dist-$LATEST_TAG.zip"
+          echo "DIST_FILENAME=$FILENAME" >> $GITHUB_ENV
+          echo "dist_filename=$FILENAME" >> $GITHUB_OUTPUT
+          echo "version=${LATEST_TAG#v}" >> $GITHUB_OUTPUT
+
+      - run: zip -r ${{ env.DIST_FILENAME }} packages/jaeger-ui/build/
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.DIST_FILENAME }}
+          path: ${{ env.DIST_FILENAME }}

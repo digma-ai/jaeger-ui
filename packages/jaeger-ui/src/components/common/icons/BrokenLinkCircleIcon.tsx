@@ -16,4 +16,6 @@ const BrokenLinkCircleIconComponent = (props: IIconProps) => {
   );
 };
 
-export const BrokenLinkCircleIcon = React.memo(BrokenLinkCircleIconComponent);
+const BrokenLinkCircleIcon = React.memo(BrokenLinkCircleIconComponent);
+
+export default BrokenLinkCircleIcon;

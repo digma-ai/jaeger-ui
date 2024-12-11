@@ -17,4 +17,6 @@ const SpotIconComponent = (props: IIconProps) => {
   );
 };
 
-export const SpotIcon = React.memo(SpotIconComponent);
+const SpotIcon = React.memo(SpotIconComponent);
+
+export default SpotIcon;

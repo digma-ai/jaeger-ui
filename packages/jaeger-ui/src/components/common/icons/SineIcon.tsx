@@ -12,4 +12,6 @@ const SineIconComponent = (props: IIconProps) => {
   );
 };
 
-export const SineIcon = React.memo(SineIconComponent);
+const SineIcon = React.memo(SineIconComponent);
+
+export default SineIcon;

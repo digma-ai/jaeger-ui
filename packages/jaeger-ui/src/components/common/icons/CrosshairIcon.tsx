@@ -17,4 +17,6 @@ const CrosshairIconComponent = (props: IIconProps) => {
   );
 };
 
-export const CrosshairIcon = React.memo(CrosshairIconComponent);
+const CrosshairIcon = React.memo(CrosshairIconComponent);
+
+export default CrosshairIcon;

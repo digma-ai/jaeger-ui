@@ -15,7 +15,7 @@
 import * as React from 'react';
 import { Dropdown, Icon, Menu, Button } from 'antd';
 import './AltViewOptions.css';
-
+import { Link } from 'react-router-dom';
 import {
   trackGanttView,
   trackGraphView,
@@ -24,6 +24,7 @@ import {
   trackJsonView,
   trackRawJsonView,
 } from './TracePageHeader.track';
+import prefixUrl from '../../../utils/prefix-url';
 import { ETraceViewType } from '../types';
 
 type Props = {
@@ -71,41 +72,39 @@ export default function AltViewOptions(props: Props) {
     onTraceViewChange(item);
   };
 
-  const menu = () => {
-    const baseUrl = window.baseUrl ?? window.apiBaseUrl;
+  const getMenuLinkUrl = (url: string) => window.baseUrl ?? window.apiBaseUrl ?? prefixUrl(url);
 
-    return (
-      <Menu>
-        {MENU_ITEMS.filter(item => item.viewType !== viewType).map(item => (
-          <Menu.Item key={item.viewType}>
-            <a onClick={() => handleSelectView(item.viewType)} role="button">
-              {item.label}
-            </a>
-          </Menu.Item>
-        ))}
-        <Menu.Item>
-          <a
-            href={`${baseUrl}/api/traces/${traceID}?prettyPrint=true`}
-            rel="noopener noreferrer"
-            target="_blank"
-            onClick={trackJsonView}
-          >
-            Trace JSON
+  const menu = (
+    <Menu>
+      {MENU_ITEMS.filter(item => item.viewType !== viewType).map(item => (
+        <Menu.Item key={item.viewType}>
+          <a onClick={() => handleSelectView(item.viewType)} role="button">
+            {item.label}
           </a>
         </Menu.Item>
-        <Menu.Item>
-          <a
-            href={`${baseUrl}/api/traces/${traceID}?raw=true&prettyPrint=true`}
-            rel="noopener noreferrer"
-            target="_blank"
-            onClick={trackRawJsonView}
-          >
-            Trace JSON (unadjusted)
-          </a>
-        </Menu.Item>
-      </Menu>
-    );
-  };
+      ))}
+      <Menu.Item>
+        <Link
+          to={getMenuLinkUrl(`/api/traces/${traceID}?prettyPrint=true`)}
+          rel="noopener noreferrer"
+          target="_blank"
+          onClick={trackJsonView}
+        >
+          Trace JSON
+        </Link>
+      </Menu.Item>
+      <Menu.Item>
+        <Link
+          to={getMenuLinkUrl(`/api/traces/${traceID}?raw=true&prettyPrint=true`)}
+          rel="noopener noreferrer"
+          target="_blank"
+          onClick={trackRawJsonView}
+        >
+          Trace JSON (unadjusted)
+        </Link>
+      </Menu.Item>
+    </Menu>
+  );
 
   const currentItem = MENU_ITEMS.find(item => item.viewType === viewType);
   const dropdownText = currentItem ? currentItem.label : 'Alternate Views';

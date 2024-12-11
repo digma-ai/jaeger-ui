@@ -18,4 +18,6 @@ const WarningCircleIconComponent = (props: IIconProps) => {
   );
 };
 
-export const WarningCircleIcon = React.memo(WarningCircleIconComponent);
+const WarningCircleIcon = React.memo(WarningCircleIconComponent);
+
+export default WarningCircleIcon;

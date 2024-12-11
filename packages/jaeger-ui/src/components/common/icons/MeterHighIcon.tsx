@@ -25,4 +25,6 @@ const MeterHighIconComponent = (props: IIconProps) => {
   );
 };
 
-export const MeterHighIcon = React.memo(MeterHighIconComponent);
+const MeterHighIcon = React.memo(MeterHighIconComponent);
+
+export default MeterHighIcon;

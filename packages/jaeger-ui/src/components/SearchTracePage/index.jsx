@@ -34,7 +34,7 @@ import { actions as traceDiffActions } from '../TraceDiff/duck';
 import { fetchedState } from '../../constants';
 import { sortTraces } from '../../model/search';
 import { stripEmbeddedState } from '../../utils/embedded-url';
-import { getStaticAssetPath } from '../../utils/getStaticAssetPath';
+import getStaticAssetPath from '../../utils/getStaticAssetPath';
 import FileLoader from './FileLoader';
 
 import './index.css';

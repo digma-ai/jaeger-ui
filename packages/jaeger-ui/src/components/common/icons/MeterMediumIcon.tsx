@@ -25,4 +25,6 @@ const MeterMediumIconComponent = (props: IIconProps) => {
   );
 };
 
-export const MeterMediumIcon = React.memo(MeterMediumIconComponent);
+const MeterMediumIcon = React.memo(MeterMediumIconComponent);
+
+export default MeterMediumIcon;
