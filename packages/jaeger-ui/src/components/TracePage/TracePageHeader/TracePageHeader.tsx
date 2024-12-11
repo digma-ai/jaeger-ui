@@ -151,9 +151,11 @@ export function TracePageHeaderFn(props: TracePageHeaderEmbedProps & { forwarded
       return { ...rest, value: renderer(trace) };
     });
 
+  const traceName = getTraceName(trace.spans);
+
   const title = (
     <h1 className={`TracePageHeader--title ${canCollapse ? 'is-collapsible' : ''}`}>
-      <TraceName traceName={getTraceName(trace.spans)} />{' '}
+      <TraceName traceName={traceName} breakable={false} />{' '}
       <small className="u-tx-muted">{trace.traceID.slice(0, 7)}</small>
     </h1>
   );

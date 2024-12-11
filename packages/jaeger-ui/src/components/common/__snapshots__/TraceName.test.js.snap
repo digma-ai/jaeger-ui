@@ -4,10 +4,9 @@ exports[`<TraceName> renders empty string error in error state 1`] = `
 <span
   className="TraceName is-error "
 >
-  <BreakableText
-    className="BreakableText"
+  <Title
+    breakable={true}
     text="Error: Unknown error"
-    wordRegexp={/\\\\W\\*\\\\w\\+\\\\W\\*/g}
   />
 </span>
 `;
@@ -16,10 +15,9 @@ exports[`<TraceName> renders error object in error state 1`] = `
 <span
   className="TraceName is-error "
 >
-  <BreakableText
-    className="BreakableText"
+  <Title
+    breakable={true}
     text="ERROR-OBJECT-MESSAGE"
-    wordRegexp={/\\\\W\\*\\\\w\\+\\\\W\\*/g}
   />
 </span>
 `;
@@ -28,10 +26,9 @@ exports[`<TraceName> renders error object with empty message in error state 1`] 
 <span
   className="TraceName is-error "
 >
-  <BreakableText
-    className="BreakableText"
+  <Title
+    breakable={true}
     text="Error"
-    wordRegexp={/\\\\W\\*\\\\w\\+\\\\W\\*/g}
   />
 </span>
 `;
@@ -40,10 +37,9 @@ exports[`<TraceName> renders in error state 1`] = `
 <span
   className="TraceName is-error "
 >
-  <BreakableText
-    className="BreakableText"
+  <Title
+    breakable={true}
     text="TEST-ERROR-MESSAGE"
-    wordRegexp={/\\\\W\\*\\\\w\\+\\\\W\\*/g}
   />
 </span>
 `;
@@ -63,10 +59,9 @@ exports[`<TraceName> renders with className 1`] = `
 <span
   className="TraceName  TEST-CLASS-NAME"
 >
-  <BreakableText
-    className="BreakableText"
+  <Title
+    breakable={true}
     text="<trace-without-root-span>"
-    wordRegexp={/\\\\W\\*\\\\w\\+\\\\W\\*/g}
   />
 </span>
 `;
@@ -75,10 +70,9 @@ exports[`<TraceName> renders with default props 1`] = `
 <span
   className="TraceName  "
 >
-  <BreakableText
-    className="BreakableText"
+  <Title
+    breakable={true}
     text="<trace-without-root-span>"
-    wordRegexp={/\\\\W\\*\\\\w\\+\\\\W\\*/g}
   />
 </span>
 `;
@@ -87,10 +81,9 @@ exports[`<TraceName> renders with traceName 1`] = `
 <span
   className="TraceName  "
 >
-  <BreakableText
-    className="BreakableText"
+  <Title
+    breakable={true}
     text="TEST-TRACE-NAME"
-    wordRegexp={/\\\\W\\*\\\\w\\+\\\\W\\*/g}
   />
 </span>
 `;

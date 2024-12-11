@@ -13,6 +13,7 @@
 // limitations under the License.
 
 import * as React from 'react';
+import { Tooltip } from 'antd';
 
 import BreakableText from './BreakableText';
 import LoadingIndicator from './LoadingIndicator';
@@ -23,15 +24,32 @@ import { ApiError } from '../../types/api-error';
 
 import './TraceName.css';
 
+type TitleProps = {
+  text: string;
+  breakable: boolean;
+};
+
 type Props = {
   className?: string;
   error?: ApiError | TNil;
   state?: FetchedState | TNil;
   traceName?: string | TNil;
+  breakable?: boolean;
+};
+
+const Title = (props: TitleProps) => {
+  const { text, breakable } = props;
+  return breakable ? (
+    <BreakableText text={text} />
+  ) : (
+    <Tooltip title={text} placement="bottom">
+      <span className="TraceName--name">{text}</span>
+    </Tooltip>
+  );
 };
 
 export default function TraceName(props: Props) {
-  const { className, error, state, traceName } = props;
+  const { className, error, state, traceName, breakable = true } = props;
   const isErred = state === fetchedState.ERROR;
   let title: string | React.ReactNode = traceName || FALLBACK_TRACE_NAME;
   let errorCssClass = '';
@@ -45,12 +63,12 @@ export default function TraceName(props: Props) {
       titleStr = 'Error: Unknown error';
     }
     title = titleStr;
-    title = <BreakableText text={titleStr} />;
+    title = <Title text={titleStr} breakable={breakable} />;
   } else if (state === fetchedState.LOADING) {
     title = <LoadingIndicator small />;
   } else {
     const text: string = String(traceName || FALLBACK_TRACE_NAME);
-    title = <BreakableText text={text} />;
+    title = <Title text={text} breakable={breakable} />;
   }
   return <span className={`TraceName ${errorCssClass} ${className || ''}`}>{title}</span>;
 }
