@@ -1,0 +1,43 @@
+name: Lint & test & build
+
+on:
+  push:
+    branches: ['digma']
+    # Github Actions don't support YAML anchors yet, so we have to repeat
+    # the paths-ignore in both push and pull_request events.
+    # More info: https://github.com/actions/runner/issues/1182
+    paths-ignore:
+      - '.vscode/**'
+      - '.prettierignore'
+      - '.prettierrc'
+      - '*.md'
+      - 'DCO'
+      - 'LICENSE'
+  pull_request:
+    branches: ['digma']
+    paths-ignore:
+      - '.vscode/**'
+      - '.prettierignore'
+      - '.prettierrc'
+      - '*.md'
+      - 'DCO'
+      - 'LICENSE'
+
+jobs:
+  lint-test:
+    name: Lint & test
+    uses: ./.github/workflows/lint-test.yml
+
+  build:
+    name: Build
+    needs: lint-test
+    uses: ./.github/workflows/build.yml
+
+  build-test-docker-image:
+    name: Build Docker image
+    needs: build
+    uses: ./.github/workflows/docker-image.yml
+    secrets: inherit
+    with:
+      dist-artifact-name: ${{ needs.build.outputs.dist-filename }}
+      push: false
