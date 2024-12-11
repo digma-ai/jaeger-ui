@@ -37,7 +37,7 @@ jobs:
           echo "dist_filename=$FILENAME" >> $GITHUB_OUTPUT
           echo "version=${LATEST_TAG#v}" >> $GITHUB_OUTPUT
 
-      - run: zip -r ${{ env.DIST_FILENAME }} packages/jaeger-ui/build/
+      - run: zip -r ${{ env.DIST_FILENAME }} packages/jaeger-ui/build/*
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
