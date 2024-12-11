@@ -17,7 +17,7 @@ import moment from 'moment';
 import queryString from 'query-string';
 
 import prefixUrl from '../utils/prefix-url';
-import { isString } from '../utils/ts/typeGuards/isString';
+import isString from '../utils/ts/typeGuards/isString';
 
 // export for tests
 export function getMessageFromError(errData, status) {

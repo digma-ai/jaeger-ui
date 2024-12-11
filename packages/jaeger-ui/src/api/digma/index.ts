@@ -1,5 +1,5 @@
 import logger from '../../logging';
-import { isObject } from '../../utils/ts/typeGuards/isObject';
+import isObject from '../../utils/ts/typeGuards/isObject';
 import ActionDispatcher from './ActionDispatcher';
 import { updateState } from './state';
 import { DigmaMessageEvent, IDigmaOutgoingMessageData } from './types';
@@ -24,7 +24,7 @@ export const initializeDigmaMessageListener = (dispatcher: ActionDispatcher) => 
 
       updateState(e.data.action, e.data.payload);
 
-      dispatcher.dispatch(e.timeStamp, e.data.action, e.data.payload);
+      dispatcher.dispatch(e.timeStamp, e.data.action, e.data.payload, e.data.error);
     }
   };
 

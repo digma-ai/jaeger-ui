@@ -23,4 +23,6 @@ const LightBulbIconComponent = (props: IIconProps) => {
   );
 };
 
-export const LightBulbIcon = React.memo(LightBulbIconComponent);
+const LightBulbIcon = React.memo(LightBulbIconComponent);
+
+export default LightBulbIcon;

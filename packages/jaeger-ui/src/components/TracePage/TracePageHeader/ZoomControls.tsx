@@ -1,7 +1,7 @@
 import { Button } from 'antd';
 import React, { useContext } from 'react';
 import ButtonGroup from 'antd/lib/button/button-group';
-import { ZoomContext } from '../../../Contexts';
+import ZoomContext from '../../../ZoomContext';
 
 type ZoomControlsProps = {
   className?: string;

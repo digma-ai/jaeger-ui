@@ -216,20 +216,21 @@ export function TracePageHeaderFn(props: TracePageHeaderEmbedProps & { forwarded
           </Button>
         )}
         {window.enableZoomControls && <ZoomControls className="TracePageHeader--zoomControls" />}
-        {showStandaloneLink && window.platform === 'JetBrains' ? (
-          <Link className="u-tx-inherit ub-nowrap ub-mx2" to="#" onClick={handleStandaloneLinkClick}>
-            <NewWindowIcon isLarge />
-          </Link>
-        ) : (
-          <Link
-            className="u-tx-inherit ub-nowrap ub-mx2"
-            to={linkToStandalone}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <NewWindowIcon isLarge />
-          </Link>
-        )}
+        {showStandaloneLink &&
+          (window.platform === 'JetBrains' ? (
+            <Link className="u-tx-inherit ub-nowrap ub-mx2" to="#" onClick={handleStandaloneLinkClick}>
+              <NewWindowIcon isLarge />
+            </Link>
+          ) : (
+            <Link
+              className="u-tx-inherit ub-nowrap ub-mx2"
+              to={linkToStandalone}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <NewWindowIcon isLarge />
+            </Link>
+          ))}
       </div>
       {summaryItems && <LabeledList className="TracePageHeader--overviewItems" items={summaryItems} />}
       {!hideMap && !slimView && (

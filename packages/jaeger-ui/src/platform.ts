@@ -1,4 +1,4 @@
-import { isString } from './utils/ts/typeGuards/isString';
+import isString from './utils/ts/typeGuards/isString';
 
 type Platform = 'JetBrains' | 'VS Code' | 'Web';
 

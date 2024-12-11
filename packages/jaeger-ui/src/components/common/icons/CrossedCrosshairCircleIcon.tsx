@@ -20,4 +20,6 @@ const CrossedCrosshairCircleIconComponent = (props: IIconProps) => {
   );
 };
 
-export const CrossedCrosshairCircleIcon = React.memo(CrossedCrosshairCircleIconComponent);
+const CrossedCrosshairCircleIcon = React.memo(CrossedCrosshairCircleIconComponent);
+
+export default CrossedCrosshairCircleIcon;

@@ -17,10 +17,10 @@ import * as React from 'react';
 import { ApiError } from '../../types/api-error';
 
 import './ErrorMessage.css';
-import { CrossedCrosshairCircleIcon } from './icons/CrossedCrosshairCircleIcon';
-import { SlackLogoIcon } from './icons/SlackLogoIcon';
-import { BrokenLinkCircleIcon } from './icons/BrokenLinkCircleIcon';
-import { isString } from '../../utils/ts/typeGuards/isString';
+import CrossedCrosshairCircleIcon from './icons/CrossedCrosshairCircleIcon';
+import SlackLogoIcon from './icons/SlackLogoIcon';
+import BrokenLinkCircleIcon from './icons/BrokenLinkCircleIcon';
+import isString from '../../utils/ts/typeGuards/isString';
 
 const SLACK_CHANNEL_URL =
   'https://join.slack.com/t/continuous-feedback/shared_invite/zt-2gsif7wdy-6Jf17HIJESc2tknT5gybtw';

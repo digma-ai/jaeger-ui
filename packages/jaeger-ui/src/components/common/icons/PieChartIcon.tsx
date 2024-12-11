@@ -15,4 +15,6 @@ const PieChartIconComponent = (props: IIconProps) => {
   );
 };
 
-export const PieChartIcon = React.memo(PieChartIconComponent);
+const PieChartIcon = React.memo(PieChartIconComponent);
+
+export default PieChartIcon;

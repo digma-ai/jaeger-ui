@@ -17,4 +17,6 @@ const ScalesIconComponent = (props: IIconProps) => {
   );
 };
 
-export const ScalesIcon = React.memo(ScalesIconComponent);
+const ScalesIcon = React.memo(ScalesIconComponent);
+
+export default ScalesIcon;

@@ -28,7 +28,7 @@ import dispatcher from '../../../api/digma/dispatcher';
 import { actions } from '../../../api/digma/actions';
 import { state as globalState } from '../../../api/digma/state';
 import { ISpanInsight, SetSpansDataPayload } from '../../../api/digma/types';
-import { LightBulbIcon } from '../../common/icons/LightBulbIcon';
+import LightBulbIcon from '../../common/icons/LightBulbIcon';
 import { getInsightImportanceColor } from '../../common/InsightIcon/utils';
 
 import { TNil } from '../../../types';
