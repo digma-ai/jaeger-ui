@@ -18,12 +18,12 @@ jobs:
     needs: lint-test
     uses: ./.github/workflows/digma-build.yml
 
-  attach-dist-asset:
+  attach-release-asset:
     name: Attach release asset
     needs: build
     uses: ./.github/workflows/digma-release-asset.yml
     with:
-      artifact-name: ${{ needs.build.outputs.dist-filename }}
+      artifact-name: ${{ needs.build.outputs.artifact-name}}
 
   build-push-docker-image:
     name: Build & push Docker image
@@ -31,12 +31,12 @@ jobs:
     uses: ./.github/workflows/digma-docker-image.yml
     secrets: inherit
     with:
-      dist-artifact-name: ${{ needs.build.outputs.dist-filename }}
+      dist-artifact-name: ${{ needs.build.outputs.artifact-name }}
       push: true
 
   update-digma-ui:
-    needs: [attach-dist-asset, build-push-docker-image]
     name: Update version in Digma UI
+    needs: [attach-release-asset, build-push-docker-image]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

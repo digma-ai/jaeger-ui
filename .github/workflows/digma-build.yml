@@ -3,8 +3,8 @@ name: Build
 on:
   workflow_call:
     outputs:
-      dist-filename:
-        value: ${{ jobs.build.outputs.dist-filename }}
+      artifact-name:
+        value: ${{ jobs.build.outputs.artifact-name }}
       version:
         value: ${{ jobs.build.outputs.version }}
 
@@ -12,8 +12,8 @@ jobs:
   build:
     runs-on: ubuntu-latest
     outputs:
-      dist-filename: ${{ steps.get-dist-filename.outputs.dist_filename }}
-      version: ${{ steps.get-dist-filename.outputs.version }}
+      artifact-name: ${{ steps.get-artifact-name.outputs.artifact_name }}
+      version: ${{ steps.get-artifact-name.outputs.version }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -26,19 +26,19 @@ jobs:
 
       - run: yarn build
 
-      - name: Get distributive filename and version
-        id: get-dist-filename
+      - name: Get artifact name and version
+        id: get-artifact-name
         run: |
           git fetch --tags
           LATEST_TAG=$(git describe --tags `git rev-list --tags --max-count=1`)
           echo "LATEST_TAG=$LATEST_TAG" >> $GITHUB_ENV
-          FILENAME="dist-$LATEST_TAG"
-          echo "DIST_FILENAME=$FILENAME" >> $GITHUB_ENV
-          echo "dist_filename=$FILENAME" >> $GITHUB_OUTPUT
+          NAME="dist-$LATEST_TAG"
+          echo "ARTIFACT_NAME=$NAME" >> $GITHUB_ENV
+          echo "artifact_name=$NAME" >> $GITHUB_OUTPUT
           echo "version=${LATEST_TAG#v}" >> $GITHUB_OUTPUT
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ env.DIST_FILENAME }}
+          name: ${{ env.ARTIFACT_NAME }}
           path: packages/jaeger-ui/build/
