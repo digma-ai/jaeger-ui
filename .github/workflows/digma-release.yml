@@ -49,4 +49,8 @@ jobs:
           token: ${{ secrets.RELEASE_PAT }}
           repository: digma-ai/digma-ui
           event-type: update-jaeger
-          client-payload: '{ "jaegerUIVersion": "${{ needs.build.outputs.version  }}", "jaegerVersion": "${{ env.JAEGER_VERSION }}" }'
+          client-payload: |-
+            {
+              "jaegerUIVersion": "${{ needs.build.outputs.version  }}",
+              "jaegerVersion": "${{ env.JAEGER_VERSION }}"
+            }
