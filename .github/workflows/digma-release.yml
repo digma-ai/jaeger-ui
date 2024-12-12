@@ -35,7 +35,7 @@ jobs:
       push: true
 
   update-digma-ui:
-    name: Update version in Digma UI
+    name: Update Jaeger dependencies in Digma UI
     needs: [attach-release-asset, build-push-docker-image]
     runs-on: ubuntu-latest
     steps:
@@ -43,15 +43,10 @@ jobs:
       - name: Get Jaeger version
         run: echo "JAEGER_VERSION=$(jq -r '.version' jaeger.json)" >> $GITHUB_ENV
 
-      - name: Create PR in digma-ui
-        run: |
-          curl -X POST -H "Accept: application/vnd.github.v3+json" \
-          -H "Authorization: token ${{ secrets.RELEASE_PAT }}" \
-          https://api.github.com/repos/digma-ai/digma-ui/dispatches \
-          -d '{
-            "event_type": "update-jaeger",
-            "client_payload": {
-              "jaegerUIVersion": "'"${{ needs.build.outputs.version }}"'",
-              "jaegerVersion": "'"${{ env.JAEGER_VERSION }}"'"
-            }
-          }'
+      - name: Dispatch event in digma-ui
+        uses: peter-evans/repository-dispatch@v3
+        with:
+          token: ${{ secrets.RELEASE_PAT }}
+          repository: digma-ai/digma-ui
+          event-type: update-jaeger
+          client-payload: '{ "jaegerUIVersion": "${{ needs.build.outputs.version  }}", "jaegerVersion": "${{ env.JAEGER_VERSION }}" }'
