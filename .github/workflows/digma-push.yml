@@ -28,18 +28,18 @@ on:
 jobs:
   lint-test:
     name: Lint & test
-    uses: ./.github/workflows/lint-test.yml
+    uses: ./.github/workflows/digma-lint-test.yml
 
   build:
     name: Build
     needs: lint-test
-    uses: ./.github/workflows/build.yml
+    uses: ./.github/workflows/digma-build.yml
 
-  build-test-docker-image:
+  build-docker-image:
     name: Build Docker image
     needs: build
-    uses: ./.github/workflows/docker-image.yml
+    uses: ./.github/workflows/digma-docker-image.yml
     secrets: inherit
     with:
-      dist-artifact-name: ${{ needs.build.outputs.dist-filename }}
+      dist-artifact-name: ${{ needs.build.outputs.artifact-name }}
       push: false

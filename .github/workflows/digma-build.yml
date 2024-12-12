@@ -1,0 +1,44 @@
+name: Build
+
+on:
+  workflow_call:
+    outputs:
+      artifact-name:
+        value: ${{ jobs.build.outputs.artifact-name }}
+      version:
+        value: ${{ jobs.build.outputs.version }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    outputs:
+      artifact-name: ${{ steps.get-artifact-name.outputs.artifact_name }}
+      version: ${{ steps.get-artifact-name.outputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        id: setup-node
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'yarn'
+
+      - run: yarn install --frozen-lockfile
+
+      - run: yarn build
+
+      - name: Get artifact name and version
+        id: get-artifact-name
+        run: |
+          git fetch --tags
+          LATEST_TAG=$(git describe --tags `git rev-list --tags --max-count=1`)
+          echo "LATEST_TAG=$LATEST_TAG" >> $GITHUB_ENV
+          NAME="dist-$LATEST_TAG"
+          echo "ARTIFACT_NAME=$NAME" >> $GITHUB_ENV
+          echo "artifact_name=$NAME" >> $GITHUB_OUTPUT
+          echo "version=${LATEST_TAG#v}" >> $GITHUB_OUTPUT
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.ARTIFACT_NAME }}
+          path: packages/jaeger-ui/build/

@@ -1,0 +1,57 @@
+name: Lint & test & build & publish Docker image
+
+on:
+  workflow_dispatch:
+  release:
+    types: [released]
+
+permissions:
+  contents: write
+
+jobs:
+  lint-test:
+    name: Lint & test
+    uses: ./.github/workflows/digma-lint-test.yml
+
+  build:
+    name: Build
+    needs: lint-test
+    uses: ./.github/workflows/digma-build.yml
+
+  attach-release-asset:
+    name: Attach release asset
+    needs: build
+    uses: ./.github/workflows/digma-release-asset.yml
+    with:
+      artifact-name: ${{ needs.build.outputs.artifact-name}}
+
+  build-push-docker-image:
+    name: Build & push Docker image
+    needs: build
+    uses: ./.github/workflows/digma-docker-image.yml
+    secrets: inherit
+    with:
+      dist-artifact-name: ${{ needs.build.outputs.artifact-name }}
+      push: true
+
+  update-digma-ui:
+    name: Update version in Digma UI
+    needs: [attach-release-asset, build-push-docker-image]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Get Jaeger version
+        run: echo "JAEGER_VERSION=$(jq -r '.version' jaeger.json)" >> $GITHUB_ENV
+
+      - name: Create PR in digma-ui
+        run: |
+          curl -X POST -H "Accept: application/vnd.github.v3+json" \
+          -H "Authorization: token ${{ secrets.RELEASE_PAT }}" \
+          https://api.github.com/repos/digma-ai/digma-ui/dispatches \
+          -d '{
+            "event_type": "update-jaeger",
+            "client_payload": {
+              "jaegerUIVersion": "'"${{ needs.build.outputs.version }}"'",
+              "jaegerVersion": "'"${{ env.JAEGER_VERSION }}"'"
+            }
+          }'
