@@ -36,7 +36,7 @@ jobs:
 
   update-digma-ui:
     name: Update Jaeger dependencies in Digma UI
-    needs: [attach-release-asset, build-push-docker-image]
+    needs: [build, attach-release-asset, build-push-docker-image]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -51,6 +51,6 @@ jobs:
           event-type: update-jaeger
           client-payload: |-
             {
-              "jaegerUIVersion": "${{ needs.build.outputs.version  }}",
+              "jaegerUIVersion": "${{ needs.build.outputs.version }}",
               "jaegerVersion": "${{ env.JAEGER_VERSION }}"
             }
