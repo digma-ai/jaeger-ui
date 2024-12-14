@@ -1,0 +1,36 @@
+name: Bump Digma Jaeger UI version and push git tag
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to set (e.g., 1.2.3)'
+        required: true
+
+jobs:
+  bump:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.RELEASE_PAT }}
+
+      - run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Get version
+        run: |
+          VERSION=$(jq -r '.version' ./packages/jaeger-ui/package.json)
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+
+      - name: Update digma-jaeger-ui version
+        run: |
+          jq '.["digma-jaeger-ui-version"] = "${{ inputs.version }}"' ./packages/jaeger-ui/package.json > tmp.$$.json && mv tmp.$$.json ./packages/jaeger-ui/package.json
+
+      - run: |
+          git add packages/jaeger-ui/package.json
+          git commit -m "Bump Digma Jaeger UI version to ${{ inputs.version }} [skip ci]"
+          git tag "v${{ env.VERSION }}-digma.${{ inputs.version }}"
+          git push
+          git push origin "v${{ inputs.version }}"

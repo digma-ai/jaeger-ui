@@ -18,6 +18,8 @@ import react from '@vitejs/plugin-react';
 import legacy from '@vitejs/plugin-legacy';
 import vitePluginImp from 'vite-plugin-imp';
 import visualizer from 'rollup-plugin-visualizer';
+import { readFileSync } from 'fs';
+import { resolve } from 'path';
 
 const proxyConfig = {
   target: 'http://localhost:16686',
@@ -26,6 +28,8 @@ const proxyConfig = {
   ws: true,
   xfwd: true,
 };
+
+const packageJson = JSON.parse(readFileSync(resolve(__dirname, 'package.json'), 'utf-8'));
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -61,6 +65,15 @@ export default defineConfig({
     }),
     // Generate a bundle size breakdown.
     visualizer(),
+    {
+      name: 'html-transform',
+      transformIndexHtml(html) {
+        return html.replace(
+          '__DIGMA_JAEGER_UI_VERSION__',
+          `${packageJson.version}-digma.${packageJson['digma-jaeger-ui-version']}`
+        );
+      },
+    },
   ],
   css: {
     preprocessorOptions: {
