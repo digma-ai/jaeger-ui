@@ -56,9 +56,16 @@ export default class JaegerUIApp extends Component {
     processScripts();
     this.zoomManager = new ZoomManager();
     this._handleZoomKeyboardShortcuts = this._handleZoomKeyboardShortcuts.bind(this);
+    this.state = { isRedirected: false };
   }
 
   componentDidMount() {
+    if (isString(window.initialRoutePath) && window.initialRoutePath) {
+      const urlToNavigate = prefixUrl(window.initialRoutePath);
+      history.push(urlToNavigate);
+    }
+    this.setState({ isRedirected: true });
+
     document.addEventListener('keydown', this._handleZoomKeyboardShortcuts);
   }
 
@@ -81,11 +88,8 @@ export default class JaegerUIApp extends Component {
   }
 
   render() {
-    // Navigate to URL provided on app start
-    if (isString(window.initialRoutePath) && window.initialRoutePath) {
-      const urlToNavigate = window.initialRoutePath;
-      window.initialRoutePath = '';
-      history.push(urlToNavigate);
+    if (!this.state.isRedirected) {
+      return null;
     }
 
     return (
