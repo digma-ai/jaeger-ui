@@ -35,7 +35,7 @@ jobs:
       push: true
 
   update-digma-ui:
-    name: Update Jaeger dependencies in Digma UI
+    name: Update dependencies in Digma UI
     needs: [build, attach-release-asset, build-push-docker-image]
     runs-on: ubuntu-latest
     steps:
@@ -48,7 +48,7 @@ jobs:
         with:
           token: ${{ secrets.RELEASE_PAT }}
           repository: digma-ai/digma-ui
-          event-type: update-jaeger
+          event-type: update-dependencies
           client-payload: |-
             {
               "jaegerUIVersion": "${{ needs.build.outputs.version }}",
