@@ -15,7 +15,6 @@
 import * as React from 'react';
 import { Dropdown, Icon, Menu, Button } from 'antd';
 import './AltViewOptions.css';
-import { Link } from 'react-router-dom';
 import {
   trackGanttView,
   trackGraphView,
@@ -26,6 +25,7 @@ import {
 } from './TracePageHeader.track';
 import prefixUrl from '../../../utils/prefix-url';
 import { ETraceViewType } from '../types';
+import isString from '../../../utils/ts/typeGuards/isString';
 
 type Props = {
   onTraceViewChange: (viewType: ETraceViewType) => void;
@@ -72,7 +72,17 @@ export default function AltViewOptions(props: Props) {
     onTraceViewChange(item);
   };
 
-  const getMenuLinkUrl = (url: string) => window.baseUrl ?? window.apiBaseUrl ?? prefixUrl(url);
+  const getMenuItemUrl = (path: string): string => {
+    if (isString(window.baseUrl) && window.baseUrl) {
+      return `${window.baseUrl}${path}`;
+    }
+
+    if (isString(window.apiBaseUrl) && window.apiBaseUrl) {
+      return `${window.apiBaseUrl}${path}`;
+    }
+
+    return prefixUrl(path);
+  };
 
   const menu = (
     <Menu>
@@ -84,24 +94,24 @@ export default function AltViewOptions(props: Props) {
         </Menu.Item>
       ))}
       <Menu.Item>
-        <Link
-          to={getMenuLinkUrl(`/api/traces/${traceID}?prettyPrint=true`)}
+        <a
+          href={getMenuItemUrl(`/api/traces/${traceID}?prettyPrint=true`)}
           rel="noopener noreferrer"
           target="_blank"
           onClick={trackJsonView}
         >
           Trace JSON
-        </Link>
+        </a>
       </Menu.Item>
       <Menu.Item>
-        <Link
-          to={getMenuLinkUrl(`/api/traces/${traceID}?raw=true&prettyPrint=true`)}
+        <a
+          href={getMenuItemUrl(`/api/traces/${traceID}?raw=true&prettyPrint=true`)}
           rel="noopener noreferrer"
           target="_blank"
           onClick={trackRawJsonView}
         >
           Trace JSON (unadjusted)
-        </Link>
+        </a>
       </Menu.Item>
     </Menu>
   );

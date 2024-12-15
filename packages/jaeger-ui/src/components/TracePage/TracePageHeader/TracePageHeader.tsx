@@ -41,6 +41,8 @@ import ExternalLinks from '../../common/ExternalLinks';
 import ZoomControls from './ZoomControls';
 import { globalActions } from '../../../api/digma/actions';
 import { OpenURLInDefaultBrowserPayload } from '../../../api/digma/types';
+import isString from '../../../utils/ts/typeGuards/isString';
+import prefixUrl from '../../../utils/prefix-url';
 
 type TracePageHeaderEmbedProps = {
   canCollapse: boolean;
@@ -161,12 +163,25 @@ export function TracePageHeaderFn(props: TracePageHeaderEmbedProps & { forwarded
   );
 
   const handleStandaloneLinkClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    const baseUrl = window.baseUrl ?? window.apiBaseUrl;
+    const getBaseUrl = (): string => {
+      if (isString(window.baseUrl) && window.baseUrl) {
+        return window.baseUrl;
+      }
+
+      if (isString(window.apiBaseUrl) && window.apiBaseUrl) {
+        return window.apiBaseUrl;
+      }
+
+      return prefixUrl('/');
+    };
+
+    const baseUrl: string = getBaseUrl();
+
     e.preventDefault();
     window.sendMessageToDigma<OpenURLInDefaultBrowserPayload>({
       action: globalActions.OPEN_URL_IN_DEFAULT_BROWSER,
       payload: {
-        url: `${baseUrl}${window.location.pathname}${window.location.search}`,
+        url: `${baseUrl}/trace/${trace.traceID}${window.location.search}`,
       },
     });
   };
