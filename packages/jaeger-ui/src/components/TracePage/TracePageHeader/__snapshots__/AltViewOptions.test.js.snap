@@ -39,26 +39,24 @@ exports[`AltViewOptions renders correctly 1`] = `
         </a>
       </MenuItem>
       <MenuItem>
-        <Link
+        <a
+          href="/api/traces/test trace ID?prettyPrint=true"
           onClick={[MockFunction]}
           rel="noopener noreferrer"
-          replace={false}
           target="_blank"
-          to="/api/traces/test trace ID?prettyPrint=true"
         >
           Trace JSON
-        </Link>
+        </a>
       </MenuItem>
       <MenuItem>
-        <Link
+        <a
+          href="/api/traces/test trace ID?raw=true&prettyPrint=true"
           onClick={[MockFunction]}
           rel="noopener noreferrer"
-          replace={false}
           target="_blank"
-          to="/api/traces/test trace ID?raw=true&prettyPrint=true"
         >
           Trace JSON (unadjusted)
-        </Link>
+        </a>
       </MenuItem>
     </Menu>
   }
