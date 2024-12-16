@@ -29,8 +29,9 @@ jobs:
           jq '.["digma-jaeger-ui-version"] = "${{ inputs.version }}"' ./packages/jaeger-ui/package.json > tmp.$$.json && mv tmp.$$.json ./packages/jaeger-ui/package.json
 
       - run: |
+          TAG="v${{ env.VERSION }}-digma.${{ inputs.version }}"
           git add packages/jaeger-ui/package.json
           git commit -m "Bump Digma Jaeger UI version to ${{ inputs.version }} [skip ci]"
-          git tag "v${{ env.VERSION }}-digma.${{ inputs.version }}"
+          git tag $TAG
           git push
-          git push origin "v${{ inputs.version }}"
+          git push origin $TAG
