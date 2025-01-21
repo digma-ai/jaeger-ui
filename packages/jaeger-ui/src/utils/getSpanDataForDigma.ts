@@ -15,7 +15,7 @@ export interface IDigmaSpanData {
 
 const getSpanDataForDigma = (span: Span, withEnvironmentId: boolean | undefined = false): IDigmaSpanData => {
   const tagsToGet = {
-    instrumentationLibrary: 'otel.library.name',
+    instrumentationLibrary: ['otel.library.name', 'otel.scope.name'],
     function: 'code.function',
     namespace: 'code.namespace',
     spanCodeObjectId: 'digma.span.code.object.id',
@@ -28,7 +28,9 @@ const getSpanDataForDigma = (span: Span, withEnvironmentId: boolean | undefined 
   };
 
   const tagsValues = Object.entries(tagsToGet).reduce((acc, [key, value]) => {
-    const tag = span.tags.find((x: any) => x.key === value);
+    const tag = span.tags.find((x: any) =>
+      Array.isArray(value) ? value.find(v => x.key === v) : x.key === value
+    );
     return tag ? { ...acc, [key]: tag.value } : acc;
   }, {});
 
