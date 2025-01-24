@@ -14,6 +14,7 @@ import { IIconProps } from '../icons/types';
 import { InsightType } from './types';
 import ClockWithTicksIcon from '../icons/ClockWithTicksIcon';
 import PieChartIcon from '../icons/PieChartIcon';
+import TwoHorizontalEndpointsIcon from '../icons/TwoHorizontalEndpointsIcon';
 
 export const getInsightTypeInfo = (
   type: InsightType
@@ -99,7 +100,7 @@ export const getInsightTypeInfo = (
       label: 'Session in View Query Detected',
     },
     [InsightType.EndpointChattyApiV2]: {
-      icon: SQLDatabaseIcon,
+      icon: TwoHorizontalEndpointsIcon,
       label: 'Excessive API Calls Detected',
     },
     [InsightType.EndpointHighNumberOfQueries]: {
