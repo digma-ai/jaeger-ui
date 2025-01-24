@@ -2,7 +2,7 @@
   "private": true,
   "name": "jaeger-ui",
   "version": "1.29.1",
-  "digma-jaeger-ui-version": "1.0.4",
+  "digma-jaeger-ui-version": "1.29.1-digma.1.0.5",
   "main": "src/index.tsx",
   "license": "Apache-2.0",
   "homepage": ".",
