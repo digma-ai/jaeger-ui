@@ -14,7 +14,8 @@ import { IIconProps } from '../icons/types';
 import { InsightType } from './types';
 import ClockWithTicksIcon from '../icons/ClockWithTicksIcon';
 import PieChartIcon from '../icons/PieChartIcon';
-import TwoHorizontalEndpointsIcon from '../icons/TwoHorizontalEndpointsIcon';
+import PulseIcon from '../icons/PulseIcon';
+import SoundWaveIcon from '../icons/SoundWaveIcon';
 
 export const getInsightTypeInfo = (
   type: InsightType
@@ -100,7 +101,7 @@ export const getInsightTypeInfo = (
       label: 'Session in View Query Detected',
     },
     [InsightType.EndpointChattyApiV2]: {
-      icon: TwoHorizontalEndpointsIcon,
+      icon: SoundWaveIcon,
       label: 'Excessive API Calls Detected',
     },
     [InsightType.EndpointHighNumberOfQueries]: {
@@ -118,6 +119,10 @@ export const getInsightTypeInfo = (
     [InsightType.EndpointQueryOptimizationV2]: {
       icon: SQLDatabaseIcon,
       label: 'Inefficient Query',
+    },
+    [InsightType.SpanPerformanceAnomaly]: {
+      icon: PulseIcon,
+      label: 'Performance Anomaly',
     },
   };
 
