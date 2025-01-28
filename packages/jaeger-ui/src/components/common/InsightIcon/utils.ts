@@ -14,6 +14,7 @@ import { IIconProps } from '../icons/types';
 import { InsightType } from './types';
 import ClockWithTicksIcon from '../icons/ClockWithTicksIcon';
 import PieChartIcon from '../icons/PieChartIcon';
+import PulseIcon from '../icons/PulseIcon';
 import TwoHorizontalEndpointsIcon from '../icons/TwoHorizontalEndpointsIcon';
 
 export const getInsightTypeInfo = (
@@ -118,6 +119,10 @@ export const getInsightTypeInfo = (
     [InsightType.EndpointQueryOptimizationV2]: {
       icon: SQLDatabaseIcon,
       label: 'Inefficient Query',
+    },
+    [InsightType.SpanPerformanceAnomaly]: {
+      icon: PulseIcon,
+      label: 'Performance Anomaly',
     },
   };
 
