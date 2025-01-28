@@ -15,7 +15,6 @@ import { InsightType } from './types';
 import ClockWithTicksIcon from '../icons/ClockWithTicksIcon';
 import PieChartIcon from '../icons/PieChartIcon';
 import PulseIcon from '../icons/PulseIcon';
-import SoundWaveIcon from '../icons/SoundWaveIcon';
 import TwoHorizontalEndpointsIcon from '../icons/TwoHorizontalEndpointsIcon';
 
 export const getInsightTypeInfo = (
