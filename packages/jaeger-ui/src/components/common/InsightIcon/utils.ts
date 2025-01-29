@@ -15,7 +15,7 @@ import { InsightType } from './types';
 import ClockWithTicksIcon from '../icons/ClockWithTicksIcon';
 import PieChartIcon from '../icons/PieChartIcon';
 import PulseIcon from '../icons/PulseIcon';
-import TwoHorizontalEndpointsIcon from '../icons/TwoHorizontalEndpointsIcon';
+import SoundWaveIcon from '../icons/SoundWaveIcon';
 
 export const getInsightTypeInfo = (
   type: InsightType
@@ -101,7 +101,7 @@ export const getInsightTypeInfo = (
       label: 'Session in View Query Detected',
     },
     [InsightType.EndpointChattyApiV2]: {
-      icon: TwoHorizontalEndpointsIcon,
+      icon: SoundWaveIcon,
       label: 'Excessive API Calls Detected',
     },
     [InsightType.EndpointHighNumberOfQueries]: {
