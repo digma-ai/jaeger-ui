@@ -1,8 +1,8 @@
 import isString from './utils/ts/typeGuards/isString';
 
-type Platform = 'JetBrains' | 'VS Code' | 'Web';
+type Platform = 'JetBrains' | 'VS Code' | 'Web' | 'Visual Studio';
 
-const PLATFORMS = ['JetBrains', 'VS Code', 'Web'];
+const PLATFORMS = ['JetBrains', 'VS Code', 'Visual Studio', 'Web'];
 
 const isPlatform = (platform: unknown): platform is Platform =>
   isString(platform) && PLATFORMS.includes(platform);
