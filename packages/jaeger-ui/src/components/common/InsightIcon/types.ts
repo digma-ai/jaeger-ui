@@ -33,4 +33,5 @@ export enum InsightType {
   EndpointQueryOptimizationV2 = 'EndpointQueryOptimizationV2',
   EndpointSlowdownSource = 'EndpointSlowdownSource',
   SpanPerformanceAnomaly = 'SpanPerformanceAnomaly',
+  EndpointScaling = 'EndpointScaling',
 }
