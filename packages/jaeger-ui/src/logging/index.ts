@@ -1,6 +1,6 @@
 import Logger from './Logger';
-import LOG_LEVEL from './types';
+import LogLevel from './types';
 
-const logger = new Logger(window.isLoggingEnabled === true ? LOG_LEVEL.DEBUG : LOG_LEVEL.NONE);
+const logger = new Logger(window.isLoggingEnabled === true ? LogLevel.Debug : LogLevel.None);
 
 export default logger;

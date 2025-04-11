@@ -1,12 +1,12 @@
 import moment from 'moment';
-import LOG_LEVEL from './types';
+import LogLevel from './types';
 
 class Logger {
   private minLogLevel: number;
   private showTimeStamp: boolean;
   private showLogLevel: boolean;
 
-  constructor(minLogLevel: LOG_LEVEL, showTimeStamp = true, showLogLevel = true) {
+  constructor(minLogLevel: LogLevel, showTimeStamp = true, showLogLevel = true) {
     this.minLogLevel = minLogLevel;
     this.showTimeStamp = showTimeStamp;
     this.showLogLevel = showLogLevel;
@@ -17,7 +17,7 @@ class Logger {
   }
 
   private getLogLevelTag(): string {
-    return LOG_LEVEL[this.minLogLevel];
+    return LogLevel[this.minLogLevel];
   }
 
   private getFormattedMessage(tags: string[], message: unknown): string {
@@ -34,11 +34,11 @@ class Logger {
     return `${tagsString}: ${message as string}`;
   }
 
-  public setLogLevel(logLevel: LOG_LEVEL): void {
+  public setLogLevel(logLevel: LogLevel): void {
     this.minLogLevel = logLevel;
   }
 
-  public log(level: LOG_LEVEL, tags: string[], message?: unknown, ...optionalParams: unknown[]): void {
+  public log(level: LogLevel, tags: string[], message?: unknown, ...optionalParams: unknown[]): void {
     const formattedMessage = this.getFormattedMessage(tags, message);
 
     if (this.minLogLevel > level) {
@@ -46,19 +46,19 @@ class Logger {
     }
 
     switch (level) {
-      case LOG_LEVEL.DEBUG:
+      case LogLevel.Debug:
         // eslint-disable-next-line no-console
         console.debug(formattedMessage, ...optionalParams);
         break;
-      case LOG_LEVEL.INFO:
+      case LogLevel.Info:
         // eslint-disable-next-line no-console
         console.info(formattedMessage, ...optionalParams);
         break;
-      case LOG_LEVEL.WARN:
+      case LogLevel.Warn:
         // eslint-disable-next-line no-console
         console.warn(formattedMessage, ...optionalParams);
         break;
-      case LOG_LEVEL.ERROR:
+      case LogLevel.Error:
         // eslint-disable-next-line no-console
         console.error(formattedMessage, ...optionalParams);
         break;
@@ -68,19 +68,19 @@ class Logger {
   }
 
   public debug(message?: unknown, ...optionalParams: unknown[]): void {
-    this.log(LOG_LEVEL.DEBUG, [], message, ...optionalParams);
+    this.log(LogLevel.Debug, [], message, ...optionalParams);
   }
 
   public info(message?: unknown, ...optionalParams: unknown[]): void {
-    this.log(LOG_LEVEL.INFO, [], message, ...optionalParams);
+    this.log(LogLevel.Info, [], message, ...optionalParams);
   }
 
   public warn(message?: unknown, ...optionalParams: unknown[]): void {
-    this.log(LOG_LEVEL.WARN, [], message, ...optionalParams);
+    this.log(LogLevel.Warn, [], message, ...optionalParams);
   }
 
   public error(message?: unknown, ...optionalParams: unknown[]): void {
-    this.log(LOG_LEVEL.ERROR, [], message, ...optionalParams);
+    this.log(LogLevel.Error, [], message, ...optionalParams);
   }
 }
 
