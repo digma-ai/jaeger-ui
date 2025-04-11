@@ -62,11 +62,11 @@ export const getInsightTypeInfo = (
     },
     [InsightType.EndpointSpanNPlusOne]: {
       icon: SQLDatabaseIcon,
-      label: 'Suspected N+1',
+      label: 'Repeated Query',
     },
     [InsightType.SpaNPlusOne]: {
       icon: SQLDatabaseIcon,
-      label: 'Suspected N+1',
+      label: 'Repeated Query',
     },
     [InsightType.SpanEndpointBottleneck]: {
       icon: BottleneckIcon,
