@@ -76,6 +76,10 @@ export const getInsightTypeInfo = (
       icon: ScalesIcon,
       label: 'Scaling Issue Found',
     },
+    [InsightType.EndpointScaling]: {
+      icon: ScalesIcon,
+      label: 'Scaling Issue Found',
+    },
     [InsightType.SpanUsages]: {
       icon: SineIcon,
       label: 'Top Usage',

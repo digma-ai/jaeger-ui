@@ -1,9 +1,9 @@
-enum LOG_LEVEL {
-  DEBUG = 0,
-  INFO = 1,
-  WARN = 2,
-  ERROR = 3,
-  NONE = 4,
+enum LogLevel {
+  Debug = 0,
+  Info = 1,
+  Warn = 2,
+  Error = 3,
+  None = 4,
 }
 
-export default LOG_LEVEL;
+export default LogLevel;

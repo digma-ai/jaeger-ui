@@ -31,12 +31,19 @@ declare interface Window {
     onFailure: (error_code, error_message) => void;
   }) => string;
   cefQueryCancel?: (request_id: string) => void;
+  chrome?: {
+    webview?: {
+      addEventListener: typeof window.addEventListener;
+      removeEventListener: typeof window.removeEventListener;
+      postMessage: typeof window.postMessage;
+    };
+  };
   sendMessageToDigma: <T>(
     message: { action: string; payload?: T } /* IDigmaOutgoingMessageData */
   ) => string | undefined;
   cancelMessageToDigma: (request_id: string) => void;
   platform?: unknown;
-  baseUrl?: unknown
+  baseUrl?: unknown;
   apiBaseUrl?: unknown;
   initialRoutePath?: unknown;
   embeddedMode?: unknown;
