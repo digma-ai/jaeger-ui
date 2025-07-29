@@ -9,8 +9,6 @@ on:
     # More info: https://github.com/actions/runner/issues/1182
     paths-ignore:
       - '.vscode/**'
-      - '.prettierignore'
-      - '.prettierrc'
       - '*.md'
       - 'DCO'
       - 'LICENSE'
@@ -19,8 +17,6 @@ on:
       - 'main'
     paths-ignore:
       - '.vscode/**'
-      - '.prettierignore'
-      - '.prettierrc'
       - '*.md'
       - 'DCO'
       - 'LICENSE'
@@ -28,15 +24,23 @@ on:
 jobs:
   lint-test:
     name: Lint & test
+    permissions:
+      contents: read
     uses: ./.github/workflows/digma-lint-test.yml
 
   build:
     name: Build
+    permissions:
+      contents: read
+      actions: write
     needs: lint-test
     uses: ./.github/workflows/digma-build.yml
 
   build-docker-image:
     name: Build Docker image
+    permissions:
+      contents: read
+      actions: write
     needs: build
     uses: ./.github/workflows/digma-docker-image.yml
     secrets: inherit

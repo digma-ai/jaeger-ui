@@ -5,21 +5,26 @@ on:
   release:
     types: [prereleased, released]
 
-permissions:
-  contents: write
-
 jobs:
   lint-test:
     name: Lint & test
+    permissions:
+      contents: read
     uses: ./.github/workflows/digma-lint-test.yml
 
   build:
     name: Build
+    permissions:
+      contents: read
+      actions: write
     needs: lint-test
     uses: ./.github/workflows/digma-build.yml
 
   attach-release-asset:
     name: Attach release asset
+    permissions:
+      contents: write
+      actions: read
     needs: build
     uses: ./.github/workflows/digma-release-asset.yml
     with:
@@ -27,6 +32,9 @@ jobs:
 
   build-push-docker-image:
     name: Build & push Docker image
+    permissions:
+      contents: read
+      actions: write
     needs: build
     uses: ./.github/workflows/digma-docker-image.yml
     secrets: inherit
@@ -36,6 +44,9 @@ jobs:
 
   update-digma-ui:
     name: Update dependencies in Digma UI
+    permissions:
+      contents: read
+      actions: write
     needs: [build, attach-release-asset, build-push-docker-image]
     runs-on: ubuntu-latest
     if: github.event.release.prerelease == false
