@@ -37,5 +37,5 @@ jobs:
           file: 'assets.tar.gz'
           overwrite: true
           tag: ${{ github.ref }}
-          repo_token: ${{ secrets.RELEASE_PAT }}
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
         if: steps.package-artifacts.outcome == 'success'
